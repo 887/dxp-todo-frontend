@@ -1,3 +1,5 @@
+include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
+
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
@@ -15,6 +17,9 @@ use crate::pages::not_found::NotFound;
 pub fn App() -> impl IntoView {
     // Provides context that manages stylesheets, titles, meta tags, etc.
     provide_meta_context();
+
+    //client from included codegen.rs
+    Client::new("http://127.0.0.1/");
 
     view! {
         <Html lang="en" dir="ltr" attr:data-theme="light"/>

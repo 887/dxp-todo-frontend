@@ -69,9 +69,51 @@
         },
         "operationId": "greet"
       }
+    },
+    "/test": {
+      "put": {
+        "tags": [
+          "HelloWorld"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "$ref": "#/components/schemas/Test"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "text/plain; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "test"
+      }
     }
   },
   "components": {
-    "schemas": {}
+    "schemas": {
+      "Test": {
+        "type": "object",
+        "required": [
+          "test"
+        ],
+        "properties": {
+          "test": {
+            "type": "string"
+          }
+        }
+      }
+    }
   }
 }
