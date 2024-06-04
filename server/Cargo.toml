@@ -3,6 +3,10 @@ name = "server"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "server"
+crate-type = ["rlib", "dylib"]
+
 [dependencies]
 dxp-logging = { workspace = true, optional = true, default-features = false }
 poem = { workspace = true, features = ["compression", "session"]}
