@@ -1,3 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["server"]
+
 [package]
 name = "dx_todo_frontend"
 version = "0.1.0"
@@ -6,39 +10,36 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-leptos = { version = "^0.6", features = ["csr", "nightly"] }
-leptos_meta = { version = "^0.6", features = ["csr", "nightly"] }
-leptos_router = { version = "^0.6", features = ["csr", "nightly"] }
-console_log = "^1"
-log = "^0.4"
-console_error_panic_hook = "^0.1"
-progenitor-client = "^0.7.0"
-base64 = "^0.22"
-rand = "^0.8.5"
-reqwest = { version = "^0.11", features = ["json", "stream"] }
+hot-lib-reloader = { version = "^0.7.0", optional = true }
+server = { path = "server", default-features = false }
+dotenvy = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread", "signal"] }
+tracing = { workspace = true }
+dxp-logging = { workspace = true, optional = true, default-features = false }
+
+[workspace.dependencies]
+poem = { version = "^3.0.1" }
+poem-grants = { version ="^3.0.0" }
+dotenvy = { version = "^0.15.7" }
+tokio = { version = "^1.37.0", default-features = false }
+anyhow = { version = "^1.0.86", features = ["backtrace"] }
+dxp-dbsession = { git = "https://github.com/887/dxp-dbsession.git", default-features = true }
+sea-orm = { version = "^0.12.15", default-features = false }
+dbopen = { path = "dbopen", default-features = false }
+tracing-subscriber = { version = "^0.3.18", features = ["env-filter"] }
+tracing = "^0.1.40"
+tracing-appender = { version = "^0.2.3" }
 serde = { version = "^1.0.203", features = ["derive"] }
-uuid = { version = "^1.0.0", features = ["serde", "v4", "v7"] }
-chrono = { version = "0.4", features = ["serde"] }
+dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 
-# utils
-# strum = { version = "0.25", features = ["derive", "strum_macros"] }
-# strum_macros = "0.25"
-
-[build-dependencies]
-prettyplease = "^0.2.20"
-progenitor = "^0.7.0"
-serde = { version = "^1.0.203", features = ["derive"] }
-serde_json = "^1.0.117"
-syn = "^2.0"
-
-[dev-dependencies]
-wasm-bindgen = "^0.2"
-wasm-bindgen-test = "^0.3"
-web-sys = { version = "^0.3", features = ["Document", "Window"] }
-
-
-[profile.release]
-opt-level = 'z'
-lto = true
-codegen-units = 1
-panic = "abort"
+[features]
+default = ["sqlite-rustls", "log", "hot-reload"]
+hot-reload = ["dep:hot-lib-reloader", "server/hot-reload"]
+mysql-rustls = ["server/mysql-rustls"]
+mysql-native-tls = ["server/mysql-native-tls"]
+sqlite-rustls = ["server/sqlite-rustls"]
+sqlite-native-tls = ["server/sqlite-native-tls"]
+postgres-rustls = ["server/postgres-rustls"]
+postgres-native-tls = ["server/postgres-native-tls"]
+log=["dep:dxp-logging", "dxp-logging/log", "server/log"]
+log-file=["log", "dxp-logging/log-file", "server/log-file"]
