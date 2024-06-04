@@ -15,6 +15,9 @@ mod endpoints;
 mod server;
 mod session;
 
+mod initializers;
+mod watchers;
+
 use server::run_server_main;
 
 #[cfg(feature = "hot-reload")]

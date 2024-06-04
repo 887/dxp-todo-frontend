@@ -30,6 +30,8 @@ dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features
 base64 = "^0.22.1"
 chrono = {version = "^0.4.38", default-features = false, features = ["clock"]}
 serde_json = { version = "^1.0.68" }
+minijinja = { version = "2.0.1", features = ["loader"]}
+arc-swap = "1.7.1"
 
 [features]
 default = ["log", "hot-reload"]
