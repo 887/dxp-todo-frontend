@@ -24,9 +24,6 @@ pub(crate) async fn run() -> std::io::Result<()> {
 async fn run_inner() -> Result<()> {
     hot_server::load_env()?;
 
-    #[cfg(feature = "migration")]
-    run_migrations().await?;
-
     Ok(tokio::task::spawn_blocking(|| {
         hot_server::run_server().map_err(|e| format!("server aborted with error, {:?}", e))
     })
@@ -54,9 +51,6 @@ async fn run_inner(
 ) -> Result<()> {
     hot_server::load_env()?;
 
-    #[cfg(feature = "migration")]
-    run_migrations().await?;
-
     *server_running_writer.write().await = true;
     run_server(rx_shutdown_server).await
 }
@@ -71,15 +65,6 @@ async fn run_server(rx_shutdown_server: Arc<RwLock<Receiver<()>>>) -> Result<()>
     // the tokio threadpool is used here
     Ok(tokio::task::spawn_blocking(|| {
         hot_server::run_server(rx_shutdown_server)
-            .map_err(|e| format!("migration aborted with error, {:?}", e))
-    })
-    .await??)
-}
-
-#[cfg(feature = "migration")]
-async fn run_migrations() -> Result<()> {
-    Ok(tokio::task::spawn_blocking(|| {
-        hot_migration_runner::run_migration()
             .map_err(|e| format!("migration aborted with error, {:?}", e))
     })
     .await??)

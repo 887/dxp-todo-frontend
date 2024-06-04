@@ -24,7 +24,6 @@ pub async fn run(
 ) {
     //communication channels must outlive the loop
     let (tx_lib_reloaded, mut rx_lib_reloaded) = mpsc::channel(1);
-    let (tx_migration_reloaded, mut rx_migration_reloaded) = mpsc::channel(1);
 
     loop {
         let lib_reloaded_ready = lib_ready_to_reload(
@@ -36,32 +35,15 @@ pub async fn run(
             || hot_server::subscribe().wait_for_reload(),
         );
 
-        let migration_reload_ready = lib_ready_to_reload(
-            "migration runner",
-            &mut rx_migration_reloaded,
-            server_is_running_reader.clone(),
-            &tx_shutdown_server,
-            &block_reloads_mutex,
-            || hot_migration_runner::subscribe().wait_for_reload(),
-        );
-
         let observe_lib_hot = observe_lib(
             "tx_lib_reloaded_hot",
             || hot_server::subscribe().wait_for_about_to_reload(),
             &tx_lib_reloaded,
         );
 
-        let observe_lib_migration = observe_lib(
-            "tx_lib_reloaded_migration",
-            || hot_migration_runner::subscribe().wait_for_about_to_reload(),
-            &tx_migration_reloaded,
-        );
-
         tokio::select! {
             _ = lib_reloaded_ready => {},
             _ = observe_lib_hot => {},
-            _ = migration_reload_ready => {},
-            _ = observe_lib_migration => {},
         };
     }
 }

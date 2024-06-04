@@ -15,7 +15,6 @@ server = { path = "server", default-features = false }
 dotenvy = { workspace = true }
 tokio = { workspace = true, features = ["rt-multi-thread", "signal"] }
 tracing = { workspace = true }
-migration-runner = { workspace = true, optional = true }
 dxp-logging = { workspace = true, optional = true, default-features = false }
 
 [workspace.dependencies]
@@ -25,25 +24,17 @@ dotenvy = { version = "^0.15.7" }
 tokio = { version = "^1.37.0", default-features = false }
 anyhow = { version = "^1.0.86", features = ["backtrace"] }
 sea-orm = { version = "^0.12.15", default-features = false }
-migration = { path = "migration", default-features = false }
-migration-runner = { path = "migration-runner", default-features = false }
 tracing = "^0.1.40"
 serde = { version = "^1.0.203", features = ["derive"] }
-dxp-db-open = { git = "https://github.com/887/dxp-db-open.git", default-features = false}
-dxp-db-session = { git = "https://github.com/887/dxp-db-session.git", default-features = true }
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
+base64 = "^0.22.1"
+chrono = {version = "^0.4.38", default-features = false, features = ["clock"]}
+serde_json = { version = "^1.0.68" }
 
 [features]
-default = ["sqlite-rustls", "migration", "log", "hot-reload"]
+default = ["log", "hot-reload"]
 path-info = []
-hot-reload = ["dep:hot-lib-reloader", "migration-runner/hot-reload", "server/hot-reload"]
-migration = ["dep:migration-runner"]
-mysql-rustls = ["server/mysql-rustls", "migration-runner/mysql-rustls"]
-mysql-native-tls = ["server/mysql-native-tls", "migration-runner/mysql-native-tls"]
-sqlite-rustls = ["server/sqlite-rustls", "migration-runner/sqlite-rustls"]
-sqlite-native-tls = ["server/sqlite-native-tls", "migration-runner/sqlite-native-tls"]
-postgres-rustls = ["server/postgres-rustls", "migration-runner/postgres-rustls"]
-postgres-native-tls = ["server/postgres-native-tls", "migration-runner/postgres-native-tls"]
-log=["dep:dxp-logging", "dxp-logging/log", "server/log", "migration-runner/log"]
-log-file=["log", "dxp-logging/log-file", "server/log-file", "migration-runner/log-file"]
+hot-reload = ["dep:hot-lib-reloader", "server/hot-reload"]
+log=["dep:dxp-logging", "dxp-logging/log", "server/log"]
+log-file=["log", "dxp-logging/log-file", "server/log-file"]
 
