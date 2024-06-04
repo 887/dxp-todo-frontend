@@ -13,6 +13,14 @@
     {
       "name": "HelloWorld",
       "description": "HelloWorld operations"
+    },
+    {
+      "name": "Session",
+      "description": "Session operations"
+    },
+    {
+      "name": "Test",
+      "description": "Test operations"
     }
   ],
   "paths": {
@@ -73,7 +81,7 @@
     "/test": {
       "put": {
         "tags": [
-          "HelloWorld"
+          "Test"
         ],
         "requestBody": {
           "content": {
@@ -98,6 +106,27 @@
           }
         },
         "operationId": "test"
+      }
+    },
+    "/session": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "summary": "Session",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "text/plain; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "session"
       }
     }
   },
