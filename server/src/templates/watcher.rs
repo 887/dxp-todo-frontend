@@ -1,16 +1,15 @@
 use arc_swap::ArcSwap;
 use minijinja::Environment as Minijinja;
-use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
-use std::sync::OnceLock;
+use notify::{event::EventAttributes, Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use std::{ffi::OsStr, path::Path};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::{error, trace};
 
-use crate::initializers::templates;
+use crate::templates::initializer;
 
 pub fn watch_directory(
     templates_dir: &'static str,
-    templates: &'static OnceLock<ArcSwap<Minijinja<'static>>>,
+    templates: &'static ArcSwap<Minijinja<'static>>,
 ) {
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
     tokio::spawn(async move {
@@ -45,7 +44,7 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 
 pub async fn async_watch<P: AsRef<Path>>(
     path: P,
-    templates_container: &'static OnceLock<ArcSwap<Minijinja<'static>>>,
+    templates_container: &'static ArcSwap<Minijinja<'static>>,
 ) -> notify::Result<()> {
     let (mut watcher, mut rx) = async_watcher()?;
 
@@ -61,14 +60,12 @@ pub async fn async_watch<P: AsRef<Path>>(
                     .iter()
                     .any(|p| p.extension().unwrap_or(OsStr::new("")) == "jinja")
                 {
-                    println!("reloading templates: {event:?}");
+                    trace!("reloading templates: {event:?}");
 
                     //this reloads all files from disk
-                    let templates = templates::get_templates();
+                    let templates = initializer::get_templates();
 
-                    templates_container
-                        .get()
-                        .map(|container| container.swap(std::sync::Arc::new(templates)));
+                    templates_container.swap(std::sync::Arc::new(templates));
 
                     trace!("templates reloaded");
                 }
