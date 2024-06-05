@@ -18,6 +18,8 @@ mod session;
 mod initializers;
 mod watchers;
 
+mod templates;
+
 use server::run_server_main;
 
 #[cfg(feature = "hot-reload")]

@@ -4,6 +4,7 @@ use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use std::sync::OnceLock;
 use std::{ffi::OsStr, path::Path};
 use tokio::sync::mpsc::{self, Receiver};
+use tracing::{error, trace};
 
 use crate::initializers::templates;
 
@@ -16,14 +17,14 @@ pub fn watch_directory(
         loop {
             // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
             if let Err(e) = async_watch(std::path::Path::new(templates_dir), templates).await {
-                println!("error: {:?}", e)
+                error!("error watching template reload: {:?}", e)
             }
         }
     });
 }
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
-    let (mut tx, rx) = mpsc::channel(1);
+    let (tx, rx) = mpsc::channel(1);
 
     let handle = tokio::runtime::Handle::current();
     // Automatically select the best implementation for your platform.
@@ -32,7 +33,7 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
         move |res| {
             handle.block_on(async {
                 if tx.send(res).await.ok().is_none() {
-                    println!("error on template future execution");
+                    error!("template reload notify channel closed - can't send");
                 }
             })
         },
@@ -69,10 +70,10 @@ pub async fn async_watch<P: AsRef<Path>>(
                         .get()
                         .map(|container| container.swap(std::sync::Arc::new(templates)));
 
-                    println!("templates reloaded");
+                    trace!("templates reloaded");
                 }
             }
-            Err(e) => println!("watch error: {e:?}"),
+            Err(e) => error!("watch error: {e:?}"),
         }
     }
 
