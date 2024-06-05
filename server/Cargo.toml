@@ -12,7 +12,7 @@ dxp-logging = { workspace = true, optional = true, default-features = false }
 poem = { workspace = true, features = ["compression", "session"]}
 poem-grants = { workspace = true }
 dotenvy = { workspace = true }
-tokio = { workspace = true, features = ["rt-multi-thread", "signal", "net"] }
+tokio = { workspace = true, features = ["rt-multi-thread", "signal", "net", "sync"] }
 tracing = { workspace = true }
 anyhow = { workspace = true }
 base64 = { workspace = true }
@@ -20,10 +20,12 @@ serde_json = { workspace = true }
 chrono = { workspace = true }
 minijinja = { workspace = true }
 arc-swap = { workspace = true , optional = true }
+notify = {workspace = true, optional = true, default-features = false, features = ["macos_kqueue"]}
+include_dir = { workspace = true }
 
 [features]
 default = ["hot-reload"]
-hot-reload = ["dep:arc-swap"]
+hot-reload = ["dep:arc-swap", "dep:notify"]
 redis = []
 log=["dep:dxp-logging", "dxp-logging/log"]
 log-file=["log", "dxp-logging/log-file"]

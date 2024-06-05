@@ -1,2 +1,2 @@
-// #[cfg(feature = "hot-reload")]
-// pub mod templates_watcher;
+#[cfg(feature = "hot-reload")]
+pub mod templates_watcher;

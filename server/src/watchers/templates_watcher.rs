@@ -1,19 +1,15 @@
 use arc_swap::ArcSwap;
-//todo: refactor to use tokio channels
-use futures::{
-    channel::mpsc::{channel, Receiver},
-    SinkExt, StreamExt,
-};
 use minijinja::Environment as Minijinja;
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
-use once_cell::sync::Lazy;
+use std::sync::OnceLock;
 use std::{ffi::OsStr, path::Path};
+use tokio::sync::mpsc::{self, Receiver};
 
-use crate::templates;
+use crate::initializers::templates;
 
 pub fn watch_directory(
     templates_dir: &'static str,
-    templates: &'static Lazy<ArcSwap<Minijinja<'static>>>,
+    templates: &'static OnceLock<ArcSwap<Minijinja<'static>>>,
 ) {
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
     tokio::spawn(async move {
@@ -27,13 +23,14 @@ pub fn watch_directory(
 }
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
-    let (mut tx, rx) = channel(1);
+    let (mut tx, rx) = mpsc::channel(1);
 
+    let handle = tokio::runtime::Handle::current();
     // Automatically select the best implementation for your platform.
     // You can also access each implementation directly e.g. INotifyWatcher.
     let watcher = RecommendedWatcher::new(
         move |res| {
-            futures::executor::block_on(async {
+            handle.block_on(async {
                 if tx.send(res).await.ok().is_none() {
                     println!("error on template future execution");
                 }
@@ -47,7 +44,7 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 
 pub async fn async_watch<P: AsRef<Path>>(
     path: P,
-    templates_container: &'static Lazy<ArcSwap<Minijinja<'static>>>,
+    templates_container: &'static OnceLock<ArcSwap<Minijinja<'static>>>,
 ) -> notify::Result<()> {
     let (mut watcher, mut rx) = async_watcher()?;
 
@@ -55,7 +52,7 @@ pub async fn async_watch<P: AsRef<Path>>(
     // below will be monitored for changes.
     watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
 
-    while let Some(res) = rx.next().await {
+    while let Some(res) = rx.recv().await {
         match res {
             Ok(event) => {
                 if event
@@ -64,14 +61,14 @@ pub async fn async_watch<P: AsRef<Path>>(
                     .any(|p| p.extension().unwrap_or(OsStr::new("")) == "jinja")
                 {
                     println!("reloading templates: {event:?}");
-                    //this only reloads the files already found
-                    // let mut tera = (*templates.load().to_owned()).clone();
-                    // let reload_result = tera.full_reload();
 
                     //this reloads all files from disk
                     let templates = templates::get_templates();
 
-                    templates_container.swap(std::sync::Arc::new(templates));
+                    templates_container
+                        .get()
+                        .map(|container| container.swap(std::sync::Arc::new(templates)));
+
                     println!("templates reloaded");
                 }
             }

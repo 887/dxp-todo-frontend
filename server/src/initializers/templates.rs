@@ -7,7 +7,7 @@ use minijinja::path_loader;
 use minijinja::Environment as Minijinja;
 
 #[cfg(feature = "hot-reload")]
-pub static TEMPLATE_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/server/src/endpoints/");
+pub static TEMPLATE_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/endpoints/");
 
 #[cfg(feature = "hot-reload")]
 pub fn get_templates() -> Minijinja<'static> {
@@ -18,7 +18,7 @@ pub fn get_templates() -> Minijinja<'static> {
 
 //https://docs.rs/include_dir/latest/include_dir/index.html
 #[cfg(not(feature = "hot-reload"))]
-static TEMPLATE_DIR_FILES: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/frontend/src/routes/");
+static TEMPLATE_DIR_FILES: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/endpoints/");
 
 #[cfg(not(feature = "hot-reload"))]
 pub fn get_templates_embedded() -> Minijinja<'static> {
@@ -65,11 +65,10 @@ fn parse_template<I: Iterator<Item = &'static include_dir::File<'static>>>(
                 contents.unwrap_or_else(|| panic!("template contents not utf8")),
             )
         })
-        .for_each(|(path, contents)| {
-            if let Ok(c) = jinja.add_template(path, contents) {
-                c
-            } else {
-                panic!("{path} template couldn't be added: {e}");
-            }
-        });
+        .for_each(
+            |(path, contents)| match jinja.add_template(path, contents) {
+                Ok(c) => c,
+                Err(e) => panic!("{path} template couldn't be added: {e}"),
+            },
+        );
 }
