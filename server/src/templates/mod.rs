@@ -1,7 +1,10 @@
 #[cfg(feature = "hot-reload")]
-pub mod watcher;
+mod watcher;
+#[cfg(feature = "hot-reload")]
+pub use watcher::*;
 
-pub mod initializer;
+mod initializer;
+pub use initializer::*;
 
 #[cfg(feature = "hot-reload")]
 use arc_swap::ArcSwap;

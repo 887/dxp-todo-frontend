@@ -9,9 +9,7 @@ use crate::templates;
 pub fn get_route() -> Route {
     let templates = templates::get_templates();
     #[cfg(feature = "hot-reload")]
-    templates::watcher::watch_directory(templates::initializer::TEMPLATE_DIR, &templates);
-
-    info!("ques");
+    templates::watch_directory(templates::TEMPLATE_DIR, &templates);
 
     let index = Route::new().at("/", get(index::index));
 

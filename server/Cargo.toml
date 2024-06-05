@@ -25,7 +25,8 @@ include_dir = { workspace = true }
 derivative = { workspace = true }
 
 [features]
-default = ["hot-reload"]
+#default features are what hot reload uses
+default = ["log", "hot-reload"]
 hot-reload = ["dep:arc-swap", "dep:notify"]
 redis = []
 log=["dep:dxp-logging", "dxp-logging/log"]
