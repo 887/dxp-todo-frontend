@@ -188,15 +188,56 @@ impl Client {
 
     ///Session
     ///
-    ///Sends a `GET` request to `/session`
-    pub async fn session<'a>(&'a self) -> Result<ResponseValue<ByteStream>, Error<()>> {
-        let url = format!("{}/session", self.baseurl,);
+    ///Sends a `GET` request to `/load_session`
+    pub async fn load_session<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<serde_json::Map<String, serde_json::Value>>, Error<()>> {
+        let url = format!("{}/load_session", self.baseurl,);
         #[allow(unused_mut)]
-        let mut request = self.client.get(url).build()?;
+        let mut request = self
+            .client
+            .get(url)
+            .header(
+                reqwest::header::ACCEPT,
+                reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .build()?;
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
-            200u16 => Ok(ResponseValue::stream(response)),
+            200u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+
+    ///Sends a `POST` request to `/update_session`
+    pub async fn update_session<'a>(
+        &'a self,
+        body: &'a serde_json::Map<String, serde_json::Value>,
+    ) -> Result<ResponseValue<()>, Error<()>> {
+        let url = format!("{}/update_session", self.baseurl,);
+        #[allow(unused_mut)]
+        let mut request = self.client.post(url).json(&body).build()?;
+        let result = self.client.execute(request).await;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => Ok(ResponseValue::empty(response)),
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+
+    ///Sends a `POST` request to `/remove_session`
+    pub async fn remove_session<'a>(
+        &'a self,
+        body: &'a serde_json::Map<String, serde_json::Value>,
+    ) -> Result<ResponseValue<()>, Error<()>> {
+        let url = format!("{}/remove_session", self.baseurl,);
+        #[allow(unused_mut)]
+        let mut request = self.client.post(url).json(&body).build()?;
+        let result = self.client.execute(request).await;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => Ok(ResponseValue::empty(response)),
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }

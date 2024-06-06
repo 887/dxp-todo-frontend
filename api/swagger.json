@@ -108,7 +108,7 @@
         "operationId": "test"
       }
     },
-    "/session": {
+    "/load_session": {
       "get": {
         "tags": [
           "Session"
@@ -118,15 +118,64 @@
           "200": {
             "description": "",
             "content": {
-              "text/plain; charset=utf-8": {
+              "application/json; charset=utf-8": {
                 "schema": {
-                  "type": "string"
+                  "type": "object",
+                  "additionalProperties": {}
                 }
               }
             }
           }
         },
-        "operationId": "session"
+        "operationId": "load_session"
+      }
+    },
+    "/update_session": {
+      "post": {
+        "tags": [
+          "Session"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "operationId": "update_session"
+      }
+    },
+    "/remove_session": {
+      "post": {
+        "tags": [
+          "Session"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "operationId": "remove_session"
       }
     }
   },

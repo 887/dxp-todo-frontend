@@ -23,6 +23,7 @@ arc-swap = { workspace = true , optional = true }
 notify = {workspace = true, optional = true, default-features = false, features = ["macos_kqueue"]}
 include_dir = { workspace = true }
 derivative = { workspace = true }
+backend = { workspace = true }
 
 [features]
 #default features are what hot reload uses

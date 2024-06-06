@@ -35,6 +35,7 @@ arc-swap = "1.7.1"
 notify = { version ="6.1.1", default-features = false }
 include_dir = { version = "0.7.3" }
 derivative = "2.2.0"
+backend = { path = "backend"}
 
 [features]
 default = ["log", "hot-reload"]

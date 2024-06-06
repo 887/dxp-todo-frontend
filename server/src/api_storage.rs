@@ -1,18 +1,21 @@
-use std::{collections::BTreeMap, ops::Add, time::Duration};
+use std::{collections::BTreeMap, time::Duration};
 
 use chrono::Utc;
-use poem::{error::InternalServerError, session::SessionStorage, Result};
-use serde_json::Value;
+use poem::{http::StatusCode, session::SessionStorage, Result};
+use serde_json::{Map, Value};
+
+use backend;
 
 #[derive(Clone)]
 pub struct ApiSessionStorage {
-    api: String,
+    client: backend::Client,
 }
 
 impl ApiSessionStorage {
     /// Create an [`PgSessionStorage`].
     pub fn new(api: String) -> ApiSessionStorage {
-        ApiSessionStorage { api }
+        let client = backend::Client::new(&api);
+        ApiSessionStorage { client }
     }
 }
 
@@ -21,6 +24,18 @@ impl SessionStorage for ApiSessionStorage {
         &'a self,
         session_id: &'a str,
     ) -> Result<Option<BTreeMap<String, Value>>> {
+        let res = match self.client.load_session().await {
+            Ok(r) => r,
+            Err(_) => return Ok(None),
+        };
+        if res.status() == 200 {
+            let inner = res.into_inner();
+            let map = BTreeMap::from_iter(inner.iter().map(|(i, e)| (i.to_string(), e.clone())));
+            return Ok(Some(map));
+        }
+
+        Ok(None)
+
         // const LOAD_SESSION_SQL: &str = r#"
         //     select session from {table_name}
         //         where id = $1 and (expires is null or expires > $2)
@@ -45,7 +60,7 @@ impl SessionStorage for ApiSessionStorage {
         //         Err(_err) => Ok(None),
         //     }
         // } else {
-        Ok(None)
+        // Ok(None)
         // }
     }
 
