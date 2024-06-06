@@ -66,20 +66,55 @@ pub async fn async_watch<P: AsRef<Path>>(
     while let Some(res) = rx.recv().await {
         match res {
             Ok(event) => {
-                if event
+                if event.kind
+                    == notify::EventKind::Modify(notify::event::ModifyKind::Data(
+                        notify::event::DataChange::Any,
+                    ))
+                {
+                    continue;
+                }
+
+                let jinja_paths = event
                     .paths
                     .iter()
-                    .any(|p| p.extension().unwrap_or(OsStr::new("")) == "jinja")
-                {
-                    trace!("reloading templates: {event:?}");
+                    .filter(|p| p.extension().unwrap_or(OsStr::new("")) == "jinja");
 
-                    //this reloads all files from disk
-                    let templates = initializer::get_templates();
+                trace!("reloading templates: {event:?}");
 
-                    templates_container.swap(std::sync::Arc::new(templates));
+                //this reloads all the templates
+                // if jinja_paths.count() > 0 {
+                //     trace!("reloading templates: {event:?}");
 
-                    trace!("templates reloaded");
+                //     //this reloads all files from disk
+                //     let templates = initializer::get_templates();
+                //     templates_container.swap(std::sync::Arc::new(templates));
+
+                //     trace!("templates reloaded");
+                // }
+
+                //this remove the cached template, so it will be loaded again when we access it
+                for p in jinja_paths {
+                    let name = p
+                        .to_string_lossy()
+                        .chars()
+                        .skip(initializer::TEMPLATE_DIR.len())
+                        .collect::<String>();
+
+                    let tps_arc = templates_container.load_full();
+                    let mut tps = (*tps_arc).clone(); //get a mutable copy of our templates collection
+
+                    match tps.get_template(&name) {
+                        Ok(_) => tps.remove_template(&name),
+                        Err(e) => match e.kind() {
+                            minijinja::ErrorKind::TemplateNotFound => {}
+                            _ => tps.remove_template(&name),
+                        },
+                    }
+
+                    templates_container.swap(std::sync::Arc::new(tps));
                 }
+
+                trace!("templates reloaded");
             }
             Err(e) => error!("watch error: {e:?}"),
         }
