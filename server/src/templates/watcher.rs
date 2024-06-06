@@ -79,8 +79,6 @@ pub async fn async_watch<P: AsRef<Path>>(
                     .iter()
                     .filter(|p| p.extension().unwrap_or(OsStr::new("")) == "jinja");
 
-                trace!("reloading templates: {event:?}");
-
                 //this reloads all the templates
                 // if jinja_paths.count() > 0 {
                 //     trace!("reloading templates: {event:?}");
@@ -103,18 +101,22 @@ pub async fn async_watch<P: AsRef<Path>>(
                     let tps_arc = templates_container.load_full();
                     let mut tps = (*tps_arc).clone(); //get a mutable copy of our templates collection
 
-                    match tps.get_template(&name) {
-                        Ok(_) => tps.remove_template(&name),
-                        Err(e) => match e.kind() {
-                            minijinja::ErrorKind::TemplateNotFound => {}
-                            _ => tps.remove_template(&name),
-                        },
-                    }
+                    // let remove_template = |tps: &mut minijinja::Environment<'static>| {
+                    trace!("reloading template: {}", &name);
+                    //this template does not have to be loaded, remove templates does not check if something exists
+                    tps.remove_template(&name);
+                    // };
+
+                    // match tps.get_template(&name) {
+                    //     Ok(_) => remove_template(&mut tps),
+                    //     Err(e) => match e.kind() {
+                    //         minijinja::ErrorKind::TemplateNotFound => {}
+                    //         _ => remove_template(&mut tps),
+                    //     },
+                    // }
 
                     templates_container.swap(std::sync::Arc::new(tps));
                 }
-
-                trace!("templates reloaded");
             }
             Err(e) => error!("watch error: {e:?}"),
         }

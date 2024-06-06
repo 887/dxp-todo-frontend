@@ -1,12 +1,13 @@
 use crate::state::State;
-use poem::{get, EndpointExt, Route};
-use tracing::info;
+use error::ErrorMiddleware;
+use poem::{get, Endpoint, EndpointExt, Route};
 
+mod error;
 mod index;
 
 use crate::templates;
 
-pub fn get_route() -> Route {
+pub fn get_route() -> impl Endpoint {
     let templates = templates::get_templates();
     #[cfg(feature = "hot-reload")]
     templates::watch_directory(templates::TEMPLATE_DIR, &templates);
@@ -21,5 +22,8 @@ pub fn get_route() -> Route {
 
     let route = Route::new().nest("/", index_with_state); //routers need to be nested
 
-    route
+    let error_middleware = ErrorMiddleware {
+        templates: &templates,
+    };
+    route.with(error_middleware)
 }
