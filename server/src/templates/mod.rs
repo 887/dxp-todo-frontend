@@ -26,5 +26,5 @@ pub fn get_templates() -> &'static arc_swap::ArcSwapAny<std::sync::Arc<Minijinja
 static TEMPLATES: OnceLock<Minijinja<'static>> = OnceLock::new();
 #[cfg(not(feature = "hot-reload"))]
 pub fn get_templates() -> &'static Minijinja<'static> {
-    TEMPLATES.get_or_init(|| templates::get_templates_embedded())
+    TEMPLATES.get_or_init(|| initializer::get_templates_embedded())
 }
