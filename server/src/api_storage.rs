@@ -26,7 +26,12 @@ impl SessionStorage for ApiSessionStorage {
     ) -> Result<Option<BTreeMap<String, Value>>> {
         let res = match self.client.load_session().await {
             Ok(r) => r,
-            Err(_) => return Ok(None),
+            Err(err) => {
+                return Err(poem::error::Error::new(
+                    err,
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                ))
+            }
         };
         if res.status() == 200 {
             let inner = res.into_inner();
@@ -35,33 +40,6 @@ impl SessionStorage for ApiSessionStorage {
         }
 
         Ok(None)
-
-        // const LOAD_SESSION_SQL: &str = r#"
-        //     select session from {table_name}
-        //         where id = $1 and (expires is null or expires > $2)
-        //     "#;
-
-        // let maybe_model = poem_sessions::Entity::find()
-        //     .filter(poem_sessions::Column::Id.eq(session_id))
-        //     .filter(
-        //         poem_sessions::Column::Expires
-        //             .is_null()
-        //             .or(poem_sessions::Column::Expires.gt(Utc::now())),
-        //     )
-        //     .one(&self.db)
-        //     .await
-        //     .map_err(InternalServerError)?;
-
-        // if let Some(model) = maybe_model {
-        //     let res: serde_json::Result<BTreeMap<String, Value>> =
-        //         serde_json::from_value(model.session);
-        //     match res {
-        //         Ok(btr_map) => Ok(Some(btr_map)),
-        //         Err(_err) => Ok(None),
-        //     }
-        // } else {
-        // Ok(None)
-        // }
     }
 
     async fn update_session<'a>(
