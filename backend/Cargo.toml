@@ -7,7 +7,7 @@ license = "SPECIFY A LICENSE BEFORE PUBLISHING"
 [dependencies]
 bytes = "1.6.0"
 futures-core = "0.3.30"
-progenitor-client = "0.7.0"
+percent-encoding = "2.3.1"
 reqwest = { version = "0.11.27", default-features=false, features = ["json", "stream"] }
 serde = { version = "1.0.200", features = ["derive"] }
 serde_json = "1.0.117"
