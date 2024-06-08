@@ -26,7 +26,6 @@ anyhow = { version = "^1.0.86", features = ["backtrace"] }
 sea-orm = { version = "^0.12.15", default-features = false }
 tracing = "^0.1.40"
 serde = { version = "^1.0.203", features = ["derive"] }
-dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 base64 = "^0.22.1"
 chrono = {version = "^0.4.38", default-features = false, features = ["clock"]}
 serde_json = { version = "^1.0.68" }
@@ -36,6 +35,8 @@ notify = { version ="6.1.1", default-features = false }
 include_dir = { version = "0.7.3" }
 derivative = "2.2.0"
 backend = { path = "backend"}
+dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
+dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git", default-features = false }
 
 [features]
 default = ["log", "hot-reload"]
