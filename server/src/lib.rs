@@ -10,14 +10,8 @@
 
 pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
 
-mod state;
-
-mod api_storage;
 mod endpoints;
 mod server;
-mod session;
-
-mod templates;
 
 use server::run_server_main;
 

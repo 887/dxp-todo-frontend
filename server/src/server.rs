@@ -1,19 +1,16 @@
 use std::env;
 use std::future::Future;
-use std::sync::OnceLock;
 
 use anyhow::Context;
 use anyhow::Result;
 
-use poem::middleware::Compression;
+use poem::IntoEndpoint;
 use poem::{listener::TcpListener, Server};
-use poem::{EndpointExt, IntoEndpoint};
 use tracing::error;
 use tracing::info;
 use tracing::trace;
 
 use crate::endpoints;
-use crate::session;
 
 pub fn get_tcp_listener() -> Result<TcpListener<String>> {
     let host = env::var("HOST").context("HOST is not set")?;
@@ -26,29 +23,13 @@ pub fn get_tcp_listener() -> Result<TcpListener<String>> {
     Ok(TcpListener::bind(format!("{host}:{port}")))
 }
 
-pub fn get_endpoints() -> Result<impl IntoEndpoint + 'static> {
-    use poem::EndpointExt;
-
-    let main_route = endpoints::get_route();
-    let main_route = main_route.with(Compression::new());
-
-    Ok(main_route)
-}
-
 //https://stackoverflow.com/questions/62536566/how-can-i-create-a-tokio-runtime-inside-another-tokio-runtime-without-getting-th
 #[tokio::main]
 pub async fn run_server_main<F: Future<Output = ()>>(shutdown: Option<F>) -> Result<()> {
     let tcp_listener = get_tcp_listener()?;
-    let endpoints = get_endpoints()?;
+    let endpoints = endpoints::get_route().await?;
 
     let server = Server::new(tcp_listener);
-
-    let api = env::var("API").context("API is not set")?;
-
-    let session_storage = session::get_api_storage(api).await?;
-    let middleware = session::get_sever_session(session_storage)?;
-
-    let endpoints = endpoints.with(middleware);
 
     info!("running sever");
 

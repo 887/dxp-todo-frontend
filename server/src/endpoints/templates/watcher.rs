@@ -5,7 +5,7 @@ use std::{ffi::OsStr, path::Path};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::{error, trace};
 
-use crate::templates::initializer;
+use super::initializer;
 
 pub fn watch_directory(
     templates_dir: &'static str,

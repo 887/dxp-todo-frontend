@@ -1,3 +1,5 @@
+mod api_storage;
+
 use std::env;
 
 use anyhow::Context;
@@ -13,9 +15,6 @@ use base64::{
     Engine as _,
 };
 
-use crate::api_storage;
-
-//Result<_, Box<impl std::error::Error>>
 pub fn get_sever_session<S>(storage: S) -> Result<ServerSession<S>>
 where
     S: SessionStorage,

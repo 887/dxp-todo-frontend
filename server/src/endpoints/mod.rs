@@ -1,20 +1,28 @@
-use crate::state::State;
+mod state;
+
+use anyhow::{Context, Result};
 use error::ErrorMiddleware;
+use poem::middleware::Compression;
 use poem::{get, Endpoint, EndpointExt, Route};
 
 mod error;
 mod index;
+mod session;
+mod templates;
 
-use crate::templates;
-
-pub fn get_route() -> impl Endpoint {
+pub async fn get_route() -> Result<impl Endpoint> {
     let templates = templates::get_templates();
     #[cfg(feature = "hot-reload")]
     templates::watch_directory(templates::TEMPLATE_DIR, &templates);
 
+    let api = std::env::var("API").context("API is not set")?;
+
+    let session_storage = session::get_api_storage(api).await?;
+    let session_middleware = session::get_sever_session(session_storage)?;
+
     let index = Route::new().at("/", get(index::index));
 
-    let state = State {
+    let state = state::State {
         templates: &templates,
     };
 
@@ -25,5 +33,8 @@ pub fn get_route() -> impl Endpoint {
     let error_middleware = ErrorMiddleware {
         templates: &templates,
     };
-    route.with(error_middleware)
+    Ok(route
+        .with(error_middleware)
+        .with(session_middleware)
+        .with(Compression::new()))
 }
