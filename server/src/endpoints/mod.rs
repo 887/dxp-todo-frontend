@@ -23,7 +23,7 @@ pub async fn get_route() -> Result<impl Endpoint> {
     let index = Route::new().at("/", get(index::index));
 
     let state = state::State {
-        templates: templates,
+        templates,
     };
 
     let index_with_state = index.data(state);
@@ -31,7 +31,7 @@ pub async fn get_route() -> Result<impl Endpoint> {
     let route = Route::new().nest("/", index_with_state); //routers need to be nested
 
     let error_middleware = ErrorMiddleware {
-        templates: templates,
+        templates,
     };
     Ok(route
         .with(error_middleware)
