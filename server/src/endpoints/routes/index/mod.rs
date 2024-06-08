@@ -1,6 +1,9 @@
 use poem::{handler, session::Session};
 use tracing::trace;
 
+mod errors;
+mod texts;
+
 pub static SESSION_INDEX_COUNTER: &str = "index_counter";
 
 #[handler]

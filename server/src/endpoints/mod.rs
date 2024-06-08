@@ -18,7 +18,7 @@ pub async fn get_route() -> Result<impl Endpoint> {
     let api = std::env::var("API").context("API is not set")?;
 
     let session_storage = session::get_api_storage(api).await?;
-    let session_middleware = session::get_sever_session(session_storage)?;
+    let session_middleware = session::get_session_middleware(session_storage)?;
 
     let index = routes::get_route().await?;
 

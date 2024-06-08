@@ -1,3 +1,6 @@
+use poem::{error::I18NError, i18n::I18NBundle};
+use serde::Serialize;
+
 #[derive(Serialize)]
 struct TranslatedTexts {
     pub hello: String,
