@@ -36,7 +36,7 @@ include_dir = { version = "0.7.3" }
 derivative = "2.2.0"
 backend = { path = "backend"}
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
-dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git", default-features = false }
+dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
 
 [features]
 default = ["log", "hot-reload"]
