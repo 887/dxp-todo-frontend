@@ -42,38 +42,6 @@ pub mod types {
         }
     }
 
-    ///SessionEntry
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "type": "object",
-    ///  "required": [
-    ///    "name",
-    ///    "value"
-    ///  ],
-    ///  "properties": {
-    ///    "name": {
-    ///      "type": "string"
-    ///    },
-    ///    "value": {}
-    ///  }
-    ///}
-    /// ```
-    /// </details>
-    #[derive(Clone, Debug, Deserialize, Serialize)]
-    pub struct SessionEntry {
-        pub name: String,
-        pub value: serde_json::Value,
-    }
-
-    impl From<&SessionEntry> for SessionEntry {
-        fn from(value: &SessionEntry) -> Self {
-            value.clone()
-        }
-    }
-
     ///Test
     ///
     /// <details><summary>JSON schema</summary>
@@ -115,10 +83,8 @@ pub mod types {
     ///  ],
     ///  "properties": {
     ///    "entries": {
-    ///      "type": "array",
-    ///      "items": {
-    ///        "$ref": "#/components/schemas/SessionEntry"
-    ///      }
+    ///      "type": "object",
+    ///      "additionalProperties": {}
     ///    },
     ///    "expires": {
     ///      "type": "integer",
@@ -130,7 +96,7 @@ pub mod types {
     /// </details>
     #[derive(Clone, Debug, Deserialize, Serialize)]
     pub struct UpdateSessionValue {
-        pub entries: Vec<SessionEntry>,
+        pub entries: serde_json::Map<String, serde_json::Value>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub expires: Option<u64>,
     }

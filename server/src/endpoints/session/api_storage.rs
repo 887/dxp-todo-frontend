@@ -47,6 +47,23 @@ impl SessionStorage for ApiSessionStorage {
         entries: &'a BTreeMap<String, Value>,
         expires: Option<Duration>,
     ) -> Result<()> {
+        // let res = match self.client.load_session(session_id).await {
+        //     Ok(r) => r,
+        //     Err(err) => {
+        //         return Err(poem::error::Error::new(
+        //             err,
+        //             StatusCode::INTERNAL_SERVER_ERROR,
+        //         ))
+        //     }
+        // };
+        // if res.status() == 200 {
+        //     let inner = res.into_inner();
+        //     let map = BTreeMap::from_iter(inner.iter().map(|(i, e)| (i.to_string(), e.clone())));
+        //     return Ok(Some(map));
+        // }
+
+        // Ok(None)
+
         // const UPDATE_SESSION_SQL: &str = r#"
         //     insert into {table_name} (id, session, expires) values ($1, $2, $3)
         //         on conflict(id) do update set
