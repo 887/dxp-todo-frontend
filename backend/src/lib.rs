@@ -42,6 +42,41 @@ pub mod types {
         }
     }
 
+    ///LoadSessionValue
+    ///
+    /// <details><summary>JSON schema</summary>
+    ///
+    /// ```json
+    ///{
+    ///  "type": "object",
+    ///  "required": [
+    ///    "exists"
+    ///  ],
+    ///  "properties": {
+    ///    "entries": {
+    ///      "type": "object",
+    ///      "additionalProperties": {}
+    ///    },
+    ///    "exists": {
+    ///      "type": "boolean"
+    ///    }
+    ///  }
+    ///}
+    /// ```
+    /// </details>
+    #[derive(Clone, Debug, Deserialize, Serialize)]
+    pub struct LoadSessionValue {
+        #[serde(default, skip_serializing_if = "serde_json::Map::is_empty")]
+        pub entries: serde_json::Map<String, serde_json::Value>,
+        pub exists: bool,
+    }
+
+    impl From<&LoadSessionValue> for LoadSessionValue {
+        fn from(value: &LoadSessionValue) -> Self {
+            value.clone()
+        }
+    }
+
     ///Test
     ///
     /// <details><summary>JSON schema</summary>
@@ -230,7 +265,7 @@ impl Client {
     pub async fn load_session<'a>(
         &'a self,
         session_id: &'a str,
-    ) -> Result<ResponseValue<serde_json::Map<String, serde_json::Value>>, Error<()>> {
+    ) -> Result<ResponseValue<types::LoadSessionValue>, Error<()>> {
         let url = format!("{}/load_session", self.baseurl,);
         let mut query = Vec::with_capacity(1usize);
         query.push(("session_id", session_id.to_string()));

@@ -132,8 +132,7 @@
             "content": {
               "application/json; charset=utf-8": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
+                  "$ref": "#/components/schemas/LoadSessionValue"
                 }
               }
             }
@@ -205,6 +204,21 @@
   },
   "components": {
     "schemas": {
+      "LoadSessionValue": {
+        "type": "object",
+        "required": [
+          "exists"
+        ],
+        "properties": {
+          "exists": {
+            "type": "boolean"
+          },
+          "entries": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
       "Test": {
         "type": "object",
         "required": [

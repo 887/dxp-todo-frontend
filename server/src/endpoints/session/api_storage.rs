@@ -11,7 +11,7 @@ pub struct ApiSessionStorage {
 }
 
 impl ApiSessionStorage {
-    /// Create an [`PgSessionStorage`].
+    /// Create a new ApiSessionStorage.
     pub fn new(api: String) -> ApiSessionStorage {
         let client = backend::Client::new(&api);
         ApiSessionStorage { client }
@@ -23,22 +23,27 @@ impl SessionStorage for ApiSessionStorage {
         &'a self,
         session_id: &'a str,
     ) -> Result<Option<BTreeMap<String, Value>>> {
-        let res = match self.client.load_session(session_id).await {
-            Ok(r) => r,
-            Err(err) => {
-                return Err(poem::error::Error::new(
-                    err,
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                ))
-            }
-        };
+        let res = self
+            .client
+            .load_session(session_id)
+            .await
+            .map_err(map_backend_err)?;
+
         if res.status() == 200 {
             let inner = res.into_inner();
-            let map = BTreeMap::from_iter(inner.iter().map(|(i, e)| (i.to_string(), e.clone())));
-            return Ok(Some(map));
+            if (!inner.exists) {
+                return Ok(None);
+            }
+            let map = BTreeMap::from_iter(
+                inner
+                    .entries
+                    .iter()
+                    .map(|(i, e)| (i.to_string(), e.clone())),
+            );
+            Ok(Some(map))
+        } else {
+            client_error(res, "Server did not load_session and return 200")
         }
-
-        Ok(None)
     }
 
     async fn update_session<'a>(
@@ -47,75 +52,54 @@ impl SessionStorage for ApiSessionStorage {
         entries: &'a BTreeMap<String, Value>,
         expires: Option<Duration>,
     ) -> Result<()> {
-        // let res = match self.client.load_session(session_id).await {
-        //     Ok(r) => r,
-        //     Err(err) => {
-        //         return Err(poem::error::Error::new(
-        //             err,
-        //             StatusCode::INTERNAL_SERVER_ERROR,
-        //         ))
-        //     }
-        // };
-        // if res.status() == 200 {
-        //     let inner = res.into_inner();
-        //     let map = BTreeMap::from_iter(inner.iter().map(|(i, e)| (i.to_string(), e.clone())));
-        //     return Ok(Some(map));
-        // }
+        let body = backend::types::UpdateSessionValue {
+            entries: entries
+                .iter()
+                .map(|(i, e)| (i.to_string(), e.clone()))
+                .collect::<serde_json::Map<String, Value>>(),
+            expires: expires.map(|t| t.as_secs() as u64),
+        };
 
-        // Ok(None)
+        let res = self
+            .client
+            .update_session(session_id, &body)
+            .await
+            .map_err(map_backend_err)?;
 
-        // const UPDATE_SESSION_SQL: &str = r#"
-        //     insert into {table_name} (id, session, expires) values ($1, $2, $3)
-        //         on conflict(id) do update set
-        //             expires = excluded.expires,
-        //             session = excluded.session
-        // "#;
-
-        //https://www.sea-ql.org/SeaORM/docs/basic-crud/update/
-        //https://www.sea-ql.org/SeaORM/docs/basic-crud/insert/
-
-        // let expires = match expires {
-        //     Some(expires) => {
-        //         Some(chrono::Duration::from_std(expires).map_err(InternalServerError)?)
-        //     }
-        //     None => None,
-        // };
-
-        // let session_map = serde_json::Map::from_iter(entries.clone());
-
-        // let model = poem_sessions::ActiveModel {
-        //     id: ActiveValue::set(session_id.to_owned()),
-        //     session: ActiveValue::set(sea_orm::JsonValue::from(session_map)),
-        //     expires: ActiveValue::set(expires.map(|expires| Utc::now().add(expires))),
-        // };
-
-        // poem_sessions::Entity::insert(model.clone())
-        //     .on_conflict(
-        //         sea_query::OnConflict::column(poem_sessions::Column::Id)
-        //             .update_columns([
-        //                 poem_sessions::Column::Expires,
-        //                 poem_sessions::Column::Session,
-        //             ])
-        //             .to_owned(),
-        //     )
-        //     .exec(&self.db)
-        //     .await
-        //     .map_err(InternalServerError)?;
-
-        Ok(())
+        if res.status() == 200 {
+            Ok(())
+        } else {
+            client_error(res, "Server did not update_session and return 200")
+        }
     }
 
     async fn remove_session<'a>(&'a self, session_id: &'a str) -> Result<()> {
-        // const REMOVE_SESSION_SQL: &str = r#"
-        //     delete from {table_name} where id = $1
-        // "#;
+        let res = self
+            .client
+            .remove_session(session_id)
+            .await
+            .map_err(map_backend_err)?;
 
-        // poem_sessions::Entity::delete_many()
-        //     .filter(poem_sessions::Column::Id.eq(session_id))
-        //     .exec(&self.db)
-        //     .await
-        //     .map_err(InternalServerError)?;
-
-        Ok(())
+        if res.status() == 200 {
+            Ok(())
+        } else {
+            client_error(res, "Server did not remove_session and return 200")
+        }
     }
+}
+
+fn client_error<T, V>(
+    res: backend::ResponseValue<T>,
+    err_msg: &str,
+) -> std::result::Result<V, poem::Error> {
+    let status_code = match StatusCode::from_u16(res.status().as_u16()) {
+        Ok(s) => s,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    };
+
+    Err(poem::error::Error::from_string(err_msg, status_code))
+}
+
+fn map_backend_err(err: backend::Error) -> poem::Error {
+    poem::error::Error::new(err, StatusCode::INTERNAL_SERVER_ERROR)
 }
