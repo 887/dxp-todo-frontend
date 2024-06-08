@@ -42,6 +42,38 @@ pub mod types {
         }
     }
 
+    ///SessionEntry
+    ///
+    /// <details><summary>JSON schema</summary>
+    ///
+    /// ```json
+    ///{
+    ///  "type": "object",
+    ///  "required": [
+    ///    "name",
+    ///    "value"
+    ///  ],
+    ///  "properties": {
+    ///    "name": {
+    ///      "type": "string"
+    ///    },
+    ///    "value": {}
+    ///  }
+    ///}
+    /// ```
+    /// </details>
+    #[derive(Clone, Debug, Deserialize, Serialize)]
+    pub struct SessionEntry {
+        pub name: String,
+        pub value: serde_json::Value,
+    }
+
+    impl From<&SessionEntry> for SessionEntry {
+        fn from(value: &SessionEntry) -> Self {
+            value.clone()
+        }
+    }
+
     ///Test
     ///
     /// <details><summary>JSON schema</summary>
@@ -67,6 +99,44 @@ pub mod types {
 
     impl From<&Test> for Test {
         fn from(value: &Test) -> Self {
+            value.clone()
+        }
+    }
+
+    ///UpdateSessionValue
+    ///
+    /// <details><summary>JSON schema</summary>
+    ///
+    /// ```json
+    ///{
+    ///  "type": "object",
+    ///  "required": [
+    ///    "entries"
+    ///  ],
+    ///  "properties": {
+    ///    "entries": {
+    ///      "type": "array",
+    ///      "items": {
+    ///        "$ref": "#/components/schemas/SessionEntry"
+    ///      }
+    ///    },
+    ///    "expires": {
+    ///      "type": "integer",
+    ///      "format": "uint64"
+    ///    }
+    ///  }
+    ///}
+    /// ```
+    /// </details>
+    #[derive(Clone, Debug, Deserialize, Serialize)]
+    pub struct UpdateSessionValue {
+        pub entries: Vec<SessionEntry>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pub expires: Option<u64>,
+    }
+
+    impl From<&UpdateSessionValue> for UpdateSessionValue {
+        fn from(value: &UpdateSessionValue) -> Self {
             value.clone()
         }
     }
@@ -193,8 +263,11 @@ impl Client {
     ///Sends a `GET` request to `/load_session`
     pub async fn load_session<'a>(
         &'a self,
+        session_id: &'a str,
     ) -> Result<ResponseValue<serde_json::Map<String, serde_json::Value>>, Error<()>> {
         let url = format!("{}/load_session", self.baseurl,);
+        let mut query = Vec::with_capacity(1usize);
+        query.push(("session_id", session_id.to_string()));
         #[allow(unused_mut)]
         let mut request = self
             .client
@@ -203,6 +276,7 @@ impl Client {
                 reqwest::header::ACCEPT,
                 reqwest::header::HeaderValue::from_static("application/json"),
             )
+            .query(&query)
             .build()?;
         let result = self.client.execute(request).await;
         let response = result?;
@@ -212,14 +286,17 @@ impl Client {
         }
     }
 
-    ///Sends a `POST` request to `/update_session`
+    ///Sends a `PUT` request to `/update_session`
     pub async fn update_session<'a>(
         &'a self,
-        body: &'a serde_json::Map<String, serde_json::Value>,
+        session_id: &'a str,
+        body: &'a types::UpdateSessionValue,
     ) -> Result<ResponseValue<()>, Error<()>> {
         let url = format!("{}/update_session", self.baseurl,);
+        let mut query = Vec::with_capacity(1usize);
+        query.push(("session_id", session_id.to_string()));
         #[allow(unused_mut)]
-        let mut request = self.client.post(url).json(&body).build()?;
+        let mut request = self.client.put(url).json(&body).query(&query).build()?;
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {
@@ -228,14 +305,16 @@ impl Client {
         }
     }
 
-    ///Sends a `POST` request to `/remove_session`
+    ///Sends a `DELETE` request to `/remove_session`
     pub async fn remove_session<'a>(
         &'a self,
-        body: &'a serde_json::Map<String, serde_json::Value>,
+        session_id: &'a str,
     ) -> Result<ResponseValue<()>, Error<()>> {
         let url = format!("{}/remove_session", self.baseurl,);
+        let mut query = Vec::with_capacity(1usize);
+        query.push(("session_id", session_id.to_string()));
         #[allow(unused_mut)]
-        let mut request = self.client.post(url).json(&body).build()?;
+        let mut request = self.client.delete(url).query(&query).build()?;
         let result = self.client.execute(request).await;
         let response = result?;
         match response.status().as_u16() {

@@ -23,7 +23,7 @@ impl SessionStorage for ApiSessionStorage {
         &'a self,
         session_id: &'a str,
     ) -> Result<Option<BTreeMap<String, Value>>> {
-        let res = match self.client.load_session().await {
+        let res = match self.client.load_session(session_id).await {
             Ok(r) => r,
             Err(err) => {
                 return Err(poem::error::Error::new(

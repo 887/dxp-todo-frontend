@@ -114,6 +114,18 @@
           "Session"
         ],
         "summary": "Session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -131,16 +143,27 @@
       }
     },
     "/update_session": {
-      "post": {
+      "put": {
         "tags": [
           "Session"
+        ],
+        "parameters": [
+          {
+            "name": "session_id",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          }
         ],
         "requestBody": {
           "content": {
             "application/json; charset=utf-8": {
               "schema": {
-                "type": "object",
-                "additionalProperties": {}
+                "$ref": "#/components/schemas/UpdateSessionValue"
               }
             }
           },
@@ -155,21 +178,22 @@
       }
     },
     "/remove_session": {
-      "post": {
+      "delete": {
         "tags": [
           "Session"
         ],
-        "requestBody": {
-          "content": {
-            "application/json; charset=utf-8": {
-              "schema": {
-                "type": "object",
-                "additionalProperties": {}
-              }
-            }
-          },
-          "required": true
-        },
+        "parameters": [
+          {
+            "name": "session_id",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -181,6 +205,19 @@
   },
   "components": {
     "schemas": {
+      "SessionEntry": {
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {}
+        }
+      },
       "Test": {
         "type": "object",
         "required": [
@@ -189,6 +226,24 @@
         "properties": {
           "test": {
             "type": "string"
+          }
+        }
+      },
+      "UpdateSessionValue": {
+        "type": "object",
+        "required": [
+          "entries"
+        ],
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionEntry"
+            }
+          },
+          "expires": {
+            "type": "integer",
+            "format": "uint64"
           }
         }
       }
