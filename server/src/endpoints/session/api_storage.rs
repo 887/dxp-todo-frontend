@@ -3,7 +3,6 @@ use std::{collections::BTreeMap, time::Duration};
 use poem::{http::StatusCode, session::SessionStorage, Result};
 use serde_json::Value;
 
-use backend;
 
 #[derive(Clone)]
 pub struct ApiSessionStorage {
@@ -31,7 +30,7 @@ impl SessionStorage for ApiSessionStorage {
 
         if res.status() == 200 {
             let inner = res.into_inner();
-            if (!inner.exists) {
+            if !inner.exists {
                 return Ok(None);
             }
             let map = BTreeMap::from_iter(
@@ -57,7 +56,7 @@ impl SessionStorage for ApiSessionStorage {
                 .iter()
                 .map(|(i, e)| (i.to_string(), e.clone()))
                 .collect::<serde_json::Map<String, Value>>(),
-            expires: expires.map(|t| t.as_secs() as u64),
+            expires: expires.map(|t| t.as_secs()),
         };
 
         let res = self

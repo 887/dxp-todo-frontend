@@ -4,7 +4,6 @@ use std::future::Future;
 use anyhow::Context;
 use anyhow::Result;
 
-use poem::IntoEndpoint;
 use poem::{listener::TcpListener, Server};
 use tracing::error;
 use tracing::info;
@@ -42,7 +41,9 @@ pub async fn run_server_main<F: Future<Output = ()>>(shutdown: Option<F>) -> Res
         None => server.run(endpoints).await,
     };
 
-    let result = match run_result {
+    
+
+    match run_result {
         Ok(_) => {
             trace!("server shut down success");
             Ok(())
@@ -51,7 +52,5 @@ pub async fn run_server_main<F: Future<Output = ()>>(shutdown: Option<F>) -> Res
             error!("server shut down with error: {:?}", err);
             Err(anyhow::anyhow!("server error: {}", err))
         }
-    };
-
-    result
+    }
 }
