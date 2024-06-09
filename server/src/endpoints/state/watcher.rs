@@ -1,8 +1,8 @@
 use arc_swap::ArcSwap;
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
-use std::{ffi::OsStr, path::Path, sync::Arc};
+use std::path::Path;
 use tokio::sync::mpsc::{self, Receiver};
-use tracing::{error, trace};
+use tracing::error;
 
 pub fn watch_directory<
     T: Send + Sync,

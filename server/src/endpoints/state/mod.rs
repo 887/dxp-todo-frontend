@@ -5,8 +5,11 @@ use anyhow::Result;
 use derivative::Derivative;
 use minijinja::Environment as Minijinja;
 use poem::i18n::I18NResources;
+
 #[cfg(feature = "hot-reload")]
 use std::sync::Arc;
+#[cfg(feature = "hot-reload")]
+mod watcher;
 
 use super::{
     i18n,
@@ -38,8 +41,12 @@ impl State {
 
     #[cfg(feature = "hot-reload")]
     pub fn watch(&self) {
-        templates::watch_directory(templates::TEMPLATE_DIR, self.templates);
-        i18n::watch_directory(i18n::I18N_DIR, self.i18n_data);
+        watcher::watch_directory(
+            templates::TEMPLATE_DIR,
+            self.templates,
+            &templates::handle_event,
+        );
+        watcher::watch_directory(i18n::I18N_DIR, self.i18n_data, &i18n::handle_event);
     }
 
     #[cfg(not(feature = "hot-reload"))]

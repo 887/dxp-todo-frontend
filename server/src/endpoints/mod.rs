@@ -10,9 +10,6 @@ mod session;
 mod state;
 mod templates;
 
-#[cfg(feature = "hot-reload")]
-mod watcher;
-
 pub async fn get_route() -> Result<impl Endpoint> {
     let state = state::State::new()?;
 
