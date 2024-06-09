@@ -25,7 +25,7 @@ pub struct State {
 
 impl State {
     pub fn new() -> Result<State> {
-        let templates = templates::get_templates();
+        let templates = templates::get_templates()?;
         let default_language = default_language::get()?;
         let i18n_data = i18n::get()?;
 

@@ -1,5 +1,3 @@
-#![allow(clippy::panic)]
-
 #[cfg(not(feature = "hot-reload"))]
 use include_dir::{include_dir, Dir};
 #[cfg(feature = "hot-reload")]

@@ -7,6 +7,8 @@ use poem::{i18n::unic_langid::LanguageIdentifier, i18n::I18NResourcesBuilder};
 #[cfg(not(feature = "hot-reload"))]
 use std::str::FromStr;
 
+use anyhow::Result;
+
 #[cfg(feature = "hot-reload")]
 pub static I18N_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/endpoints/i18n/");
 
@@ -33,8 +35,11 @@ pub fn get_i18n_data() -> Result<I18NResources, poem::error::I18NError> {
 }
 
 #[cfg(not(feature = "hot-reload"))]
-pub fn get_i18n_data_from_embedded() -> I18NResources {
+pub fn get_i18n_data_from_embedded() -> Result<I18NResources> {
     use std::ffi::OsStr;
+
+    use anyhow::Context;
+    use dxp_code_loc::code_loc;
 
     let mut builder = I18NResources::builder();
 
@@ -72,10 +77,8 @@ pub fn get_i18n_data_from_embedded() -> I18NResources {
             builder = load_resources_from_path(builder, &language, contents);
         }
     }
-    match builder.build() {
-        Ok(res) => res,
-        Err(err) => panic!("could not load i18n data {err}"),
-    }
+
+    builder.build().context(code_loc!())
 }
 
 #[cfg(not(feature = "hot-reload"))]
