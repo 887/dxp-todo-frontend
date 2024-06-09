@@ -5,6 +5,8 @@ use tracing::{error, trace};
 
 use super::TemplatesType;
 
+//TODO: create generic watcher with that only needs the event filter
+
 pub fn watch_directory(dir: &'static str, templates: &'static TemplatesType) {
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
     tokio::task::spawn(async move {
