@@ -10,6 +10,9 @@ mod session;
 mod state;
 mod templates;
 
+#[cfg(feature = "hot-reload")]
+mod watcher;
+
 pub async fn get_route() -> Result<impl Endpoint> {
     let state = state::State::new()?;
 
@@ -23,9 +26,7 @@ pub async fn get_route() -> Result<impl Endpoint> {
     let index = routes::get_route().await?;
 
     #[cfg(feature = "hot-reload")]
-    templates::watch_directory(templates::TEMPLATE_DIR, state.templates);
-    #[cfg(feature = "hot-reload")]
-    i18n::watch_directory(i18n::I18N_DIR, state.i18n_data);
+    state.watch();
 
     let index_with_state = index.data(state);
 

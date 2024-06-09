@@ -16,14 +16,6 @@ pub static I18N_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/endpoints/
 #[cfg(not(feature = "hot-reload"))]
 static I18N_DIR_FILES: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/endpoints/i18n/");
 
-pub static VALID_LANGUAGES: &[&str] = &["en-US", "de-DE"];
-
-#[cfg(feature = "hot-reload")]
-pub type I18NResourcesType = arc_swap::ArcSwap<I18NResources>;
-
-#[cfg(not(feature = "hot-reload"))]
-pub type I18NResourcesType = I18NResources;
-
 #[cfg(not(feature = "hot-reload"))]
 use include_dir::{include_dir, Dir};
 

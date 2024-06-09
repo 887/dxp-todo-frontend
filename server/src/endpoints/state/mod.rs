@@ -1,5 +1,4 @@
 mod default_language;
-mod i18n;
 
 use anyhow::Result;
 
@@ -10,6 +9,7 @@ use poem::i18n::I18NResources;
 use std::sync::Arc;
 
 use super::{
+    i18n,
     i18n::I18NResourcesType,
     templates::{self, TemplatesType},
 };
@@ -34,6 +34,12 @@ impl State {
             default_language,
             i18n_data,
         })
+    }
+
+    #[cfg(feature = "hot-reload")]
+    pub fn watch(&self) {
+        templates::watch_directory(templates::TEMPLATE_DIR, self.templates);
+        i18n::watch_directory(i18n::I18N_DIR, self.i18n_data);
     }
 
     #[cfg(not(feature = "hot-reload"))]

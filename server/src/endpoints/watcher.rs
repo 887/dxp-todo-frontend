@@ -1,11 +1,17 @@
+use arc_swap::ArcSwap;
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use std::{ffi::OsStr, path::Path, sync::Arc};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::{error, trace};
 
-use super::{initializer, I18NResourcesType};
-
-pub fn watch_directory(dir: &'static str, container: &'static I18NResourcesType) {
+pub fn watch_directory<
+    T: Send + Sync,
+    F: Fn(Event, &'static str, &'static ArcSwap<T>) + Send + Sync,
+>(
+    dir: &'static str,
+    container: &'static ArcSwap<T>,
+    process_event: &'static F,
+) {
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
     tokio::task::spawn(async move {
         #[cfg(feature = "log")]
@@ -16,7 +22,9 @@ pub fn watch_directory(dir: &'static str, container: &'static I18NResourcesType)
         async {
             loop {
                 // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-                if let Err(e) = async_watch(dir, std::path::Path::new(dir), container).await {
+                if let Err(e) =
+                    async_watch(dir, std::path::Path::new(dir), container, process_event).await
+                {
                     error!("error watching i18n reload: {:?}", e)
                 }
             }
@@ -48,10 +56,15 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
     Ok((watcher, rx))
 }
 
-pub async fn async_watch<P: AsRef<Path>>(
+pub async fn async_watch<
+    T: Send + Sync,
+    F: Fn(Event, &'static str, &'static ArcSwap<T>) + Send + Sync,
+    P: AsRef<Path>,
+>(
     dir: &'static str,
     path: P,
-    container: &'static I18NResourcesType,
+    container: &'static ArcSwap<T>,
+    process_event: F,
 ) -> notify::Result<()> {
     let (mut watcher, mut rx) = async_watcher()?;
 
@@ -70,7 +83,7 @@ pub async fn async_watch<P: AsRef<Path>>(
                     continue;
                 }
 
-                handle_event(event, dir, container);
+                process_event(event, dir, container);
             }
             Err(e) => error!("watch error: {e:?}"),
         }
@@ -79,36 +92,32 @@ pub async fn async_watch<P: AsRef<Path>>(
     Ok(())
 }
 
-fn handle_event(
-    event: Event,
-    dir: &str,
-    container: &arc_swap::ArcSwapAny<Arc<poem::i18n::I18NResources>>,
-) {
-    let paths = event
-        .paths
-        .iter()
-        .filter(|p| p.extension().unwrap_or(OsStr::new("")) == "ftl");
+// fn process_event2<T>(event: Event, dir: &str, container: &arc_swap::ArcSwapAny<Arc<T>>) {
+//     let paths = event
+//         .paths
+//         .iter()
+//         .filter(|p| p.extension().unwrap_or(OsStr::new("")) == "ftl");
 
-    let mut any = true;
-    //this remove the cached template, so it will be loaded again when we access it
-    for p in paths {
-        let name = p
-            .to_string_lossy()
-            .chars()
-            .skip(dir.chars().count())
-            .collect::<String>();
-        trace!("reloading template: {}", &name);
+//     let mut any = true;
+//     //this remove the cached template, so it will be loaded again when we access it
+//     for p in paths {
+//         let name = p
+//             .to_string_lossy()
+//             .chars()
+//             .skip(dir.chars().count())
+//             .collect::<String>();
+//         trace!("reloading template: {}", &name);
 
-        any = true;
-    }
+//         any = true;
+//     }
 
-    if any {
-        let i18n_maybe = initializer::get_i18n_data();
-        if let Ok(i18n) = i18n_maybe {
-            let arc = Arc::new(i18n);
-            container.swap(arc);
-        } else if let Err(err) = i18n_maybe {
-            println!("watch error: {err:?}");
-        }
-    }
-}
+//     if any {
+//         let i18n_maybe = initializer::get_i18n_data();
+//         if let Ok(i18n) = i18n_maybe {
+//             let arc = Arc::new(i18n);
+//             container.swap(arc);
+//         } else if let Err(err) = i18n_maybe {
+//             println!("watch error: {err:?}");
+//         }
+//     }
+// }
