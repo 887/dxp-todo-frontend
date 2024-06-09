@@ -27,11 +27,11 @@ pub fn get() -> Result<&'static I18NResourcesType> {
     use std::sync::Arc;
 
     let i18n_data = get_i18n_data()?;
-    Ok(&I18N_DATA.get_or_init(|| ArcSwap::new(Arc::new(i18n_data))))
+    Ok(I18N_DATA.get_or_init(|| ArcSwap::new(Arc::new(i18n_data))))
 }
 
 #[cfg(not(feature = "hot-reload"))]
 pub fn get() -> Result<&'static I18NResourcesType> {
     let i18n_data = get_i18n_data_from_embedded()?;
-    Ok(&I18N_DATA.get_or_init(|| i18n_data))
+    Ok(I18N_DATA.get_or_init(|| i18n_data))
 }
