@@ -1,11 +1,11 @@
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
-use std::{ffi::OsStr, path::Path};
+use std::{ffi::OsStr, path::Path, sync::Arc};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::{error, trace};
 
-use super::TemplatesType;
+use super::{initializer, I18NResourcesType};
 
-pub fn watch_directory(dir: &'static str, templates: &'static TemplatesType) {
+pub fn watch_directory(dir: &'static str, container: &'static I18NResourcesType) {
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
     tokio::task::spawn(async move {
         #[cfg(feature = "log")]
@@ -16,8 +16,8 @@ pub fn watch_directory(dir: &'static str, templates: &'static TemplatesType) {
         async {
             loop {
                 // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-                if let Err(e) = async_watch(dir, std::path::Path::new(dir), templates).await {
-                    error!("error watching template reload: {:?}", e)
+                if let Err(e) = async_watch(dir, std::path::Path::new(dir), container).await {
+                    error!("error watching i18n reload: {:?}", e)
                 }
             }
         }
@@ -51,7 +51,7 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 pub async fn async_watch<P: AsRef<Path>>(
     dir: &'static str,
     path: P,
-    container: &'static TemplatesType,
+    container: &'static I18NResourcesType,
 ) -> notify::Result<()> {
     let (mut watcher, mut rx) = async_watcher()?;
 
@@ -73,19 +73,9 @@ pub async fn async_watch<P: AsRef<Path>>(
                 let paths = event
                     .paths
                     .iter()
-                    .filter(|p| p.extension().unwrap_or(OsStr::new("")) == "jinja");
+                    .filter(|p| p.extension().unwrap_or(OsStr::new("")) == "ftl");
 
-                //this reloads all the templates
-                // if jinja_paths.count() > 0 {
-                //     trace!("reloading templates: {event:?}");
-
-                //     //this reloads all files from disk
-                //     let templates = initializer::get_templates();
-                //     templates_container.swap(std::sync::Arc::new(templates));
-
-                //     trace!("templates reloaded");
-                // }
-
+                let mut any = true;
                 //this remove the cached template, so it will be loaded again when we access it
                 for p in paths {
                     let name = p
@@ -93,25 +83,19 @@ pub async fn async_watch<P: AsRef<Path>>(
                         .chars()
                         .skip(dir.chars().count())
                         .collect::<String>();
-
-                    let tps_arc = container.load_full();
-                    let mut tps = (*tps_arc).clone(); //get a mutable copy of our templates collection
-
-                    // let remove_template = |tps: &mut minijinja::Environment<'static>| {
                     trace!("reloading template: {}", &name);
-                    //this template does not have to be loaded, remove templates does not check if something exists
-                    tps.remove_template(&name);
-                    // };
 
-                    // match tps.get_template(&name) {
-                    //     Ok(_) => remove_template(&mut tps),
-                    //     Err(e) => match e.kind() {
-                    //         minijinja::ErrorKind::TemplateNotFound => {}
-                    //         _ => remove_template(&mut tps),
-                    //     },
-                    // }
+                    any = true;
+                }
 
-                    container.swap(std::sync::Arc::new(tps));
+                if any {
+                    let i18n_maybe = initializer::get_i18n_data();
+                    if let Ok(i18n) = i18n_maybe {
+                        let arc = Arc::new(i18n);
+                        container.swap(arc);
+                    } else if let Err(err) = i18n_maybe {
+                        println!("watch error: {err:?}");
+                    }
                 }
             }
             Err(e) => error!("watch error: {e:?}"),

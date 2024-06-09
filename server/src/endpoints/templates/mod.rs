@@ -14,7 +14,9 @@ use std::sync::OnceLock;
 #[cfg(feature = "hot-reload")]
 static TEMPLATES: OnceLock<ArcSwap<Minijinja<'static>>> = OnceLock::new();
 #[cfg(feature = "hot-reload")]
-pub fn get_templates() -> &'static arc_swap::ArcSwapAny<std::sync::Arc<Minijinja<'static>>> {
+pub type TemplatesType = arc_swap::ArcSwapAny<std::sync::Arc<Minijinja<'static>>>;
+#[cfg(feature = "hot-reload")]
+pub fn get_templates() -> &'static TemplatesType {
     TEMPLATES.get_or_init(|| {
         let templates = initializer::get_templates();
         //https://docs.rs/arc-swap/latest/arc_swap/index.html
@@ -25,6 +27,8 @@ pub fn get_templates() -> &'static arc_swap::ArcSwapAny<std::sync::Arc<Minijinja
 #[cfg(not(feature = "hot-reload"))]
 static TEMPLATES: OnceLock<Minijinja<'static>> = OnceLock::new();
 #[cfg(not(feature = "hot-reload"))]
-pub fn get_templates() -> &'static Minijinja<'static> {
+pub type TemplatesType = Minijinja<'static>;
+#[cfg(not(feature = "hot-reload"))]
+pub fn get_templates() -> &'static TemplatesType {
     TEMPLATES.get_or_init(|| initializer::get_templates_embedded())
 }
