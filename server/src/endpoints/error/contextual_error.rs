@@ -8,6 +8,20 @@ pub enum ContextualError {
     InnerError(#[from] anyhow::Error),
 }
 
+//https://old.reddit.com/r/rust/comments/viax3s/in_rust_why_can_we_not_define_an_impl_for_a_type/
+pub trait CtxtExt<T> {
+    fn map_ctxt(self) -> Result<T, ContextualError>;
+}
+
+impl<T> CtxtExt<T> for Result<T, anyhow::Error> {
+    fn map_ctxt(self) -> Result<T, ContextualError> {
+        match self {
+            Ok(t) => Ok(t),
+            Err(e) => Err(ContextualError::from(e)),
+        }
+    }
+}
+
 impl fmt::Display for ContextualError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {

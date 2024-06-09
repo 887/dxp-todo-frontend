@@ -9,9 +9,7 @@ use poem::{
 use texts::TranslatedTexts;
 use tracing::trace;
 
-use crate::endpoints::{
-    error::ContextualError, session::language::get_user_language_bundle, state,
-};
+use crate::endpoints::{error::CtxtExt, session::language::get_user_language_bundle, state};
 
 // mod errors;
 mod texts;
@@ -46,22 +44,21 @@ pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<imp
     // let account_maybe = session_get_active_account(session);
     let texts = TranslatedTexts::get_text(&locale)
         .context(code_loc!())
-        .map_err(ContextualError::from)?;
+        .map_ctxt()?;
 
     let templates = state.get_templates();
     let template = templates
         .get_template("routes/index/index.jinja")
         .context(code_loc!())
-        .map_err(ContextualError::from)?;
+        .map_ctxt()?;
+    // .map_err(ContextualError::from)?;
 
     let ctx = minijinja::context! {
         t => texts,
     };
 
-    let body = template
-        .render(&ctx)
-        .context(code_loc!())
-        .map_err(ContextualError::from)?;
+    let body = template.render(&ctx).context(code_loc!()).map_ctxt()?;
+    // .map_err(ContextualError::from)?;
 
     Ok(Html(body).into_response())
 }
