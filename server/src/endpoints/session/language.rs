@@ -11,15 +11,15 @@ use poem::{
 
 use crate::endpoints::state;
 
-pub static SESSION_USER_LANGUAGE_NAME: &str = "user_lang"; //i18n
+static SESSION_USER_LANGUAGE_NAME: &str = "user_lang"; //i18n
 
 pub fn get_user_language(session: &Session) -> Option<String> {
     session.get(SESSION_USER_LANGUAGE_NAME)
 }
 
-pub fn set_user_language(session: &Session, value: &str) {
-    session.set(SESSION_USER_LANGUAGE_NAME, value)
-}
+// pub fn set_user_language(session: &Session, value: &str) {
+//     session.set(SESSION_USER_LANGUAGE_NAME, value)
+// }
 
 pub fn get_user_language_bundle(state: &Data<&state::State>, session: &Session) -> I18NBundle {
     let lang_setting = get_user_language(session).unwrap_or(state.default_language.to_string());

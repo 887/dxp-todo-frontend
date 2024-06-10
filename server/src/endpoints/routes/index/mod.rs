@@ -1,5 +1,6 @@
 use anyhow::Context;
 use dxp_code_loc::code_loc;
+use errors::TranslatedErrs;
 use poem::{
     handler,
     session::Session,
@@ -11,7 +12,7 @@ use tracing::trace;
 
 use crate::endpoints::{error::CtxtExt, session::language::get_user_language_bundle, state};
 
-// mod errors;
+mod errors;
 mod texts;
 
 pub static SESSION_INDEX_COUNTER: &str = "index_counter";
@@ -41,8 +42,11 @@ pub fn index2() -> String {
 #[handler]
 pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<impl IntoResponse> {
     let locale = get_user_language_bundle(&state, session);
-    // let account_maybe = session_get_active_account(session);
-    let texts = TranslatedTexts::get_text(&locale)
+
+    let texts = TranslatedTexts::get_text(&locale, "name")
+        .context(code_loc!())
+        .map_ctxt()?;
+    let err_texts = TranslatedErrs::get_text(&locale)
         .context(code_loc!())
         .map_ctxt()?;
 
@@ -55,6 +59,7 @@ pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<imp
 
     let ctx = minijinja::context! {
         t => texts,
+        e => err_texts
     };
 
     let body = template.render(&ctx).context(code_loc!()).map_ctxt()?;

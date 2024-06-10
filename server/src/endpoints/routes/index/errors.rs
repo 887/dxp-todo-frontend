@@ -1,4 +1,6 @@
-use poem::{error::I18NError, i18n::I18NBundle};
+use anyhow::Context;
+use dxp_code_loc::code_loc;
+use poem::i18n::I18NBundle;
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -7,9 +9,9 @@ pub struct TranslatedErrs {
 }
 
 impl TranslatedErrs {
-    pub fn get_text(locale: &I18NBundle) -> Result<TranslatedErrs, I18NError> {
+    pub fn get_text(locale: &I18NBundle) -> Result<TranslatedErrs, anyhow::Error> {
         Ok(TranslatedErrs {
-            name_missing: locale.text("name_missing")?,
+            name_missing: locale.text("name_missing").context(code_loc!())?,
         })
     }
 }

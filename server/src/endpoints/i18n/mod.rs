@@ -10,7 +10,7 @@ pub use watcher::*;
 mod initializer;
 pub use initializer::*;
 
-pub static VALID_LANGUAGES: &[&str] = &["en-US", "de-DE"];
+// pub static VALID_LANGUAGES: &[&str] = &["en-US", "de-DE"];
 
 #[cfg(feature = "hot-reload")]
 pub type I18NResourcesType = arc_swap::ArcSwap<I18NResources>;
