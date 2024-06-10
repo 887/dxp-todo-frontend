@@ -3,7 +3,6 @@ use std::{collections::BTreeMap, time::Duration};
 use poem::{http::StatusCode, session::SessionStorage, Result};
 use serde_json::Value;
 
-
 #[derive(Clone)]
 pub struct ApiSessionStorage {
     client: backend::Client,
@@ -22,27 +21,21 @@ impl SessionStorage for ApiSessionStorage {
         &'a self,
         session_id: &'a str,
     ) -> Result<Option<BTreeMap<String, Value>>> {
-        let res = self
-            .client
-            .load_session(session_id)
-            .await
-            .map_err(map_backend_err)?;
+        let res = self.client.load_session(session_id).await;
 
-        if res.status() == 200 {
+        if let Ok(res) = res {
             let inner = res.into_inner();
-            if !inner.exists {
+            let map = BTreeMap::from_iter(inner.iter().map(|(i, e)| (i.to_string(), e.clone())));
+            return Ok(Some(map));
+        } else if let Err(backend::Error::ErrorResponse(ref err)) = res {
+            if err.status() == 404 {
                 return Ok(None);
             }
-            let map = BTreeMap::from_iter(
-                inner
-                    .entries
-                    .iter()
-                    .map(|(i, e)| (i.to_string(), e.clone())),
-            );
-            Ok(Some(map))
-        } else {
-            client_error(res, "Server did not load_session and return 200")
         }
+
+        let res = res.map_err(map_backend_err)?;
+
+        client_error(res, "Server did not load_session and return 200")
     }
 
     async fn update_session<'a>(

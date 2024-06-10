@@ -132,10 +132,14 @@
             "content": {
               "application/json; charset=utf-8": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoadSessionValue"
+                  "type": "object",
+                  "additionalProperties": {}
                 }
               }
             }
+          },
+          "404": {
+            "description": "Returns when Session not found (None)"
           }
         },
         "operationId": "load_session"
@@ -204,21 +208,6 @@
   },
   "components": {
     "schemas": {
-      "LoadSessionValue": {
-        "type": "object",
-        "required": [
-          "exists"
-        ],
-        "properties": {
-          "exists": {
-            "type": "boolean"
-          },
-          "entries": {
-            "type": "object",
-            "additionalProperties": {}
-          }
-        }
-      },
       "Test": {
         "type": "object",
         "required": [
