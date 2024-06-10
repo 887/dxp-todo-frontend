@@ -1,13 +1,11 @@
 use anyhow::Context;
 use dxp_code_loc::code_loc;
-use errors::TranslatedErrs;
 use poem::{
     handler,
     session::Session,
     web::{Data, Html},
     IntoResponse,
 };
-use texts::TranslatedTexts;
 use tracing::trace;
 
 use crate::endpoints::{error::CtxtExt, session::language::get_user_language_bundle, state};
@@ -43,12 +41,11 @@ pub fn index2() -> String {
 pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<impl IntoResponse> {
     let locale = get_user_language_bundle(&state, session);
 
-    let texts = TranslatedTexts::get_text(&locale, "name")
+    let texts = texts::get(&locale, "name")
         .context(code_loc!())
         .map_ctxt()?;
-    let err_texts = TranslatedErrs::get_text(&locale)
-        .context(code_loc!())
-        .map_ctxt()?;
+
+    let err_texts = errors::get(&locale).context(code_loc!()).map_ctxt()?;
 
     let templates = state.get_templates();
     let template = templates
@@ -58,8 +55,8 @@ pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<imp
     // .map_err(ContextualError::from)?;
 
     let ctx = minijinja::context! {
-        t => texts,
-        e => err_texts
+        ..texts,
+        ..err_texts
     };
 
     let body = template.render(&ctx).context(code_loc!()).map_ctxt()?;
