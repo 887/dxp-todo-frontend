@@ -9,7 +9,7 @@ use tracing::error;
 use tracing::info;
 use tracing::trace;
 
-use crate::endpoints;
+use crate::endpoint;
 
 pub fn get_tcp_listener() -> Result<TcpListener<String>> {
     let host = env::var("HOST").context("HOST is not set")?;
@@ -26,7 +26,7 @@ pub fn get_tcp_listener() -> Result<TcpListener<String>> {
 #[tokio::main]
 pub async fn run_server_main<F: Future<Output = ()>>(shutdown: Option<F>) -> Result<()> {
     let tcp_listener = get_tcp_listener()?;
-    let endpoints = endpoints::get_route().await?;
+    let endpoints = endpoint::get_route().await?;
 
     let server = Server::new(tcp_listener);
 
@@ -40,8 +40,6 @@ pub async fn run_server_main<F: Future<Output = ()>>(shutdown: Option<F>) -> Res
         }
         None => server.run(endpoints).await,
     };
-
-    
 
     match run_result {
         Ok(_) => {
