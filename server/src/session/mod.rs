@@ -1,5 +1,6 @@
 mod api_storage;
-pub mod language;
+mod language;
+pub use language::*;
 
 use std::env;
 

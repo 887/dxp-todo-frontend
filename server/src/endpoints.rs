@@ -1,14 +1,10 @@
+use crate::error::ErrorMiddleware;
+use crate::routes;
+use crate::session;
+use crate::state;
 use anyhow::{Context, Result};
-use error::ErrorMiddleware;
 use poem::middleware::Compression;
 use poem::{Endpoint, EndpointExt, Route};
-
-mod error;
-mod i18n;
-mod routes;
-mod session;
-mod state;
-mod templates;
 
 pub async fn get_route() -> Result<impl Endpoint> {
     let state = state::State::new()?;

@@ -9,7 +9,7 @@ use poem::{
     web::Data,
 };
 
-use crate::endpoints::state;
+use crate::state;
 
 static SESSION_USER_LANGUAGE_NAME: &str = "user_lang"; //i18n
 
