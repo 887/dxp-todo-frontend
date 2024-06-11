@@ -10,18 +10,18 @@ use std::str::FromStr;
 use anyhow::Result;
 
 #[cfg(feature = "hot-reload")]
-pub static I18N_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/endpoints/i18n/");
+pub static I18N_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/i18n/");
 
 //https://docs.rs/include_dir/latest/include_dir/index.html
 #[cfg(not(feature = "hot-reload"))]
-static I18N_DIR_FILES: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/endpoints/i18n/");
+static I18N_DIR_FILES: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/i18n/");
 
 #[cfg(not(feature = "hot-reload"))]
 use include_dir::{include_dir, Dir};
 
 #[cfg(feature = "hot-reload")]
 pub fn get_i18n_data() -> Result<I18NResources, poem::error::I18NError> {
-    let path_str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/endpoints/i18n");
+    let path_str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/i18n");
     let p = Path::new(path_str);
     I18NResources::builder().add_path(p).build()
 }

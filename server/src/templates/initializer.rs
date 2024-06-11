@@ -5,7 +5,7 @@ use minijinja::path_loader;
 use minijinja::Environment as Minijinja;
 
 #[cfg(feature = "hot-reload")]
-pub static TEMPLATE_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/endpoints/");
+pub static TEMPLATE_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/");
 
 #[cfg(feature = "hot-reload")]
 pub fn get_templates() -> Minijinja<'static> {
@@ -16,7 +16,7 @@ pub fn get_templates() -> Minijinja<'static> {
 
 //https://docs.rs/include_dir/latest/include_dir/index.html
 #[cfg(not(feature = "hot-reload"))]
-static TEMPLATE_DIR_FILES: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/endpoints/");
+static TEMPLATE_DIR_FILES: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/src/");
 
 #[cfg(not(feature = "hot-reload"))]
 pub fn get_templates_embedded() -> Minijinja<'static> {
