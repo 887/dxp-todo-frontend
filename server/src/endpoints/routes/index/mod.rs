@@ -1,19 +1,9 @@
-use anyhow::Context;
-use dxp_code_loc::code_loc;
-use poem::{
-    handler,
-    session::Session,
-    web::{Data, Html},
-    IntoResponse,
-};
+use poem::{handler, session::Session};
 use tracing::trace;
 
-use crate::endpoints::{error::CtxtExt, session::language::get_user_language_bundle, state};
-
-mod errors;
-mod texts;
-
 pub static SESSION_INDEX_COUNTER: &str = "index_counter";
+
+pub mod index3;
 
 #[handler]
 pub fn index(session: &Session) -> String {
@@ -35,32 +25,4 @@ pub fn index2() -> String {
     trace!("{}", &hello);
 
     hello.to_owned()
-}
-
-#[handler]
-pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<impl IntoResponse> {
-    let locale = get_user_language_bundle(&state, session);
-
-    let texts = texts::get(&locale, "name")
-        .context(code_loc!())
-        .map_ctxt()?;
-
-    let err_texts = errors::get(&locale).context(code_loc!()).map_ctxt()?;
-
-    let templates = state.get_templates();
-    let template = templates
-        .get_template("routes/index/index.jinja")
-        .context(code_loc!())
-        .map_ctxt()?;
-    // .map_err(ContextualError::from)?;
-
-    let ctx = minijinja::context! {
-        ..texts,
-        ..err_texts
-    };
-
-    let body = template.render(&ctx).context(code_loc!()).map_ctxt()?;
-    // .map_err(ContextualError::from)?;
-
-    Ok(Html(body).into_response())
 }
