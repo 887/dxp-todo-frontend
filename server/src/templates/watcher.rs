@@ -36,6 +36,7 @@ pub fn handle_event(event: Event, dir: &str, container: &'static TemplatesType) 
         trace!("reloading template: {}", &name);
         //this template does not have to be loaded, remove templates does not check if something exists
         tps.remove_template(&name);
+
         // };
 
         // match tps.get_template(&name) {
