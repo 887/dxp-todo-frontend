@@ -1,3 +1,4 @@
+use crate::error::LogErrExt;
 use crate::{error::CtxtErrExt, state};
 use anyhow::Context;
 use dxp_code_loc::code_loc;
@@ -13,16 +14,15 @@ use poem::{
 pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<impl IntoResponse> {
     let locale = crate::session::get_user_language_bundle(&state, session);
 
-    let texts = get_texts(&locale, "name")
-        .context(code_loc!())
-        .map_ctxt_err()?;
+    let texts = get_texts(&locale, "name").log_error().map_ctxt_err()?;
 
-    let err_texts = get_errors(&locale).context(code_loc!()).map_ctxt_err()?;
+    let err_texts = get_errors(&locale).log_error().map_ctxt_err()?;
 
     let templates = state.get_templates();
     let template = templates
         .get_template("routes/index/index3.jinja")
         .context(code_loc!())
+        .log_error()
         .map_ctxt_err()?;
     // .map_err(ContextualError::from)?;
 
@@ -31,7 +31,11 @@ pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<imp
         ..err_texts
     };
 
-    let body = template.render(&ctx).context(code_loc!()).map_ctxt_err()?;
+    let body = template
+        .render(&ctx)
+        .context(code_loc!())
+        .log_error()
+        .map_ctxt_err()?;
     // .map_err(ContextualError::from)?;
 
     Ok(Html(body).into_response())
