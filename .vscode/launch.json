@@ -29,7 +29,7 @@
             "name": "Attach",
             "type": "lldb",
             "request": "attach",
-            "program": "${workspaceFolder}/target/debug/dxp_todo_frontend",
+            "program": "${workspaceFolder}/target/debug/dxp-todo-frontend",
         },
     ],
     "compounds": [
