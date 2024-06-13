@@ -1,7 +1,7 @@
 use std::fmt;
 
 use poem::{error::ResponseError, http::StatusCode, Response};
-use tracing::{event, Level};
+use tracing::error;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ContextualError {
@@ -50,7 +50,7 @@ impl ResponseError for ContextualError {
                 let body = format!("{:?}", error) + "\n" + &errs.join("\n");
                 let log = format!("{:?}", error) + ";" + &errs.join(";");
 
-                event!(Level::ERROR, "{log}");
+                error!("{log}");
                 Response::builder()
                     .status(StatusCode::INTERNAL_SERVER_ERROR)
                     .body(body)

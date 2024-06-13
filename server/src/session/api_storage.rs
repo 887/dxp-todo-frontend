@@ -1,7 +1,9 @@
 use std::{collections::BTreeMap, time::Duration};
 
+use dxp_code_loc::code_loc;
 use poem::{http::StatusCode, session::SessionStorage, Result};
 use serde_json::Value;
+use tracing::error;
 
 #[derive(Clone)]
 pub struct ApiSessionStorage {
@@ -33,7 +35,7 @@ impl SessionStorage for ApiSessionStorage {
             }
         }
 
-        let res = res.map_err(map_backend_err)?;
+        let res = res.map_err(|err| map_backend_err(code_loc!(), err))?;
 
         client_error(res, "Server did not load_session and return 200")
     }
@@ -56,7 +58,7 @@ impl SessionStorage for ApiSessionStorage {
             .client
             .update_session(session_id, &body)
             .await
-            .map_err(map_backend_err)?;
+            .map_err(|err| map_backend_err(code_loc!(), err))?;
 
         if res.status() == 200 {
             Ok(())
@@ -70,7 +72,7 @@ impl SessionStorage for ApiSessionStorage {
             .client
             .remove_session(session_id)
             .await
-            .map_err(map_backend_err)?;
+            .map_err(|err| map_backend_err(code_loc!(), err))?;
 
         if res.status() == 200 {
             Ok(())
@@ -92,6 +94,8 @@ fn client_error<T, V>(
     Err(poem::error::Error::from_string(err_msg, status_code))
 }
 
-fn map_backend_err(err: backend::Error) -> poem::Error {
+fn map_backend_err(code_loc: String, err: backend::Error) -> poem::Error {
+    error!("{:?}\n{}", err, code_loc);
+
     poem::error::Error::new(err, StatusCode::INTERNAL_SERVER_ERROR)
 }
