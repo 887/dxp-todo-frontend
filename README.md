@@ -1,3 +1,12 @@
 # Readme
 
-cargo progenitor -i api/swagger.json -o backend -n backend -v 0.1.0 --include-client true
+Frontend for dxp-todo-backend
+
+- Uses Progenitor client to connect to the backend API.
+- Uses MiniJinja templates.
+- I18n ready.
+
+## Recommendation
+
+Install cargo watch to hot-reload the server during development,
+either via cargo install or your distros package manager.
