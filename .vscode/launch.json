@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "cargo": {
+                "args": [
+                    "build",
+                    "-p",
+                    "dxp_todo_frontend",
+                    "-p",
+                    "server"
+                ],
+            },
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch",
+        },
+        {
             "type": "lldb",
             "request": "attach",
             "name": "Attach",
