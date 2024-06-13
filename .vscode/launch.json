@@ -19,10 +19,23 @@
             "name": "Launch",
         },
         {
+            "command": "cargo watch -w server -x 'build -p server'",
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Watch",
+        },
+        {
             "type": "lldb",
             "request": "attach",
             "name": "Attach",
             "program": "${workspaceFolder}/target/debug/dxp_todo_frontend",
         },
+    ],
+    "compounds": [
+        {
+            "name": "Both",
+            "configurations": ["Launch", "Watch"],
+            "stopAll": true
+        }
     ]
 }
