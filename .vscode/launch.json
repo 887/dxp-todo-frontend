@@ -9,7 +9,7 @@
                 "args": [
                     "build",
                     "-p",
-                    "dxp_todo_frontend",
+                    "dxp-todo-frontend",
                     "-p",
                     "server"
                 ],

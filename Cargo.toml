@@ -3,7 +3,7 @@ resolver = "2"
 members = ["server"]
 
 [package]
-name = "dxp_todo_frontend"
+name = "dxp-todo-frontend"
 version = "0.1.0"
 edition = "2021"
 
