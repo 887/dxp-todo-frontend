@@ -6,6 +6,7 @@
     "configurations": [
         {
             "name": "Launch",
+            "preLaunchTask": "watch",
             "cargo": {
                 "args": [
                     "build",
@@ -18,13 +19,27 @@
             "type": "lldb",
             "request": "launch",
         },
-        {
-            "name": "Watch",
-            "preLaunchTask": "sleep",
-            "command": "cargo watch -w server -x 'build -p server'",
-            "type": "node-terminal",
-            "request": "launch",
-        },
+        // {
+        //     "name": "Launch",
+        //     "cargo": {
+        //         "args": [
+        //             "build",
+        //             "-p",
+        //             "dxp-todo-frontend",
+        //             "-p",
+        //             "server"
+        //         ],
+        //     },
+        //     "type": "lldb",
+        //     "request": "launch",
+        // },
+        // {
+        //     "name": "Watch",
+        //     "preLaunchTask": "sleep",
+        //     "command": "cargo watch -w server -x 'build -p server'",
+        //     "type": "node-terminal",
+        //     "request": "launch",
+        // },
         {
             "name": "Attach",
             "type": "lldb",
@@ -32,11 +47,11 @@
             "program": "${workspaceFolder}/target/debug/dxp-todo-frontend",
         },
     ],
-    "compounds": [
-        {
-            "name": "Both",
-            "configurations": ["Launch", "Watch"],
-            "stopAll": true
-        }
-    ]
+    // "compounds": [
+    //     {
+    //         "name": "Both",
+    //         "configurations": ["Launch", "Watch"],
+    //         "stopAll": true
+    //     }
+    // ]
 }
