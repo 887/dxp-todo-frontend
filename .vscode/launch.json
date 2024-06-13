@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch",
             "cargo": {
                 "args": [
                     "build",
@@ -16,18 +17,18 @@
             },
             "type": "lldb",
             "request": "launch",
-            "name": "Launch",
         },
         {
+            "name": "Watch",
+            "preLaunchTask": "sleep",
             "command": "cargo watch -w server -x 'build -p server'",
             "type": "node-terminal",
             "request": "launch",
-            "name": "Watch",
         },
         {
+            "name": "Attach",
             "type": "lldb",
             "request": "attach",
-            "name": "Attach",
             "program": "${workspaceFolder}/target/debug/dxp_todo_frontend",
         },
     ],
