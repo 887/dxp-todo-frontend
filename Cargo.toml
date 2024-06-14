@@ -19,7 +19,6 @@ dxp-logging = { workspace = true, optional = true, default-features = false }
 
 [workspace.dependencies]
 poem = { version = "^3.0.1" }
-poem-grants = { version ="^3.0.0" }
 dotenvy = { version = "^0.15.7" }
 tokio = { version = "^1.37.0", default-features = false }
 anyhow = { version = "^1.0.86", features = ["backtrace"] }

@@ -10,7 +10,6 @@ crate-type = ["rlib", "dylib"]
 [dependencies]
 dxp-logging = { workspace = true, optional = true, default-features = false }
 poem = { workspace = true, features = ["compression", "session", "i18n"]}
-poem-grants = { workspace = true }
 dotenvy = { workspace = true }
 tokio = { workspace = true, features = ["rt-multi-thread", "signal", "net", "sync"] }
 tracing = { workspace = true }
