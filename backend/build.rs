@@ -2,8 +2,10 @@ use std::io::Write;
 
 //https://github.com/oxidecomputer/progenitor?tab=readme-ov-file#buildrs
 fn main() {
-    let swagger_file = "swagger.json";
-    match reqwest::blocking::get("http://127.0.0.1:8000/api/swagger.json") {
+    // let swagger_file = "swagger.json";
+    // match reqwest::blocking::get("http://127.0.0.1:8000/api/swagger.json") {
+    let swagger_file = "swagger.yaml";
+    match reqwest::blocking::get("http://127.0.0.1:8000/api/swagger.yaml") {
         Ok(rsp) => {
             let mut file = std::fs::File::create(swagger_file).unwrap();
             file.write_all(&rsp.bytes().unwrap()).unwrap();
@@ -13,7 +15,8 @@ fn main() {
 
     println!("cargo:rerun-if-changed={}", swagger_file);
     let file = std::fs::File::open(swagger_file).unwrap();
-    let spec = serde_json::from_reader(file).unwrap();
+    // let spec = serde_json::from_reader(file).unwrap();
+    let spec = serde_yml::from_reader(file).unwrap();
     let mut generator = progenitor::Generator::default();
 
     let tokens = generator.generate_tokens(&spec).unwrap();

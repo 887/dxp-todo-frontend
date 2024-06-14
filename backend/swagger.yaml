@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: Hello World
+  version: '1.0'
+servers:
+- url: http://127.0.0.1:8000/api
+tags:
+- name: HelloWorld
+  description: HelloWorld operations
+- name: Session
+  description: Session operations
+- name: Test
+  description: Test operations
+paths:
+  /hello:
+    get:
+      tags:
+      - HelloWorld
+      summary: Say hello
+      responses:
+        '200':
+          description: ''
+          content:
+            text/plain; charset=utf-8:
+              schema:
+                type: string
+      operationId: hello
+  /greet:
+    get:
+      tags:
+      - HelloWorld
+      summary: Greetings
+      parameters:
+      - name: name
+        schema:
+          type: string
+        in: query
+        required: false
+        deprecated: false
+        explode: true
+      responses:
+        '200':
+          description: ''
+          content:
+            text/plain; charset=utf-8:
+              schema:
+                type: string
+      operationId: greet
+  /test:
+    put:
+      tags:
+      - Test
+      requestBody:
+        content:
+          application/json; charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/Test'
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            text/plain; charset=utf-8:
+              schema:
+                type: string
+      operationId: test
+  /load_session:
+    get:
+      tags:
+      - Session
+      summary: Session
+      parameters:
+      - name: session_id
+        schema:
+          type: string
+        in: query
+        required: true
+        deprecated: false
+        explode: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: object
+                additionalProperties: {}
+        '404':
+          description: Returns when Session not found (None)
+      operationId: load_session
+  /update_session:
+    put:
+      tags:
+      - Session
+      parameters:
+      - name: session_id
+        schema:
+          type: string
+        in: query
+        required: true
+        deprecated: false
+        explode: true
+      requestBody:
+        content:
+          application/json; charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/UpdateSessionValue'
+        required: true
+      responses:
+        '200':
+          description: ''
+      operationId: update_session
+  /remove_session:
+    delete:
+      tags:
+      - Session
+      parameters:
+      - name: session_id
+        schema:
+          type: string
+        in: query
+        required: true
+        deprecated: false
+        explode: true
+      responses:
+        '200':
+          description: ''
+      operationId: remove_session
+components:
+  schemas:
+    Test:
+      type: object
+      required:
+      - test
+      properties:
+        test:
+          type: string
+    UpdateSessionValue:
+      type: object
+      required:
+      - entries
+      properties:
+        entries:
+          type: object
+          additionalProperties: {}
+        expires:
+          type: integer
+          format: uint64
