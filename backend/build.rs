@@ -1,5 +1,15 @@
+use std::io::Write;
+
 //https://github.com/oxidecomputer/progenitor?tab=readme-ov-file#buildrs
 fn main() {
+    match reqwest::blocking::get("http://127.0.0.1/api/swagger.json") {
+        Ok(rsp) => {
+            let mut file = std::fs::File::create("swagger.json").unwrap();
+            file.write_all(&rsp.bytes().unwrap()).unwrap();
+        }
+        Err(_) => {} //ignore, continue with existing file
+    }
+
     let src = "swagger.json";
     println!("cargo:rerun-if-changed={}", src);
     let file = std::fs::File::open(src).unwrap();
