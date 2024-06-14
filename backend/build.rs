@@ -2,7 +2,7 @@ use std::io::Write;
 
 //https://github.com/oxidecomputer/progenitor?tab=readme-ov-file#buildrs
 fn main() {
-    match reqwest::blocking::get("http://127.0.0.1/api/swagger.json") {
+    match reqwest::blocking::get("http://127.0.0.1:8000/api/swagger.json") {
         Ok(rsp) => {
             let mut file = std::fs::File::create("swagger.json").unwrap();
             file.write_all(&rsp.bytes().unwrap()).unwrap();
