@@ -3,10 +3,10 @@ use anyhow::Result;
 use poem::{get, IntoEndpoint, Route};
 
 mod index;
+mod test;
 
 pub(crate) async fn get_route() -> Result<impl IntoEndpoint> {
-    Ok(Route::new()
-        .at("/", get(index::index))
-        .at("/2", get(index::index2))
-        .at("/3", get(index::index3::index3)))
+    let route = Route::new().at("/", get(index::index));
+
+    Ok(route.nest("/test", test::get_route().await?))
 }

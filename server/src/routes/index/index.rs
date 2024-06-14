@@ -11,7 +11,7 @@ use poem::{
 };
 
 #[handler]
-pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<impl IntoResponse> {
+pub fn index(session: &Session, state: Data<&state::State>) -> poem::Result<impl IntoResponse> {
     let locale = crate::session::get_user_language_bundle(&state, session);
 
     let texts = get_texts(&locale, "name").log_error().map_ctxt_err()?;
@@ -20,7 +20,7 @@ pub fn index3(session: &Session, state: Data<&state::State>) -> poem::Result<imp
 
     let templates = state.get_templates();
     let template = templates
-        .get_template("routes/index/index3.jinja")
+        .get_template("routes/index/index.jinja")
         .context(code_loc!())
         .log_error()
         .map_ctxt_err()?;
