@@ -6,12 +6,10 @@ fn main() {
     let swagger_file = "swagger.json";
     #[cfg(feature = "yaml")]
     let swagger_file = "swagger.yaml";
-    match reqwest::blocking::get("http://127.0.0.1:8000/api/".to_string() + swagger_file) {
-        Ok(rsp) => {
-            let mut file = std::fs::File::create(swagger_file).unwrap();
-            file.write_all(&rsp.bytes().unwrap()).unwrap();
-        }
-        Err(_) => {} //ignore, continue with existing file
+    if let Ok(rsp) = reqwest::blocking::get("http://127.0.0.1:8000/api/".to_string() + swagger_file)
+    {
+        let mut file = std::fs::File::create(swagger_file).unwrap();
+        file.write_all(&rsp.bytes().unwrap()).unwrap();
     }
 
     println!("cargo:rerun-if-changed={}", swagger_file);
