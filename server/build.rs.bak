@@ -1,0 +1,38 @@
+use std::io::Write;
+use std::{fmt::format, process::Command};
+
+fn main() {
+    let current_manifest = std::env::var("CARGO_MANIFEST_DIR").unwrap().to_string();
+    let css_builder = current_manifest.clone() + "/tools/css-builder";
+    let css_builder_manifest = css_builder.clone() + "/Cargo.toml";
+
+    // println!("cargo:rerun-if-changed={}", css_builder_manifest);
+
+    // Command::new("cargo")
+    //     .arg("build")
+    //     .arg("--release")
+    //     .current_dir(css_builder)
+    //     .spawn()
+    //     .expect("cargo build command failed to start");
+
+    // let tools = current_manifest.clone() + "/tools/out";
+    // let tools = std::path::Path::new(&tools);
+    // std::fs::create_dir(tools);
+    // let run = escargot::CargoBuild::new()
+    //     .current_release()
+    //     .current_target()
+    //     .manifest_path(css_builder_manifest)
+    //     .target_dir(tools)
+    //     .exec()
+    //     .unwrap();
+
+    // let result = current_manifest.clone() + "/tools/result";
+    // std::fs::write(result.clone(), format!("{}", ""));
+    // let mut f = std::fs::File::options().append(true).open(result).unwrap();
+    // for m in run {
+    //     match m {
+    //         Ok(m) => writeln!(&mut f, "{}", m.).unwrap(),
+    //         Err(ce) => writeln!(&mut f, "").unwrap(),
+    //     }
+    // }
+}

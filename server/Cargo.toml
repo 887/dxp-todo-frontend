@@ -27,6 +27,9 @@ backend = { workspace = true }
 dxp-code-loc = { workspace = true }
 thiserror = { workspace = true }
 
+# [build-dependencies]
+# escargot = "^0.5.11"
+
 [features]
 #default features are what hot reload uses
 default = ["log", "hot-reload"]
