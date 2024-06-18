@@ -9,19 +9,8 @@ fn main() {
 
     Command::new("cargo")
         .arg("build")
+        .arg("--release")
         .current_dir(css_builder)
         .spawn()
         .expect("cargo build command failed to start");
-
-    // let tools = current_manifest.clone() + "/tools";
-    // let tools = std::path::Path::new(&tools);
-    // std::fs::create_dir(tools);
-    // escargot::CargoBuild::new()
-    //     .bin("bin")
-    //     .current_release()
-    //     .current_target()
-    //     .manifest_path(css_builder_manifest)
-    //     .target_dir(tools)
-    //     .exec()
-    //     .unwrap();
 }
