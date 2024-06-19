@@ -6,20 +6,21 @@ fn main() {
     let css_builder = current_manifest.clone() + "/tools/css-builder";
     let css_builder_manifest = css_builder.clone() + "/Cargo.toml";
 
-    // println!("cargo:rerun-if-changed={}", css_builder_manifest);
+    println!("cargo:rerun-if-changed={}", css_builder_manifest);
 
-    // Command::new("cargo")
-    //     .arg("build")
-    //     .arg("--release")
-    //     .current_dir(css_builder)
-    //     .spawn()
-    //     .expect("cargo build command failed to start");
+    //only build this when developing this way, otherwise use build script
+    #[cfg(debug_assertions)]
+    Command::new("cargo")
+        .arg("build")
+        .arg("--release")
+        .current_dir(css_builder)
+        .spawn()
+        .expect("cargo build command failed to start");
 
     // let tools = current_manifest.clone() + "/tools/out";
     // let tools = std::path::Path::new(&tools);
     // std::fs::create_dir(tools);
     // let run = escargot::CargoBuild::new()
-    //     .current_release()
     //     .current_target()
     //     .manifest_path(css_builder_manifest)
     //     .target_dir(tools)
