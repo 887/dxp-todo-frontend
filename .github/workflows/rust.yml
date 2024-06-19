@@ -19,7 +19,7 @@ jobs:
 
     - name: Build css-builder
       working-directory: "server/tools/css-builder"
-      run: cargo build --release --verbose
+      run: cargo build --release --verbose -p dxp-css-bulider
 
     - name: Build
       run: cargo build --features "github" --release --verbose
