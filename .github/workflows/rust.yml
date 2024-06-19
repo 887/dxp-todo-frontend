@@ -19,10 +19,10 @@ jobs:
 
     - name: Build css-builder
       working-directory: "server/tools/css-builder"
-      # env: {
-      #   "CARGO_MANIFEST_DIR": "./server/tools/css-builder"
-      # }
-      run: cargo build --release --verbose -p dxp-css-builder
+      env: {
+        "CARGO_MANIFEST_DIR": "./server/tools/css-builder"
+      }
+      run: CARGO_MANIFEST_DIR=./server/tools/css-builder cargo build --release --verbose -p dxp-css-builder
 
     - name: Build
       run: cargo build --features "github" --release --verbose
