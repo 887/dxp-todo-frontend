@@ -40,6 +40,7 @@ dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
 
 [features]
 default = ["log", "hot-reload"]
+github = ["server/github"]
 path-info = []
 hot-reload = ["dep:hot-lib-reloader", "server/hot-reload"]
 log=["dep:dxp-logging", "dxp-logging/log", "server/log"]

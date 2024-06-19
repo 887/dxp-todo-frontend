@@ -33,6 +33,7 @@ thiserror = { workspace = true }
 [features]
 #default features are what hot reload uses
 default = ["log", "hot-reload"]
+github = []
 hot-reload = ["dep:arc-swap", "dep:notify"]
 redis = []
 log=["dep:dxp-logging", "dxp-logging/log"]
