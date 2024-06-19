@@ -1,3 +1,4 @@
+use std::io::Read;
 #[cfg(not(feature = "github"))]
 use std::process::Command;
 
@@ -15,10 +16,22 @@ fn main() {
 
     //with github do not run this pre-build command, otherwise the github action hangs!
     #[cfg(not(feature = "github"))]
-    Command::new("cargo")
-        .arg("build")
-        .arg("--release")
-        .current_dir(css_builder)
-        .spawn()
-        .expect("cargo build command failed to start");
+    {
+        let output = Command::new("cargo")
+            .arg("build")
+            .arg("--release")
+            .current_dir(css_builder)
+            .spawn()
+            .expect("cargo build command failed to start");
+
+        if let Some(mut std_err) = output.stderr {
+            let mut std_err_out = String::new();
+            if let Ok(size) = std_err.read_to_string(&mut std_err_out) {
+                if size > 0 {
+                    println!("cargo::warning={}", std_err_out);
+                    panic!("{}", std_err_out);
+                }
+            }
+        }
+    }
 }
