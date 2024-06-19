@@ -20,7 +20,7 @@ jobs:
     - name: Build css-builder
       working-directory: "server/tools/css-builder"
       env: {
-        "CARGO_MANIFEST_DIR": "server/tools/css-builder"
+        "CARGO_MANIFEST_DIR": "./server/tools/css-builder"
       }
       run: cargo build --release --verbose -p dxp-css-bulider
 
