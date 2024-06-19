@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-          submodules: 'true'
+        submodules: 'true'
 
     - name: Build css-builder
       run: cargo build --manifest-path server/tools/css-builder/Cargo.toml --release --verbose
