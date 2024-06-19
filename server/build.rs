@@ -9,6 +9,7 @@ fn main() {
     #[cfg(not(feature = "github"))]
     let css_builder_manifest = css_builder.clone() + "/Cargo.toml";
 
+    #[cfg(not(feature = "github"))]
     println!("cargo:rerun-if-changed={}", css_builder_manifest);
 
     //with github do not run this pre-build command, otherwise the github action hangs!
