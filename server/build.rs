@@ -1,5 +1,4 @@
-use std::io::Write;
-use std::{fmt::format, process::Command};
+use std::process::Command;
 
 fn main() {
     let current_manifest = std::env::var("CARGO_MANIFEST_DIR").unwrap().to_string();
