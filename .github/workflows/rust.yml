@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4 #https://github.com/actions/checkout
       with:
         submodules: 'true'
+        clean: false,
 
     - name: Build css-builder
       run: cargo build --manifest-path server/tools/css-builder/Cargo.toml --release --verbose
