@@ -49,7 +49,7 @@ impl State {
             &templates::handle_event,
         );
         watcher::watch_directory_container(i18n::I18N_DIR, self.i18n_data, &i18n::handle_event);
-        // watcher::watch_directory(css::STYLE_DIR, css::handle_event)
+        watcher::watch_directory(css::STYLE_DIR, &css::handle_event)
     }
 
     #[cfg(not(feature = "hot-reload"))]
