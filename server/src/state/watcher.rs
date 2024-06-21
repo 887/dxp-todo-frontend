@@ -1,15 +1,11 @@
-use arc_swap::ArcSwap;
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::error;
 
-pub fn watch_directory<
-    T: Send + Sync,
-    F: Fn(Event, &'static str, &'static ArcSwap<T>) + Send + Sync,
->(
+pub fn watch_directory<C: Send + Sync, F: Fn(Event, &'static str, &'static C) + Send + Sync>(
     dir: &'static str,
-    container: &'static ArcSwap<T>,
+    container: &'static C,
     process_event: &'static F,
 ) {
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
@@ -57,13 +53,13 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 }
 
 pub async fn async_watch<
-    T: Send + Sync,
-    F: Fn(Event, &'static str, &'static ArcSwap<T>) + Send + Sync,
+    C: Send + Sync,
+    F: Fn(Event, &'static str, &'static C) + Send + Sync,
     P: AsRef<Path>,
 >(
     dir: &'static str,
     path: P,
-    container: &'static ArcSwap<T>,
+    container: &'static C,
     process_event: F,
 ) -> notify::Result<()> {
     let (mut watcher, mut rx) = async_watcher()?;
