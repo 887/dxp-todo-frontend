@@ -4,7 +4,7 @@ use tracing::{error, trace};
 
 use super::{initializer, I18NResourcesType};
 
-pub fn handle_event(event: Event, dir: &str, container: &I18NResourcesType) {
+pub async fn handle_event(event: Event, dir: &str, container: &I18NResourcesType) {
     let paths = event
         .paths
         .iter()

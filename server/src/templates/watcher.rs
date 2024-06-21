@@ -4,7 +4,7 @@ use tracing::trace;
 
 use super::TemplatesType;
 
-pub fn handle_event(event: Event, dir: &str, container: &'static TemplatesType) {
+pub async fn handle_event(event: Event, dir: &str, container: &'static TemplatesType) {
     let paths = event
         .paths
         .iter()

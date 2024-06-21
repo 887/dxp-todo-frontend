@@ -1,36 +1,7 @@
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
-use std::path::Path;
+use std::{future::Future, path::Path};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::error;
-
-pub fn watch_directory<C: Send + Sync, F: Fn(Event, &'static str, &'static C) + Send + Sync>(
-    dir: &'static str,
-    container: &'static C,
-    process_event: &'static F,
-) {
-    //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
-    tokio::task::spawn(async move {
-        #[cfg(feature = "log")]
-        let Ok(log_subscription) = dxp_logging::get_subscription() else {
-            return;
-        };
-
-        async {
-            loop {
-                // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-                if let Err(e) =
-                    async_watch(dir, std::path::Path::new(dir), container, process_event).await
-                {
-                    error!("error watching i18n reload: {:?}", e)
-                }
-            }
-        }
-        .await;
-
-        #[cfg(feature = "log")]
-        drop(log_subscription);
-    });
-}
 
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (tx, rx) = mpsc::channel(1);
@@ -52,9 +23,46 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
     Ok((watcher, rx))
 }
 
-pub async fn async_watch<
+pub fn watch_directory_container<
     C: Send + Sync,
-    F: Fn(Event, &'static str, &'static C) + Send + Sync,
+    RetFut: Future<Output = ()>,
+    F: Send + Sync + Fn(Event, &'static str, &'static C) -> RetFut,
+>(
+    dir: &'static str,
+    container: &'static C,
+    process_event: &'static F,
+) where
+    F:,
+{
+    //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
+    tokio::task::spawn(async move {
+        #[cfg(feature = "log")]
+        let Ok(log_subscription) = dxp_logging::get_subscription() else {
+            return;
+        };
+
+        async {
+            loop {
+                // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+                if let Err(e) =
+                    async_watch_container(dir, std::path::Path::new(dir), container, process_event)
+                        .await
+                {
+                    error!("error watching i18n reload: {:?}", e)
+                }
+            }
+        }
+        .await;
+
+        #[cfg(feature = "log")]
+        drop(log_subscription);
+    });
+}
+
+pub async fn async_watch_container<
+    C: Send + Sync,
+    RetFut: Future<Output = ()>,
+    F: Send + Sync + Fn(Event, &'static str, &'static C) -> RetFut,
     P: AsRef<Path>,
 >(
     dir: &'static str,
@@ -80,6 +88,70 @@ pub async fn async_watch<
                 }
 
                 process_event(event, dir, container);
+            }
+            Err(e) => error!("watch error: {e:?}"),
+        }
+    }
+
+    Ok(())
+}
+
+pub fn watch_directory<
+    RetFut: Future<Output = ()>,
+    F: Send + Sync + Fn(Event, &'static str) -> RetFut,
+>(
+    dir: &'static str,
+    process_event: &'static F,
+) {
+    //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
+    tokio::task::spawn(async move {
+        #[cfg(feature = "log")]
+        let Ok(log_subscription) = dxp_logging::get_subscription() else {
+            return;
+        };
+
+        async {
+            loop {
+                // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+                if let Err(e) = async_watch(dir, std::path::Path::new(dir), process_event).await {
+                    error!("error watching i18n reload: {:?}", e)
+                }
+            }
+        }
+        .await;
+
+        #[cfg(feature = "log")]
+        drop(log_subscription);
+    });
+}
+
+pub async fn async_watch<
+    RetFut: Future<Output = ()>,
+    F: Send + Sync + Fn(Event, &'static str) -> RetFut,
+    P: AsRef<Path>,
+>(
+    dir: &'static str,
+    path: P,
+    process_event: F,
+) -> notify::Result<()> {
+    let (mut watcher, mut rx) = async_watcher()?;
+
+    // Add a path to be watched. All files and directories at that path and
+    // below will be monitored for changes.
+    watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
+
+    while let Some(res) = rx.recv().await {
+        match res {
+            Ok(event) => {
+                if event.kind
+                    == notify::EventKind::Modify(notify::event::ModifyKind::Data(
+                        notify::event::DataChange::Any,
+                    ))
+                {
+                    continue;
+                }
+
+                process_event(event, dir);
             }
             Err(e) => error!("watch error: {e:?}"),
         }

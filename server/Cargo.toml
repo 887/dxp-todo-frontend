@@ -11,7 +11,7 @@ crate-type = ["rlib", "dylib"]
 dxp-logging = { workspace = true, optional = true, default-features = false }
 poem = { workspace = true, features = ["compression", "session", "i18n"]}
 dotenvy = { workspace = true }
-tokio = { workspace = true, features = ["rt-multi-thread", "signal", "net", "sync"] }
+tokio = { workspace = true, features = ["rt-multi-thread", "signal", "net", "sync", "process"] }
 tracing = { workspace = true }
 anyhow = { workspace = true }
 base64 = { workspace = true }
@@ -26,6 +26,7 @@ derivative = { workspace = true }
 backend = { workspace = true }
 dxp-code-loc = { workspace = true }
 thiserror = { workspace = true }
+is_executable = { workspace = true }
 
 [features]
 #default features are what hot reload uses

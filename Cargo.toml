@@ -37,7 +37,7 @@ thiserror = "1.0.61"
 backend = { path = "backend"}
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
-
+is_executable = { version ="1.0.1" }
 [features]
 default = ["log", "hot-reload"]
 github = ["server/github"]

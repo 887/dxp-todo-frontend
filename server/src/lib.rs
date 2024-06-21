@@ -7,6 +7,7 @@
 
 pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error>>;
 
+mod css;
 mod endpoint;
 mod error;
 mod i18n;

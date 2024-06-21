@@ -17,6 +17,8 @@ use super::{
     templates::{self, TemplatesType},
 };
 
+use super::css;
+
 #[derive(Clone, Derivative)]
 #[derivative(Debug)]
 pub struct State {
@@ -41,12 +43,13 @@ impl State {
 
     #[cfg(feature = "hot-reload")]
     pub fn watch(&self) {
-        watcher::watch_directory(
+        watcher::watch_directory_container(
             templates::TEMPLATE_DIR,
             self.templates,
             &templates::handle_event,
         );
-        watcher::watch_directory(i18n::I18N_DIR, self.i18n_data, &i18n::handle_event);
+        watcher::watch_directory_container(i18n::I18N_DIR, self.i18n_data, &i18n::handle_event);
+        // watcher::watch_directory(css::STYLE_DIR, css::handle_event)
     }
 
     #[cfg(not(feature = "hot-reload"))]
