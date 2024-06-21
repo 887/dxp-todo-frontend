@@ -25,7 +25,7 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
 
 pub fn watch_directory_container<
     C: Send + Sync,
-    RetFut: Future<Output = ()>,
+    RetFut: Future<Output = ()> + Send + Sync,
     F: Send + Sync + Fn(Event, &'static str, &'static C) -> RetFut,
 >(
     dir: &'static str,
@@ -61,7 +61,7 @@ pub fn watch_directory_container<
 
 pub async fn async_watch_container<
     C: Send + Sync,
-    RetFut: Future<Output = ()>,
+    RetFut: Future<Output = ()> + Send + Sync,
     F: Send + Sync + Fn(Event, &'static str, &'static C) -> RetFut,
     P: AsRef<Path>,
 >(
@@ -87,7 +87,7 @@ pub async fn async_watch_container<
                     continue;
                 }
 
-                process_event(event, dir, container);
+                process_event(event, dir, container).await;
             }
             Err(e) => error!("watch error: {e:?}"),
         }
@@ -97,7 +97,7 @@ pub async fn async_watch_container<
 }
 
 pub fn watch_directory<
-    RetFut: Future<Output = ()>,
+    RetFut: Future<Output = ()> + Send + Sync,
     F: Send + Sync + Fn(Event, &'static str) -> RetFut,
 >(
     dir: &'static str,
@@ -126,7 +126,7 @@ pub fn watch_directory<
 }
 
 pub async fn async_watch<
-    RetFut: Future<Output = ()>,
+    RetFut: Future<Output = ()> + Send + Sync,
     F: Send + Sync + Fn(Event, &'static str) -> RetFut,
     P: AsRef<Path>,
 >(
@@ -151,7 +151,7 @@ pub async fn async_watch<
                     continue;
                 }
 
-                process_event(event, dir);
+                process_event(event, dir).await;
             }
             Err(e) => error!("watch error: {e:?}"),
         }
