@@ -19,8 +19,6 @@ use super::{
 
 use super::css;
 
-use crate::error::LogErrExt;
-
 #[derive(Clone, Derivative)]
 #[derivative(Debug)]
 pub struct State {
@@ -35,7 +33,6 @@ impl State {
         let templates = templates::get_templates()?;
         let default_language = default_language::get()?;
         let i18n_data = i18n::get()?;
-        css::run_bundler().await.log_error()?;
 
         Ok(State {
             templates,

@@ -28,6 +28,9 @@ dxp-code-loc = { workspace = true }
 thiserror = { workspace = true }
 is_executable = { workspace = true }
 
+[build-dependencies]
+is_executable = { workspace = true }
+
 [features]
 #default features are what hot reload uses
 default = ["log", "hot-reload"]
