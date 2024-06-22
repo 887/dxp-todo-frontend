@@ -7,7 +7,7 @@ use poem::middleware::Compression;
 use poem::{Endpoint, EndpointExt, Route};
 
 pub async fn get_route() -> Result<impl Endpoint> {
-    let state = state::State::new()?;
+    let state = state::State::new().await?;
 
     let api = std::env::var("API").context("API is not set")?;
     let session_storage = session::get_api_storage(api).await?;

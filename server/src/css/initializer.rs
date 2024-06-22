@@ -8,14 +8,14 @@ use std::path::Path;
 
 use is_executable::IsExecutable;
 
-pub(crate) async fn run_bundler_command(
+async fn run_bundler_command(
     sheet_file_name: &str,
 ) -> Result<std::process::Output, std::io::Error> {
     let p = Path::new(CSS_BUILDER);
     if !(p.is_executable()) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::PermissionDenied,
-            "File not executable",
+            format!("File not executable {}", CSS_BUILDER),
         ));
     }
 
