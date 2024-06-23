@@ -26,7 +26,7 @@ derivative = { workspace = true }
 backend = { workspace = true }
 dxp-code-loc = { workspace = true }
 thiserror = { workspace = true }
-is_executable = { workspace = true }
+is_executable = { workspace = true, optional = true }
 
 [build-dependencies]
 is_executable = { workspace = true }
@@ -35,7 +35,7 @@ is_executable = { workspace = true }
 #default features are what hot reload uses
 default = ["log", "hot-reload"]
 github = []
-hot-reload = ["dep:arc-swap", "dep:notify"]
+hot-reload = ["dep:arc-swap", "dep:notify", "dep:is_executable"]
 redis = []
 log=["dep:dxp-logging", "dxp-logging/log"]
 log-file=["log", "dxp-logging/log-file"]
