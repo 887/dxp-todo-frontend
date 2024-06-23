@@ -1,6 +1,7 @@
 #[cfg(not(feature = "github"))]
+use std::io::Read;
+use std::path::Path;
 use std::process::Command;
-use std::{io::Read, path::Path};
 
 #[path = "src/css/paths.rs"]
 mod paths;
@@ -38,19 +39,19 @@ fn main() {
                 }
             }
         }
+    }
 
-        let styles = STYLES;
-        for style in styles {
-            let result = run_css_builder(style);
-            match result {
-                Ok(output) => {
-                    // info!("stylesheet {} rebuild", style);
-                    if !output.is_empty() {
-                        println!("failed to rebuild stylesheet {output}");
-                    }
+    let styles = STYLES;
+    for style in styles {
+        let result = run_css_builder(style);
+        match result {
+            Ok(output) => {
+                // info!("stylesheet {} rebuild", style);
+                if !output.is_empty() {
+                    println!("failed to rebuild stylesheet {output}");
                 }
-                Err(e) => println!("failed to rebuild stylesheet {}: {e}", style),
             }
+            Err(e) => println!("failed to rebuild stylesheet {}: {e}", style),
         }
     }
 }
