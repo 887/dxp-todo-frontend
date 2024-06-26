@@ -3,6 +3,9 @@ use std::{future::Future, path::Path};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::error;
 
+//TODO: solve duplicate code with this:
+// https://stackoverflow.com/questions/60345904/defining-a-macro-that-passes-params-to-a-function
+
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (tx, rx) = mpsc::channel(1);
 
