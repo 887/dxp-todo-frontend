@@ -26,6 +26,20 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
     Ok((watcher, rx))
 }
 
+// Helper trait for calling a function with a list of arguments.
+trait WatcherWithArgs<Args> {
+    // Return type.
+    type EventReturnType;
+
+    /// Call function with an argument list.
+    fn watch_directory<F: Send + Sync + Fn(Event, &'static str, Args) -> Self::EventReturnType>(
+        &self,
+        dir: &'static str,
+        process_event: &'static F,
+        args: Args,
+    );
+}
+
 pub fn watch_directory_container<
     C: Send + Sync,
     RetFut: Future<Output = ()> + Send + Sync,
