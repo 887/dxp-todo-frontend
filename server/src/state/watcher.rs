@@ -28,14 +28,14 @@ pub trait CallbackTrait<Ret: Future<Output = ()> + Send + Sync> {
 }
 
 pub struct CallbackNoParams<
-    F: 'static + Send + Sync + Fn(Event, &'static str) -> Ret,
+    F: Fn(Event, &'static str) -> Ret + 'static + Send + Sync,
     Ret: Future<Output = ()> + Send + Sync,
 > {
     pub callback: &'static F,
 }
 
 impl<
-        F: 'static + Send + Sync + Fn(Event, &'static str) -> Ret,
+        F: Fn(Event, &'static str) -> Ret + 'static + Send + Sync,
         Ret: Future<Output = ()> + Send + Sync,
     > CallbackNoParams<F, Ret>
 {
@@ -49,7 +49,7 @@ impl<
 }
 
 impl<
-        F: 'static + Send + Sync + Fn(Event, &'static str) -> Ret,
+        F: Fn(Event, &'static str) -> Ret + 'static + Send + Sync,
         Ret: Future<Output = ()> + Send + Sync,
     > CallbackTrait<Ret> for CallbackNoParams<F, Ret>
 {
@@ -60,7 +60,7 @@ impl<
 }
 
 pub struct CallbackOneParam<
-    F: 'static + Send + Sync + Fn(Event, &'static str, &'static TParam) -> Ret,
+    F: Fn(Event, &'static str, &'static TParam) -> Ret + 'static + Send + Sync,
     Ret: Future<Output = ()> + Send + Sync,
     TParam: 'static + Send + Sync,
 > {
@@ -69,7 +69,7 @@ pub struct CallbackOneParam<
 }
 
 impl<
-        F: 'static + Send + Sync + Fn(Event, &'static str, &'static TParam) -> Ret,
+        F: Fn(Event, &'static str, &'static TParam) -> Ret + 'static + Send + Sync,
         Ret: Future<Output = ()> + Send + Sync,
         TParam: 'static + Send + Sync,
     > CallbackOneParam<F, Ret, TParam>
@@ -84,7 +84,7 @@ impl<
 }
 
 impl<
-        F: 'static + Send + Sync + Fn(Event, &'static str, &'static TParam) -> Ret,
+        F: Fn(Event, &'static str, &'static TParam) -> Ret + 'static + Send + Sync,
         Ret: Future<Output = ()> + Send + Sync,
         TParam: Send + Sync,
     > CallbackTrait<Ret> for CallbackOneParam<F, Ret, TParam>
@@ -97,7 +97,7 @@ impl<
 
 pub fn watch_directory<
     Ret: Future<Output = ()> + Send + Sync,
-    C: 'static + CallbackTrait<Ret> + Send + Sync,
+    C: CallbackTrait<Ret> + 'static + Send + Sync,
 >(
     dir: &'static str,
     callback: Arc<C>,
@@ -127,7 +127,7 @@ pub fn watch_directory<
 
 pub async fn async_watch<
     Ret: Future<Output = ()> + Send + Sync,
-    C: 'static + CallbackTrait<Ret> + Send + Sync,
+    C: CallbackTrait<Ret> + 'static + Send + Sync,
     P: AsRef<Path>,
 >(
     dir: &'static str,
