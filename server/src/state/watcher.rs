@@ -3,9 +3,6 @@ use std::{future::Future, path::Path};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::error;
 
-//TODO: solve duplicate code with this:
-// https://stackoverflow.com/questions/60345904/defining-a-macro-that-passes-params-to-a-function
-
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (tx, rx) = mpsc::channel(1);
 
@@ -26,19 +23,42 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
     Ok((watcher, rx))
 }
 
-// Helper trait for calling a function with a list of arguments.
-trait WatcherWithArgs<Args> {
-    // Return type.
-    type EventReturnType;
+//TODO: solve duplicate code with this:
+// https://stackoverflow.com/questions/60345904/defining-a-macro-that-passes-params-to-a-function
 
-    /// Call function with an argument list.
-    fn watch_directory<F: Send + Sync + Fn(Event, &'static str, Args) -> Self::EventReturnType>(
-        &self,
-        dir: &'static str,
-        process_event: &'static F,
-        args: Args,
-    );
-}
+// // Helper trait for calling a function with a list of arguments.
+// trait WatcherWithArgs<Args> {
+//     // Return type.
+//     type ResultType;
+//     type ProcessEventCallback;
+
+//     /// Call function with an argument list.
+//     fn watch_directory(
+//         &self,
+//         dir: &'static str,
+//         process_event: &'static Self::ProcessEventCallback,
+//         args: Args,
+//     ) -> Self::ResultType;
+// }
+
+// impl<F, T, R: Future<Output = ()>, CBR, CB: Send + Sync + Fn(Event, &'static str) -> CBR>
+//     WatcherWithArgs<[T; 0]> for F
+// where
+//     F: Fn(&'static str) -> R,
+// {
+//     type ResultType = R;
+//     type ProcessEventCallback = CB;
+
+//     fn watch_directory(
+//         &self,
+//         dir: &'static str,
+//         process_event: &'static Self::ProcessEventCallback,
+//         args: [T; 0],
+//     ) -> R {
+//         process_event(Event::new(notify::EventKind::Any), dir);
+//         ()
+//     }
+// }
 
 pub fn watch_directory_container<
     C: Send + Sync,
