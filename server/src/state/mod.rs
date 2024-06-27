@@ -43,13 +43,15 @@ impl State {
 
     #[cfg(feature = "hot-reload")]
     pub fn watch(&self) {
-        watcher::watch_directory_container(
-            templates::TEMPLATE_DIR,
-            self.templates,
-            &templates::handle_event,
-        );
-        watcher::watch_directory_container(i18n::I18N_DIR, self.i18n_data, &i18n::handle_event);
-        watcher::watch_directory(css::STYLE_DIR, &css::handle_event)
+        let callback_templates =
+            watcher::CallbackOneParam::wrap(&templates::handle_event, self.templates);
+        watcher::watch_directory(templates::TEMPLATE_DIR, callback_templates);
+
+        let callback_i18n = watcher::CallbackOneParam::wrap(&i18n::handle_event, self.i18n_data);
+        watcher::watch_directory(i18n::I18N_DIR, callback_i18n);
+
+        let callback_css = watcher::CallbackNoParams::wrap(&css::handle_event);
+        watcher::watch_directory(css::STYLE_DIR, callback_css);
     }
 
     #[cfg(not(feature = "hot-reload"))]

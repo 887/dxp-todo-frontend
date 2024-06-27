@@ -1,5 +1,5 @@
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
-use std::{future::Future, path::Path};
+use std::{future::Future, path::Path, sync::Arc};
 use tokio::sync::mpsc::{self, Receiver};
 use tracing::error;
 
@@ -23,122 +23,84 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
     Ok((watcher, rx))
 }
 
-//TODO: solve duplicate code with this:
-// https://stackoverflow.com/questions/60345904/defining-a-macro-that-passes-params-to-a-function
-
-// // Helper trait for calling a function with a list of arguments.
-// trait WatcherWithArgs<Args> {
-//     // Return type.
-//     type ResultType;
-//     type ProcessEventCallback;
-
-//     /// Call function with an argument list.
-//     fn watch_directory(
-//         &self,
-//         dir: &'static str,
-//         process_event: &'static Self::ProcessEventCallback,
-//         args: Args,
-//     ) -> Self::ResultType;
-// }
-
-// impl<F, T, R: Future<Output = ()>, CBR, CB: Send + Sync + Fn(Event, &'static str) -> CBR>
-//     WatcherWithArgs<[T; 0]> for F
-// where
-//     F: Fn(&'static str) -> R,
-// {
-//     type ResultType = R;
-//     type ProcessEventCallback = CB;
-
-//     fn watch_directory(
-//         &self,
-//         dir: &'static str,
-//         process_event: &'static Self::ProcessEventCallback,
-//         args: [T; 0],
-//     ) -> R {
-//         process_event(Event::new(notify::EventKind::Any), dir);
-//         ()
-//     }
-// }
-
-pub fn watch_directory_container<
-    C: Send + Sync,
-    RetFut: Future<Output = ()> + Send + Sync,
-    F: Send + Sync + Fn(Event, &'static str, &'static C) -> RetFut,
->(
-    dir: &'static str,
-    container: &'static C,
-    process_event: &'static F,
-) where
-    F:,
-{
-    //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
-    tokio::task::spawn(async move {
-        #[cfg(feature = "log")]
-        let Ok(log_subscription) = dxp_logging::get_subscription() else {
-            return;
-        };
-
-        async {
-            loop {
-                // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-                if let Err(e) =
-                    async_watch_container(dir, std::path::Path::new(dir), container, process_event)
-                        .await
-                {
-                    error!("error watching i18n reload: {:?}", e)
-                }
-            }
-        }
-        .await;
-
-        #[cfg(feature = "log")]
-        drop(log_subscription);
-    });
+pub trait CallbackTrait<Ret: Future<Output = ()> + Send + Sync> {
+    fn process_event(&self, event: Event, dir: &'static str) -> Ret;
 }
 
-pub async fn async_watch_container<
-    C: Send + Sync,
-    RetFut: Future<Output = ()> + Send + Sync,
-    F: Send + Sync + Fn(Event, &'static str, &'static C) -> RetFut,
-    P: AsRef<Path>,
->(
-    dir: &'static str,
-    path: P,
-    container: &'static C,
-    process_event: F,
-) -> notify::Result<()> {
-    let (mut watcher, mut rx) = async_watcher()?;
+pub struct CallbackNoParams<
+    F: 'static + Send + Sync + Fn(Event, &'static str) -> Ret,
+    Ret: Future<Output = ()> + Send + Sync,
+> {
+    pub callback: &'static F,
+}
 
-    // Add a path to be watched. All files and directories at that path and
-    // below will be monitored for changes.
-    watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
-
-    while let Some(res) = rx.recv().await {
-        match res {
-            Ok(event) => {
-                if event.kind
-                    == notify::EventKind::Modify(notify::event::ModifyKind::Data(
-                        notify::event::DataChange::Any,
-                    ))
-                {
-                    continue;
-                }
-
-                process_event(event, dir, container).await;
-            }
-            Err(e) => error!("watch error: {e:?}"),
-        }
+impl<
+        F: 'static + Send + Sync + Fn(Event, &'static str) -> Ret,
+        Ret: Future<Output = ()> + Send + Sync,
+    > CallbackNoParams<F, Ret>
+{
+    fn new(callback: &'static F) -> Self {
+        Self { callback }
     }
 
-    Ok(())
+    pub fn wrap(callback: &'static F) -> Arc<Self> {
+        Arc::new(Self::new(callback))
+    }
+}
+
+impl<
+        F: 'static + Send + Sync + Fn(Event, &'static str) -> Ret,
+        Ret: Future<Output = ()> + Send + Sync,
+    > CallbackTrait<Ret> for CallbackNoParams<F, Ret>
+{
+    fn process_event(&self, event: Event, dir: &'static str) -> Ret {
+        let x = self.callback;
+        x(event, dir)
+    }
+}
+
+pub struct CallbackOneParam<
+    F: 'static + Send + Sync + Fn(Event, &'static str, &'static TParam) -> Ret,
+    Ret: Future<Output = ()> + Send + Sync,
+    TParam: 'static + Send + Sync,
+> {
+    pub callback: &'static F,
+    pub param: &'static TParam,
+}
+
+impl<
+        F: 'static + Send + Sync + Fn(Event, &'static str, &'static TParam) -> Ret,
+        Ret: Future<Output = ()> + Send + Sync,
+        TParam: 'static + Send + Sync,
+    > CallbackOneParam<F, Ret, TParam>
+{
+    fn new(callback: &'static F, param: &'static TParam) -> Self {
+        Self { callback, param }
+    }
+
+    pub fn wrap(callback: &'static F, param: &'static TParam) -> Arc<Self> {
+        Arc::new(Self::new(callback, param))
+    }
+}
+
+impl<
+        F: 'static + Send + Sync + Fn(Event, &'static str, &'static TParam) -> Ret,
+        Ret: Future<Output = ()> + Send + Sync,
+        TParam: Send + Sync,
+    > CallbackTrait<Ret> for CallbackOneParam<F, Ret, TParam>
+{
+    fn process_event(&self, event: Event, dir: &'static str) -> Ret {
+        let x = self.callback;
+        x(event, dir, self.param)
+    }
 }
 
 pub fn watch_directory<
-    RetFut: Future<Output = ()> + Send + Sync,
-    F: Send + Sync + Fn(Event, &'static str) -> RetFut,
+    Ret: Future<Output = ()> + Send + Sync,
+    C: 'static + CallbackTrait<Ret> + Send + Sync,
 >(
     dir: &'static str,
-    process_event: &'static F,
+    callback: Arc<C>,
 ) {
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
     tokio::task::spawn(async move {
@@ -150,7 +112,8 @@ pub fn watch_directory<
         async {
             loop {
                 // tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-                if let Err(e) = async_watch(dir, std::path::Path::new(dir), process_event).await {
+                if let Err(e) = async_watch(dir, std::path::Path::new(dir), callback.clone()).await
+                {
                     error!("error watching i18n reload: {:?}", e)
                 }
             }
@@ -163,13 +126,13 @@ pub fn watch_directory<
 }
 
 pub async fn async_watch<
-    RetFut: Future<Output = ()> + Send + Sync,
-    F: Send + Sync + Fn(Event, &'static str) -> RetFut,
+    Ret: Future<Output = ()> + Send + Sync,
+    C: 'static + CallbackTrait<Ret> + Send + Sync,
     P: AsRef<Path>,
 >(
     dir: &'static str,
     path: P,
-    process_event: F,
+    callback: Arc<C>,
 ) -> notify::Result<()> {
     let (mut watcher, mut rx) = async_watcher()?;
 
@@ -188,7 +151,7 @@ pub async fn async_watch<
                     continue;
                 }
 
-                process_event(event, dir).await;
+                callback.process_event(event, dir).await;
             }
             Err(e) => error!("watch error: {e:?}"),
         }
