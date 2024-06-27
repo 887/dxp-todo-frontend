@@ -32,7 +32,7 @@ pub async fn handle_event(event: Event, dir: &str) {
         match result {
             Ok(output) => {
                 info!("stylesheet {} rebuild", filename);
-                if output.is_empty() {
+                if !output.is_empty() {
                     info!("{output}");
                 }
             }
