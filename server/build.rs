@@ -1,3 +1,10 @@
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::indexing_slicing
+)]
+
 #[cfg(not(feature = "github"))]
 use std::io::Read;
 use std::path::Path;

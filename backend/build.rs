@@ -1,3 +1,10 @@
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::indexing_slicing
+)]
+
 use std::io::Write;
 
 //https://github.com/oxidecomputer/progenitor?tab=readme-ov-file#buildrs
@@ -28,7 +35,10 @@ fn main() {
     let mut out_file =
         std::path::Path::new(&(std::env::var("CARGO_MANIFEST_DIR").unwrap().to_string() + "/src"))
             .to_path_buf();
+
+    let allow = "#![allow(clippy::unwrap_used)]\n".to_string();
+
     out_file.push("client.rs");
 
-    std::fs::write(out_file, content).unwrap();
+    std::fs::write(out_file, allow + &content).unwrap();
 }
