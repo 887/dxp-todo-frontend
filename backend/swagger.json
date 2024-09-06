@@ -11,6 +11,10 @@
   ],
   "tags": [
     {
+      "name": "Authenticate",
+      "description": "Authenticate operations"
+    },
+    {
       "name": "HelloWorld",
       "description": "HelloWorld operations"
     },
@@ -20,6 +24,10 @@
     },
     {
       "name": "Test",
+      "description": "Test operations"
+    },
+    {
+      "name": "Todo",
       "description": "Test operations"
     }
   ],
@@ -204,11 +212,116 @@
         },
         "operationId": "remove_session"
       }
+    },
+    "/todo": {
+      "put": {
+        "tags": [
+          "Todo"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "$ref": "#/components/schemas/Todo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "text/plain; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeySecurityScheme": []
+          }
+        ],
+        "operationId": "todo_put"
+      }
+    },
+    "/login": {
+      "put": {
+        "tags": [
+          "Authenticate"
+        ],
+        "summary": "Greetings",
+        "parameters": [
+          {
+            "name": "user_name",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          },
+          {
+            "name": "password",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          },
+          {
+            "name": "_device_info",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": ""
+          },
+          "401": {
+            "description": "Returns when Session not found (None)"
+          }
+        },
+        "operationId": "authenticate"
+      }
     }
   },
   "components": {
     "schemas": {
       "Test": {
+        "type": "object",
+        "required": [
+          "test"
+        ],
+        "properties": {
+          "test": {
+            "type": "string"
+          }
+        }
+      },
+      "Todo": {
         "type": "object",
         "required": [
           "test"
@@ -234,6 +347,13 @@
             "format": "uint64"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeySecurityScheme": {
+        "type": "apiKey",
+        "name": "X-API-Key",
+        "in": "query"
       }
     }
   }

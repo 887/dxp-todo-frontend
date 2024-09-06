@@ -14,7 +14,7 @@ use poem::{
 pub fn index(session: &Session, state: Data<&state::State>) -> poem::Result<impl IntoResponse> {
     let locale = crate::session::get_user_language_bundle(&state, session);
 
-    let texts = get_texts(&locale, "name").log_error().map_ctxt_err()?;
+    let texts = get_texts(&locale, "name222").log_error().map_ctxt_err()?;
 
     let err_texts = get_errors(&locale).log_error().map_ctxt_err()?;
 
