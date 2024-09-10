@@ -7,20 +7,24 @@ edition = "2021"
 bytes = "1.6.0"
 futures-core = "0.3.30"
 percent-encoding = "2.3.1"
-reqwest = { version = "0.11.27", default-features=false, features = ["json", "stream"] }
+reqwest = { version = "0.12.7", default-features=false, features = ["json", "stream"] }
 serde = { version = "^1.0.200", features = ["derive"] }
 serde_json = "1.0.117"
 serde_urlencoded = "0.7.1"
 futures = "0.3"
-progenitor-client = "0.7.0"
+# https://github.com/oxidecomputer/progenitor/pull/883
+# progenitor-client = "0.7.0"
+progenitor-client = { version = "0.6.0", rev = "4a3dfec3926f1f9db78eb6dc90087a1e2a1f9e45", git = "https://github.com/oxidecomputer/progenitor", package = "progenitor-client" }
 
 [build-dependencies]
 prettyplease = "^0.2.20"
-progenitor = "^0.7.0"
+# https://github.com/oxidecomputer/progenitor/pull/883
+# progenitor = "^0.7.0"
+progenitor = { version = "0.6.0", rev = "4a3dfec3926f1f9db78eb6dc90087a1e2a1f9e45", git = "https://github.com/oxidecomputer/progenitor", package = "progenitor" }
 serde_json = { version = "^1.0.117", optional = true }
-serde_yml = { version = "0.0.10", optional = true }
+serde_yml = { version = "0.0.12", optional = true }
 syn = "^2.0"
-reqwest = { version = "0.11.27", default-features=false, features = ["stream", "blocking"] }
+reqwest = { version = "0.12.7", default-features=false, features = ["stream", "blocking"] }
 
 
 [features]
