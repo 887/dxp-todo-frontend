@@ -1,5 +1,6 @@
 use std::{collections::BTreeMap, time::Duration};
 
+use chrono::Utc;
 use dxp_code_loc::code_loc;
 use poem::{http::StatusCode, session::SessionStorage, Result};
 use serde_json::Value;
@@ -27,15 +28,20 @@ impl SessionStorage for ApiSessionStorage {
 
         if let Ok(res) = res {
             let inner = res.into_inner();
-            let map = BTreeMap::from_iter(inner.iter().map(|(i, e)| (i.to_string(), e.clone())));
-            return Ok(Some(map));
+            if let Some(inner) = inner {
+                let map: BTreeMap<String, Value> = serde_json::from_str(&inner)
+                    .map_err(|err| map_backend_err(code_loc!(), err.into()))?;
+                return Ok(Some(map));
+            } else {
+                return Ok(None);
+            }
         } else if let Err(backend::Error::ErrorResponse(ref err)) = res {
             if err.status() == 404 {
                 return Ok(None);
             }
         }
 
-        let res = res.map_err(|err| map_backend_err(code_loc!(), err))?;
+        let res = res.map_err(|err| map_backend_err(code_loc!(), err.into()))?;
 
         client_error(res, "Server did not load_session and return 200")
     }
@@ -47,18 +53,16 @@ impl SessionStorage for ApiSessionStorage {
         expires: Option<Duration>,
     ) -> Result<()> {
         let body = backend::types::UpdateSessionValue {
-            entries: entries
-                .iter()
-                .map(|(i, e)| (i.to_string(), e.clone()))
-                .collect::<serde_json::Map<String, Value>>(),
-            expires: expires.map(|t| t.as_secs()),
+            entries: serde_json::to_string(entries)
+                .map_err(|err| map_backend_err(code_loc!(), err.into()))?,
+            expires: expires.map(|t| Utc::now().timestamp() + t.as_secs() as i64),
         };
 
         let res = self
             .client
             .update_session(session_id, &body)
             .await
-            .map_err(|err| map_backend_err(code_loc!(), err))?;
+            .map_err(|err| map_backend_err(code_loc!(), err.into()))?;
 
         if res.status() == 200 {
             Ok(())
@@ -72,7 +76,7 @@ impl SessionStorage for ApiSessionStorage {
             .client
             .remove_session(session_id)
             .await
-            .map_err(|err| map_backend_err(code_loc!(), err))?;
+            .map_err(|err| map_backend_err(code_loc!(), err.into()))?;
 
         if res.status() == 200 {
             Ok(())
@@ -94,8 +98,11 @@ fn client_error<T, V>(
     Err(poem::error::Error::from_string(err_msg, status_code))
 }
 
-fn map_backend_err(code_loc: String, err: backend::Error) -> poem::Error {
+fn map_backend_err(code_loc: String, err: anyhow::Error) -> poem::Error {
     error!("{:?}\n{}", err, code_loc);
 
-    poem::error::Error::new(err, StatusCode::INTERNAL_SERVER_ERROR)
+    poem::error::Error::from_string(
+        format!("{:?}\n{}", err, code_loc),
+        StatusCode::INTERNAL_SERVER_ERROR,
+    )
 }

@@ -1,238 +1,189 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.0.3",
   "info": {
-    "title": "Hello World",
-    "version": "1.0"
+    "title": "server",
+    "description": "",
+    "license": {
+      "name": ""
+    },
+    "version": "0.1.0"
   },
-  "servers": [
-    {
-      "url": "http://127.0.0.1:8000/api"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Authenticate",
-      "description": "Authenticate operations"
-    },
-    {
-      "name": "HelloWorld",
-      "description": "HelloWorld operations"
-    },
-    {
-      "name": "Session",
-      "description": "Session operations"
-    },
-    {
-      "name": "Test",
-      "description": "Test operations"
-    },
-    {
-      "name": "Todo",
-      "description": "Test operations"
-    }
-  ],
   "paths": {
-    "/hello": {
+    "/api/greet": {
       "get": {
         "tags": [
           "HelloWorld"
         ],
-        "summary": "Say hello",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "text/plain; charset=utf-8": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "hello"
-      }
-    },
-    "/greet": {
-      "get": {
-        "tags": [
-          "HelloWorld"
-        ],
-        "summary": "Greetings",
+        "operationId": "greet",
         "parameters": [
           {
             "name": "name",
-            "schema": {
-              "type": "string"
-            },
             "in": "query",
+            "description": "Name to greet",
             "required": false,
-            "deprecated": false,
-            "explode": true
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "Greetings",
             "content": {
-              "text/plain; charset=utf-8": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }
-              }
-            }
-          }
-        },
-        "operationId": "greet"
-      }
-    },
-    "/test": {
-      "put": {
-        "tags": [
-          "Test"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json; charset=utf-8": {
-              "schema": {
-                "$ref": "#/components/schemas/Test"
               }
             }
           },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "",
+          "500": {
+            "description": "Internal server error",
             "content": {
-              "text/plain; charset=utf-8": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }
               }
             }
           }
-        },
-        "operationId": "test"
+        }
       }
     },
-    "/load_session": {
+    "/api/hello": {
+      "get": {
+        "tags": [
+          "HelloWorld"
+        ],
+        "operationId": "hello",
+        "responses": {
+          "200": {
+            "description": "Say hello",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/load_session": {
       "get": {
         "tags": [
           "Session"
         ],
-        "summary": "Session",
+        "operationId": "load_session",
         "parameters": [
           {
             "name": "session_id",
+            "in": "query",
+            "description": "Session ID",
+            "required": true,
             "schema": {
               "type": "string"
-            },
-            "in": "query",
-            "required": true,
-            "deprecated": false,
-            "explode": true
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "Session found",
             "content": {
-              "application/json; charset=utf-8": {
+              "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
+                  "type": "string",
+                  "nullable": true
                 }
               }
             }
           },
           "404": {
-            "description": "Returns when Session not found (None)"
-          }
-        },
-        "operationId": "load_session"
-      }
-    },
-    "/update_session": {
-      "put": {
-        "tags": [
-          "Session"
-        ],
-        "parameters": [
-          {
-            "name": "session_id",
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "required": true,
-            "deprecated": false,
-            "explode": true
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json; charset=utf-8": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateSessionValue"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "operationId": "update_session"
-      }
-    },
-    "/remove_session": {
-      "delete": {
-        "tags": [
-          "Session"
-        ],
-        "parameters": [
-          {
-            "name": "session_id",
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "required": true,
-            "deprecated": false,
-            "explode": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "operationId": "remove_session"
-      }
-    },
-    "/todo": {
-      "put": {
-        "tags": [
-          "Todo"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json; charset=utf-8": {
-              "schema": {
-                "$ref": "#/components/schemas/Todo"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "",
+            "description": "Session not found",
             "content": {
-              "text/plain; charset=utf-8": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "nullable": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "put": {
+        "tags": [
+          "Authenticate"
+        ],
+        "operationId": "authenticate",
+        "parameters": [
+          {
+            "name": "user_name",
+            "in": "query",
+            "description": "User name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "Password",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "device_info",
+            "in": "query",
+            "description": "Device info",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }
@@ -242,74 +193,242 @@
         },
         "security": [
           {
-            "ApiKeySecurityScheme": []
+            "ApiKeyAuth": []
           }
-        ],
-        "operationId": "todo_put"
+        ]
       }
     },
-    "/login": {
-      "put": {
+    "/api/remove_session": {
+      "delete": {
         "tags": [
-          "Authenticate"
+          "Session"
         ],
-        "summary": "Greetings",
+        "operationId": "remove_session",
         "parameters": [
           {
-            "name": "user_name",
+            "name": "session_id",
+            "in": "query",
+            "description": "Session ID",
+            "required": true,
             "schema": {
               "type": "string"
-            },
-            "in": "query",
-            "required": true,
-            "deprecated": false,
-            "explode": true
-          },
-          {
-            "name": "password",
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "required": true,
-            "deprecated": false,
-            "explode": true
-          },
-          {
-            "name": "_device_info",
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "required": true,
-            "deprecated": false,
-            "explode": true
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "Session removed"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/test": {
+      "put": {
+        "tags": [
+          "Test"
+        ],
+        "operationId": "test_put",
+        "parameters": [
+          {
+            "name": "test",
+            "in": "path",
+            "description": "Test",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Test operation successful",
             "content": {
-              "application/json; charset=utf-8": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }
               }
             }
           },
-          "409": {
-            "description": ""
-          },
-          "401": {
-            "description": "Returns when Session not found (None)"
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
+        }
+      }
+    },
+    "/api/todo": {
+      "put": {
+        "tags": [
+          "Todo"
+        ],
+        "operationId": "todo_put",
+        "parameters": [
+          {
+            "name": "todo",
+            "in": "path",
+            "description": "Json<Todo>",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todo item created successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/update_session": {
+      "put": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "update_session",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "query",
+            "description": "Session ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSessionValue"
+              }
+            }
+          },
+          "required": true
         },
-        "operationId": "authenticate"
+        "responses": {
+          "200": {
+            "description": "Session updated"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
       }
     }
   },
   "components": {
     "schemas": {
+      "AuthenticateApi": {
+        "default": null,
+        "nullable": true
+      },
+      "AuthenticationResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "Some"
+            ],
+            "properties": {
+              "Some": {
+                "type": "string"
+              }
+            },
+            "example": "session_id"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "Conflict"
+            ]
+          },
+          {
+            "type": "string",
+            "enum": [
+              "Forbidden"
+            ]
+          }
+        ]
+      },
+      "GreetParams": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "LoadSessionParams": {
+        "type": "object",
+        "required": [
+          "session_id"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginParams": {
+        "type": "object",
+        "required": [
+          "user_name",
+          "password",
+          "device_info"
+        ],
+        "properties": {
+          "device_info": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "user_name": {
+            "type": "string"
+          }
+        }
+      },
+      "RemoveSessionParams": {
+        "type": "object",
+        "required": [
+          "session_id"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          }
+        }
+      },
       "Test": {
         "type": "object",
         "required": [
@@ -332,6 +451,17 @@
           }
         }
       },
+      "UpdateSessionParams": {
+        "type": "object",
+        "required": [
+          "session_id"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          }
+        }
+      },
       "UpdateSessionValue": {
         "type": "object",
         "required": [
@@ -339,22 +469,49 @@
         ],
         "properties": {
           "entries": {
-            "type": "object",
-            "additionalProperties": {}
+            "type": "string"
           },
           "expires": {
             "type": "integer",
-            "format": "uint64"
+            "format": "int64",
+            "minimum": 0
           }
         }
       }
     },
     "securitySchemes": {
-      "ApiKeySecurityScheme": {
+      "api_key": {
         "type": "apiKey",
-        "name": "X-API-Key",
-        "in": "query"
+        "in": "header",
+        "name": "apikey"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "HelloWorld",
+      "description": "Hello world operations"
+    },
+    {
+      "name": "Authenticate",
+      "description": "Authenticate operations"
+    },
+    {
+      "name": "Test",
+      "description": "Test operations"
+    },
+    {
+      "name": "Todo",
+      "description": "Todo operations"
+    },
+    {
+      "name": "Session",
+      "description": "Session operations"
+    }
+  ]
 }
