@@ -27,13 +27,15 @@ backend = { workspace = true }
 dxp-code-loc = { workspace = true }
 thiserror = { workspace = true }
 is_executable = { workspace = true, optional = true }
+simd-json = { workspace = true, optional = true }
 
 [build-dependencies]
 is_executable = { workspace = true }
 
 [features]
 #default features are what hot reload uses
-default = ["log", "hot-reload"]
+default = ["log", "hot-reload", "simd-json"]
+simd-json = ["dep:simd-json"]
 github = []
 hot-reload = ["dep:arc-swap", "dep:notify", "dep:is_executable"]
 redis = []

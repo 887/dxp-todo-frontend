@@ -21,7 +21,7 @@ dxp-logging = { workspace = true, optional = true, default-features = false }
 poem = { version = "^3.0.1" }
 dotenvy = { version = "^0.15.7" }
 tokio = { version = "^1.37.0", default-features = false }
-anyhow = { version = "^1.0.86", features = ["backtrace"] }
+anyhow = { version = "^1.0.89", features = ["backtrace"] }
 sea-orm = { version = "^0.12.15", default-features = false }
 tracing = "^0.1.40"
 serde = { version = "^1.0.203", features = ["derive"] }
@@ -37,10 +37,12 @@ thiserror = "1.0.61"
 backend = { path = "backend"}
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
-is_executable = { version ="1.0.1" }
+is_executable = { version ="1.0.3" }
+simd-json = "0.14.0"
 
 [features]
-default = ["log", "hot-reload"]
+default = ["log", "hot-reload", "simd-json"]
+simd-json = ["server/simd-json"]
 github = ["server/github"]
 path-info = []
 hot-reload = ["dep:hot-lib-reloader", "server/hot-reload"]
