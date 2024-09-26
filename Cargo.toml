@@ -38,11 +38,9 @@ backend = { path = "backend"}
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
 is_executable = { version ="1.0.3" }
-simd-json = "0.14.0"
 
 [features]
-default = ["log", "hot-reload", "simd-json"]
-simd-json = ["server/simd-json"]
+default = ["log", "hot-reload"]
 github = ["server/github"]
 path-info = []
 hot-reload = ["dep:hot-lib-reloader", "server/hot-reload"]
