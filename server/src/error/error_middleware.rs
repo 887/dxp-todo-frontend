@@ -108,3 +108,37 @@ impl<E: Endpoint> Endpoint for ErrorMiddlewareImpl<E> {
         }
     }
 }
+
+//this part is already axum, the upper part needs to be converted into this
+
+#[derive(Debug, Error)]
+enum AppError {
+    #[error("An error occurred: {0}")]
+    GenericError(String),
+}
+
+// Implement IntoResponse for AppError to customize the response
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response<Body> {
+        let message = self.to_string();
+        let response = Response::builder()
+            .status(500) // You can customize the status code based on the error type
+            .body(Body::from(message))
+            .unwrap();
+        response
+    }
+}
+
+// Middleware to catch errors
+pub async fn error_handling_middleware<B>(
+    req: Request<B>,
+    next: Next<B>,
+) -> Result<Response<Body>, AppError> {
+    let response = next.run(req).await;
+
+    // Check if the response is an error
+    match response {
+        Ok(res) => Ok(res),
+        Err(err) => Err(AppError::GenericError(err.to_string())),
+    }
+}
