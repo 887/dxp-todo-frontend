@@ -189,6 +189,297 @@
         }
       }
     },
+    "/api/session/count": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "count",
+        "parameters": [
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/session/delete_all": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "delete_all",
+        "parameters": [
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked"
+          }
+        }
+      }
+    },
+    "/api/session/delete_by_expiry": {
+      "delete": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "delete_by_expiry",
+        "parameters": [
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/session/delete_one_by_id": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "delete_one_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Session ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked"
+          }
+        }
+      }
+    },
+    "/api/session/exists": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "exists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Session ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/session/get_ids": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "get_ids",
+        "parameters": [
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/session/load": {
+      "get": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "load",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Session ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "worked"
+          }
+        }
+      }
+    },
+    "/api/session/store": {
+      "put": {
+        "tags": [
+          "Session"
+        ],
+        "operationId": "store",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Session ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "session",
+            "in": "query",
+            "description": "Session data",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expires",
+            "in": "query",
+            "description": "Expiration timestamp",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "table_name",
+            "in": "query",
+            "description": "Table name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "worked"
+          }
+        }
+      }
+    },
     "/api/test": {
       "put": {
         "tags": [
@@ -329,12 +620,79 @@
           }
         ]
       },
+      "DeleteAllParams": {
+        "type": "object",
+        "required": [
+          "table_name"
+        ],
+        "properties": {
+          "table_name": {
+            "type": "string"
+          }
+        }
+      },
+      "DeleteOneByIdParams": {
+        "type": "object",
+        "required": [
+          "id",
+          "table_name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "table_name": {
+            "type": "string"
+          }
+        }
+      },
+      "ExistsParams": {
+        "type": "object",
+        "required": [
+          "id",
+          "table_name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "table_name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetIdsParams": {
+        "type": "object",
+        "required": [
+          "table_name"
+        ],
+        "properties": {
+          "table_name": {
+            "type": "string"
+          }
+        }
+      },
       "GreetParams": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "LoadParams": {
+        "type": "object",
+        "required": [
+          "id",
+          "table_name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "table_name": {
+            "type": "string"
           }
         }
       },
@@ -375,6 +733,30 @@
         ],
         "properties": {
           "session_id": {
+            "type": "string"
+          }
+        }
+      },
+      "StoreParams": {
+        "type": "object",
+        "required": [
+          "id",
+          "session",
+          "expires",
+          "table_name"
+        ],
+        "properties": {
+          "expires": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "id": {
+            "type": "string"
+          },
+          "session": {
+            "type": "string"
+          },
+          "table_name": {
             "type": "string"
           }
         }
