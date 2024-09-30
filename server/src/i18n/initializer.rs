@@ -1,6 +1,8 @@
 #[cfg(feature = "hot-reload")]
 use std::path::Path;
 
+// https://github.com/dioxus-community/dioxus-i18n
+
 use poem::i18n::I18NResources;
 #[cfg(not(feature = "hot-reload"))]
 use poem::{i18n::unic_langid::LanguageIdentifier, i18n::I18NResourcesBuilder};

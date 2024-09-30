@@ -10,7 +10,7 @@ use anyhow::Result;
 
 #[cfg(feature = "hot-reload")]
 use arc_swap::ArcSwap;
-use minijinja::Environment as Minijinja;
+
 use std::sync::OnceLock;
 
 #[cfg(feature = "hot-reload")]

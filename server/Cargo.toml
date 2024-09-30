@@ -17,7 +17,6 @@ base64 = { workspace = true }
 # serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 chrono = { workspace = true }
-minijinja = { workspace = true }
 arc-swap = { workspace = true , optional = true }
 notify = {workspace = true, optional = true, default-features = false, features = ["macos_kqueue"]}
 include_dir = { workspace = true }
@@ -30,6 +29,9 @@ axum = { workspace = true }
 axum-server = { workspace = true }
 tower-http = { workspace = true }
 axum_session = { workspace = true }
+# dioxus-sdk = { workspace = true, features = ["i18n"] }
+dioxus = { workspace = true, features = ["web"] }
+dioxus-i18n = { workspace = true }
 
 [build-dependencies]
 is_executable = { workspace = true }

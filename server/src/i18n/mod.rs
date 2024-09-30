@@ -1,6 +1,31 @@
 use anyhow::Result;
-use poem::i18n::I18NResources;
 use std::sync::OnceLock;
+
+use dioxus::prelude::*;
+// use dioxus_sdk::i18n::*;
+// use dioxus_sdk::translate;
+
+// https://github.com/dioxus-community/dioxus-i18n
+
+// fn app() -> Element {
+//     let i18 = use_init_i18n(|| {
+//         I18nConfig::new(langid!("en-US"))
+//             .with_locale(Locale::new_static(
+//                 // Embed
+//                 langid!("en-US"),
+//                 include_str!("./en-US.ftl"),
+//             ))
+//             .with_locale(Locale::new_dynamic(
+//                 // Load at launch
+//                 langid!("es-ES"),
+//                 include_str!("./es-ES.ftl"),
+//             ))
+//     });
+
+//     rsx!(
+//         label { { t!("hello", name: "World") } }
+//     )
+// }
 
 #[cfg(feature = "hot-reload")]
 mod watcher;

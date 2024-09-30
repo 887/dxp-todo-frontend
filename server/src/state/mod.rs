@@ -3,8 +3,6 @@ mod default_language;
 use anyhow::Result;
 
 use derivative::Derivative;
-use minijinja::Environment as Minijinja;
-use poem::i18n::I18NResources;
 
 #[cfg(feature = "hot-reload")]
 use std::sync::Arc;
