@@ -35,7 +35,9 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
     let listener = get_tcp_listener().await?;
 
     // let app = endpoint::get_route().await?;
-    let app = axum::Router::new().route("/", axum::routing::get(|| async { "Hello, World!" }));
+    let app = axum::Router::new()
+        .route("/", axum::routing::get(|| async { "Hello, World!" }))
+        .route("/2", axum::routing::get(|| async { "Hello, World2!" }));
 
     info!("running sever");
 
