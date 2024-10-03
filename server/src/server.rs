@@ -11,7 +11,7 @@ use tracing::error;
 use tracing::info;
 use tracing::trace;
 
-use crate::endpoint;
+// use crate::endpoint;
 
 pub async fn get_tcp_listener() -> Result<TcpListener> {
     let host = env::var("HOST").context("HOST is not set")?;
@@ -29,11 +29,13 @@ pub async fn get_tcp_listener() -> Result<TcpListener> {
 
 //https://stackoverflow.com/questions/62536566/how-can-i-create-a-tokio-runtime-inside-another-tokio-runtime-without-getting-th
 #[tokio::main]
-pub async fn run_server_main<F: Future<Output = ()>>(shutdown: Option<F>) -> Result<()> {
-    let listener = get_tcp_listener()?;
-    let endpoints = endpoint::get_route().await?;
+pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
+    shutdown: Option<F>,
+) -> Result<()> {
+    let listener = get_tcp_listener().await?;
 
-    let app = endpoint::get_route().await?;
+    // let app = endpoint::get_route().await?;
+    let app = axum::Router::new().route("/", axum::routing::get(|| async { "Hello, World!" }));
 
     info!("running sever");
 
