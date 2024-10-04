@@ -36,7 +36,10 @@ fn main() {
         std::path::Path::new(&(std::env::var("CARGO_MANIFEST_DIR").unwrap().to_string() + "/src"))
             .to_path_buf();
 
-    let allow = "#![allow(clippy::unwrap_used)]\n".to_string();
+    let allow = "#![allow(clippy::unwrap_used)]\n\
+        #![allow(unused_variables)]\n\
+        #![allow(dead_code)]\n"
+        .to_string();
 
     out_file.push("client.rs");
 

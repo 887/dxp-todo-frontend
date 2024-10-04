@@ -11,10 +11,17 @@ mod server;
 #[cfg(feature = "web")]
 mod web;
 
-fn main() {
+#[allow(dead_code)]
+pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
+
+fn main() -> std::io::Result<()> {
     #[cfg(not(feature = "web"))]
-    server::main();
+    {
+        server::main()
+    }
 
     #[cfg(feature = "web")]
-    web::main();
+    {
+        web::main()
+    }
 }

@@ -14,7 +14,7 @@ use tokio::{sync::mpsc, task::spawn_blocking};
 use tracing::error;
 use tracing::trace;
 
-use crate::server::hot_libs::*;
+use super::hot;
 
 pub async fn run(
     tx_shutdown_server: Arc<RwLock<Option<Sender<()>>>>,
@@ -29,12 +29,12 @@ pub async fn run(
             &mut rx_lib_reloaded,
             &tx_shutdown_server,
             &block_reloads_mutex,
-            || hot_server::subscribe().wait_for_reload(),
+            || hot::subscribe().wait_for_reload(),
         );
 
         let observe_lib_hot = observe_lib(
             "tx_lib_reloaded_hot",
-            || hot_server::subscribe().wait_for_about_to_reload(),
+            || hot::subscribe().wait_for_about_to_reload(),
             &tx_lib_reloaded,
         );
 
