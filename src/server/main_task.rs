@@ -3,7 +3,7 @@ use tokio::sync::mpsc::Receiver;
 
 use tracing::error;
 
-use crate::hot_libs::*;
+use crate::server::hot_libs::*;
 
 #[cfg(not(feature = "hot-reload"))]
 pub(crate) async fn run() -> std::io::Result<()> {
