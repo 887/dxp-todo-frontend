@@ -35,7 +35,7 @@ thiserror = "1.0.61"
 backend = { path = "backend"}
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
-is_executable = { version ="1.0.3" }
+is_executable = { version ="1.0.4" }
 axum = { version = "0.7.5", features = ["http2", "macros"] }
 axum-server = "0.7.1"
 tower-http = { version = "0.6.0", features = ["compression-zstd"] }

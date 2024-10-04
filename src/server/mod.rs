@@ -9,16 +9,12 @@
 mod path_info;
 
 #[cfg(feature = "hot-reload")]
-mod hot;
+pub mod hot;
 #[cfg(feature = "hot-reload")]
 mod observe;
-#[cfg(feature = "hot-reload")]
-pub use hot::*;
 
 #[cfg(not(feature = "hot-reload"))]
-mod cold;
-#[cfg(not(feature = "hot-reload"))]
-pub use cold::*;
+pub mod cold;
 
 #[cfg(feature = "log")]
 pub fn get_log_subscription() -> std::io::Result<dxp_logging::LogGuard> {
