@@ -45,7 +45,7 @@ dioxus-i18n = "0.2.5"
 
 [features]
 default = ["log", "hot-reload"]
-web = []
+web = ["server/web"]
 github = ["server/github"]
 path-info = []
 hot-reload = ["dep:hot-lib-reloader", "server/hot-reload"]

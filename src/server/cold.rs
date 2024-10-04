@@ -2,18 +2,6 @@ use tracing::error;
 
 use super::get_log_subscription;
 
-pub(crate) mod hot_server {
-    pub type Result<T> = crate::Result<T>;
-
-    pub(crate) fn run_server() -> Result<()> {
-        server::run_server()
-    }
-
-    pub(crate) fn load_env() -> Result<std::path::PathBuf> {
-        server::load_env()
-    }
-}
-
 #[tokio::main]
 pub async fn main() -> std::io::Result<()> {
     dotenvy::dotenv()
@@ -39,10 +27,10 @@ pub(crate) async fn run() -> std::io::Result<()> {
 }
 
 async fn run_inner() -> crate::Result<()> {
-    hot_server::load_env()?;
+    server::load_env()?;
 
     Ok(tokio::task::spawn_blocking(|| {
-        hot_server::run_server().map_err(|e| format!("run_server aborted with error: {:?}", e))
+        server::run_server().map_err(|e| format!("run_server aborted with error: {:?}", e))
     })
     .await??)
 }

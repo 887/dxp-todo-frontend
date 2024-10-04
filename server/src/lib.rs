@@ -16,6 +16,8 @@ mod server;
 // mod session;
 // mod state;
 // mod templates;
+#[cfg(feature = "web")]
+pub mod web;
 
 #[cfg(not(feature = "hot-reload"))]
 mod cold;

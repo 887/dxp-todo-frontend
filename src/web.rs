@@ -1,3 +1,3 @@
-fn main() -> std::io::Result<()> {
-    Ok(())
+pub fn main() -> std::io::Result<()> {
+    server::web::main()
 }
