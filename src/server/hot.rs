@@ -19,8 +19,6 @@ pub(crate) mod hot_server {
     pub fn subscribe() -> hot_lib_reloader::LibReloadObserver {}
 }
 
-pub use hot_server::*;
-
 #[tokio::main]
 pub async fn main() -> std::io::Result<()> {
     use std::sync::Arc;

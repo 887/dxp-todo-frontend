@@ -29,12 +29,12 @@ pub async fn run(
             &mut rx_lib_reloaded,
             &tx_shutdown_server,
             &block_reloads_mutex,
-            || hot::subscribe().wait_for_reload(),
+            || hot::hot_server::subscribe().wait_for_reload(),
         );
 
         let observe_lib_hot = observe_lib(
             "tx_lib_reloaded_hot",
-            || hot::subscribe().wait_for_about_to_reload(),
+            || hot::hot_server::subscribe().wait_for_about_to_reload(),
             &tx_lib_reloaded,
         );
 
