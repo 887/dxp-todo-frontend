@@ -41,7 +41,10 @@ tower-http = { version = "0.6.0", features = ["compression-zstd"] }
 axum_session = { version = "0.14.0" }
 # dioxus-sdk = { version = "0.5.0", features = ["i18n"] }
 dioxus = { version = "0.5.6", features = ["web"] }
+dioxus-hot-reload = "0.5.6"
 dioxus-i18n = "0.2.5"
+dioxus-fullstack = "0.5.6"
+dioxus-web = { version = "0.5.6", features = ["hydrate"] }
 
 [features]
 default = ["log", "hot-reload"]
