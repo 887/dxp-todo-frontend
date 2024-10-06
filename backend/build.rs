@@ -7,6 +7,8 @@
 
 use std::io::Write;
 
+use progenitor::GenerationSettings;
+
 //https://github.com/oxidecomputer/progenitor?tab=readme-ov-file#buildrs
 fn main() {
     #[cfg(feature = "json")]
@@ -25,7 +27,11 @@ fn main() {
     let spec = serde_json::from_reader(file).unwrap();
     #[cfg(feature = "yaml")]
     let spec = serde_yml::from_reader(file).unwrap();
-    let mut generator = progenitor::Generator::default();
+    let mut settings = GenerationSettings::default();
+    settings.with_interface(progenitor::InterfaceStyle::Builder);
+    settings.with_tag(progenitor::TagStyle::Separate);
+    let mut generator = progenitor::Generator::new(&settings);
+    generator.uses_futures();
 
     let tokens = generator.generate_tokens(&spec).unwrap();
     let ast = syn::parse2(tokens).unwrap();

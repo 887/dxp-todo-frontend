@@ -210,9 +210,12 @@
           "200": {
             "description": "worked",
             "content": {
-              "text/plain": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/CountResponse"
+                },
+                "example": {
+                  "count": 0
                 }
               }
             }
@@ -341,9 +344,12 @@
           "200": {
             "description": "worked",
             "content": {
-              "text/plain": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ExistsResponse"
+                },
+                "example": {
+                  "value": false
                 }
               }
             }
@@ -415,9 +421,12 @@
           "200": {
             "description": "worked",
             "content": {
-              "text/plain": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/LoadResponse"
+                },
+                "example": {
+                  "value": ""
                 }
               }
             }
@@ -620,55 +629,26 @@
           }
         ]
       },
-      "DeleteAllParams": {
+      "CountResponse": {
         "type": "object",
         "required": [
-          "table_name"
+          "count"
         ],
         "properties": {
-          "table_name": {
-            "type": "string"
+          "count": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
-      "DeleteOneByIdParams": {
+      "ExistsResponse": {
         "type": "object",
         "required": [
-          "id",
-          "table_name"
+          "value"
         ],
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "table_name": {
-            "type": "string"
-          }
-        }
-      },
-      "ExistsParams": {
-        "type": "object",
-        "required": [
-          "id",
-          "table_name"
-        ],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "table_name": {
-            "type": "string"
-          }
-        }
-      },
-      "GetIdsParams": {
-        "type": "object",
-        "required": [
-          "table_name"
-        ],
-        "properties": {
-          "table_name": {
-            "type": "string"
+          "value": {
+            "type": "boolean"
           }
         }
       },
@@ -681,18 +661,12 @@
           }
         }
       },
-      "LoadParams": {
+      "LoadResponse": {
         "type": "object",
-        "required": [
-          "id",
-          "table_name"
-        ],
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "table_name": {
-            "type": "string"
+          "value": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -733,30 +707,6 @@
         ],
         "properties": {
           "session_id": {
-            "type": "string"
-          }
-        }
-      },
-      "StoreParams": {
-        "type": "object",
-        "required": [
-          "id",
-          "session",
-          "expires",
-          "table_name"
-        ],
-        "properties": {
-          "expires": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "id": {
-            "type": "string"
-          },
-          "session": {
-            "type": "string"
-          },
-          "table_name": {
             "type": "string"
           }
         }

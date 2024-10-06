@@ -13,7 +13,7 @@ pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + 
 // mod i18n;
 // mod routes;
 mod server;
-// mod session;
+mod session;
 // mod state;
 // mod templates;
 #[cfg(feature = "web")]
