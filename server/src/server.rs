@@ -4,12 +4,20 @@ use std::net::Ipv4Addr;
 
 use anyhow::Context;
 use anyhow::Result;
+use axum_session::DatabasePool;
+use axum_session::SessionConfig;
+use axum_session::SessionLayer;
+use axum_session::SessionStore;
 
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tracing::error;
 use tracing::info;
 use tracing::trace;
+
+use crate::session::api_database_pool;
+use crate::session::api_database_pool::ApiDatabasePool;
+use crate::session::get_api_storage;
 
 // use crate::endpoint;
 
@@ -38,6 +46,14 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
     let app = axum::Router::new()
         .route("/", axum::routing::get(|| async { "Hello, World!" }))
         .route("/2", axum::routing::get(|| async { "Hello, World2!" }));
+
+    let pool = get_api_storage("http://127.0.0.1:8000".to_string()).await?;
+    let session_config = SessionConfig::default();
+    let session_storage = SessionStore::<ApiDatabasePool>::new(Some(pool), session_config).await?;
+
+    let session_layer = SessionLayer::new(session_storage);
+
+    let app = app.layer(session_layer);
 
     info!("running sever");
 

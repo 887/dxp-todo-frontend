@@ -1,4 +1,4 @@
-mod api_database_pool;
+pub mod api_database_pool;
 // mod language;
 // pub use language::*;
 
@@ -11,6 +11,7 @@ use anyhow::Result;
 //     web::cookie::CookieKey,
 // };
 
+use api_database_pool::ApiDatabasePool;
 use axum_session::DatabasePool;
 use base64::{
     alphabet,
@@ -37,7 +38,7 @@ use base64::{
 //     ))
 // }
 
-pub async fn get_api_storage(api: String) -> Result<impl DatabasePool> {
+pub async fn get_api_storage(api: String) -> Result<ApiDatabasePool> {
     let storage = api_database_pool::ApiDatabasePool::new(api);
     Ok(storage)
 }

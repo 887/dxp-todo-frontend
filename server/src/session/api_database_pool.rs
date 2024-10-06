@@ -1,15 +1,9 @@
-use std::{borrow::Borrow, collections::BTreeMap, ops::Deref, time::Duration};
-
-use backend::{reqwest, ClientSessionExt};
-use chrono::Utc;
-use dxp_code_loc::code_loc;
-use serde_json::Value;
-use tracing::error;
+use backend::ClientSessionExt;
 
 use axum::async_trait;
 use axum_session::DatabasePool;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct ApiDatabasePool {
     client: backend::Client,
 }
