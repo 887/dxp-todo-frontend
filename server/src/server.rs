@@ -53,7 +53,14 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
 
     let session_layer = SessionLayer::new(session_storage);
 
-    let app = app.layer(session_layer);
+    //todo session layer destroys app! (no endpoint reachable if session layer is added and session server unreachable!)
+    //todo this needs to be logged and the timeout needs to be short
+    //todo also logging is broken in the session layer
+    let app_session = axum::Router::new()
+        .route("/", axum::routing::get(|| async { "Hello, Session!" }))
+        .layer(session_layer);
+
+    let app = app.nest("/session", app_session);
 
     info!("running sever");
 

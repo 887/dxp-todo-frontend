@@ -2,6 +2,8 @@ use backend::ClientSessionExt;
 
 use axum::async_trait;
 use axum_session::DatabasePool;
+use dxp_code_loc::code_loc;
+use tracing::error;
 
 #[derive(Debug, Clone)]
 pub struct ApiDatabasePool {
@@ -34,7 +36,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner())
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericDeleteError(err.to_string())
+            })
     }
 
     #[inline(always)]
@@ -45,7 +50,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner().count)
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericSelectError(err.to_string())
+            })
     }
 
     #[inline(always)]
@@ -65,7 +73,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner())
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericInsertError(err.to_string())
+            })
     }
 
     #[inline(always)]
@@ -81,7 +92,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner().value)
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericSelectError(err.to_string())
+            })
     }
 
     #[inline(always)]
@@ -97,7 +111,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner())
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericDeleteError(err.to_string())
+            })
     }
 
     #[inline(always)]
@@ -113,7 +130,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner().value)
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericSelectError(err.to_string())
+            })
     }
 
     #[inline(always)]
@@ -124,7 +144,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner())
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericDeleteError(err.to_string())
+            })
     }
 
     #[inline(always)]
@@ -135,7 +158,10 @@ impl DatabasePool for ApiDatabasePool {
             .send()
             .await
             .map(|res| res.into_inner())
-            .map_err(|err| axum_session::DatabaseError::GenericDeleteError(err.to_string()))
+            .map_err(|err| {
+                error!("{}: {}", code_loc!(), err);
+                axum_session::DatabaseError::GenericSelectError(err.to_string())
+            })
     }
 
     #[inline(always)]
