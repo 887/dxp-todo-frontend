@@ -18,6 +18,7 @@ use tracing::trace;
 use crate::session::api_database_pool;
 use crate::session::api_database_pool::ApiDatabasePool;
 use crate::session::get_api_storage;
+use crate::tracing_layer::TracingLayer;
 
 // use crate::endpoint;
 
@@ -61,6 +62,8 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
         .layer(session_layer);
 
     let app = app.nest("/session", app_session);
+
+    let app = app.layer(TracingLayer {});
 
     info!("running sever");
 
