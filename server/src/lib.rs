@@ -14,6 +14,7 @@ pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + 
 // mod routes;
 mod server;
 mod session;
+#[cfg(feature = "log")]
 mod tracing_layer;
 // mod state;
 // mod templates;

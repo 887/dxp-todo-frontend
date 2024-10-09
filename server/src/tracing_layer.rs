@@ -1,3 +1,6 @@
+// This should always be the last layer in the middleware stack.
+// Otherwise trace logging will not be complete.
+
 use axum::{body::Body, extract::Request, response::Response};
 use std::task::{Context, Poll};
 use tower::{Layer, Service};
@@ -37,12 +40,18 @@ where
     fn call(&mut self, request: Request) -> Self::Future {
         let future = self.inner.call(request);
         Box::pin(async move {
-            #[cfg(feature = "log")]
-            let log_subscription = dxp_logging::get_subscription();
-            let response: Response = future.await?;
-            #[cfg(feature = "log")]
-            drop(log_subscription);
-            Ok(response)
+            match dxp_logging::get_subscriber() {
+                Ok(subscriber) => {
+                    let log_subscription = dxp_logging::get_subscription_for_subscriber(subscriber);
+                    let response: Response = future.await?;
+                    drop(log_subscription);
+                    Ok(response)
+                }
+                Err(err) => {
+                    let response = Response::new(Body::from(err.to_string()));
+                    Ok(response)
+                }
+            }
         })
     }
 }
