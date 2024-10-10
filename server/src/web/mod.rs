@@ -1,15 +1,11 @@
-#[cfg(feature = "web")]
 use dioxus::prelude::*;
-#[cfg(feature = "web")]
 use dioxus_fullstack::prelude::*;
-#[cfg(feature = "web")]
 use serde::{Deserialize, Serialize};
 
 //https://github.com/dxps/fullstack-rust-axum-dioxus-rwa/tree/main/frontend
 //https://docs.rs/dioxus-fullstack/latest/dioxus_fullstack/
 //https://crates.io/crates/dioxus-hot-reload
 
-#[cfg(feature = "web")]
 pub fn main() -> std::io::Result<()> {
     // Hydrate the application on the client
     dioxus_web::launch::launch_cfg(app, dioxus_web::Config::new().hydrate(true));
@@ -19,8 +15,8 @@ pub fn main() -> std::io::Result<()> {
 }
 
 fn app() -> Element {
-    let mut user_name = use_signal(|| "?".to_string());
-    let mut permissions = use_signal(|| "?".to_string());
+    let user_name = use_signal(|| "?".to_string());
+    let permissions = use_signal(|| "?".to_string());
 
     rsx! {
         div {
