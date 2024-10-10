@@ -72,7 +72,7 @@ server = [
 web = [
     "dep:anyhow",
     "dep:tracing",
-    "dep:axum_session",
+    # "dep:axum_session",
     "dep:serde",
     "dep:serde_json",
 
