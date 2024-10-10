@@ -53,6 +53,6 @@ web = ["server/web"]
 github = ["server/github"]
 path-info = []
 hot-reload = ["dep:hot-lib-reloader", "server/hot-reload"]
-log=["dep:dxp-logging", "dxp-logging/log", "server/log"]
+log=["dep:dxp-logging", "server/log"]
 log-file=["log", "dxp-logging/log-file", "server/log-file"]
 
