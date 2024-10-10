@@ -47,14 +47,11 @@ where
     fn call(&mut self, request: Request) -> Self::Future {
         let future = self.inner.call(request);
         let log_dispatcher = self.log_dispatcher.clone();
-        let log_guard = dxp_logging::set_thread_default_dispatcher(&log_dispatcher);
-        let res = Box::pin(async move {
+        Box::pin(async move {
             let log_guard = dxp_logging::set_thread_default_dispatcher(&log_dispatcher);
             let response: Response = future.await?;
             drop(log_guard);
             Ok(response)
-        });
-        drop(log_guard);
-        res
+        })
     }
 }

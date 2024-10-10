@@ -38,7 +38,7 @@ is_executable = { version ="1.0.4" }
 axum = { version = "0.7.5", features = ["http2", "macros"] }
 axum-server = "0.7.1"
 tower = "0.5.1"
-tower-http = { version = "0.6.0", features = ["compression-zstd"] }
+tower-http = { version = "0.6.0", features = ["compression-zstd", "trace"] }
 axum_session = { version = "0.14.0" }
 # dioxus-sdk = { version = "0.5.0", features = ["i18n"] }
 dioxus = { version = "0.5.6", features = ["web"] }

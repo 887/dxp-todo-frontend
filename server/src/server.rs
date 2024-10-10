@@ -4,18 +4,17 @@ use std::net::Ipv4Addr;
 
 use anyhow::Context;
 use anyhow::Result;
-use axum_session::DatabasePool;
 use axum_session::SessionConfig;
 use axum_session::SessionLayer;
 use axum_session::SessionStore;
 
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
+use tower_http::trace::TraceLayer;
 use tracing::error;
 use tracing::info;
 use tracing::trace;
 
-use crate::session::api_database_pool;
 use crate::session::api_database_pool::ApiDatabasePool;
 use crate::session::get_api_storage;
 #[cfg(feature = "log")]
@@ -41,10 +40,12 @@ pub async fn get_tcp_listener() -> Result<TcpListener> {
 #[tokio::main]
 pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
     shutdown: Option<F>,
+    log_dispatcher: &dxp_logging::LogDispatcher,
 ) -> Result<()> {
     let listener = get_tcp_listener().await?;
 
     // let app = endpoint::get_route().await?;
+
     let app = axum::Router::new()
         .route("/", axum::routing::get(|| async { "Hello, World!" }))
         .route("/2", axum::routing::get(|| async { "Hello, World2!" }));
@@ -59,13 +60,24 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
     //todo this needs to be logged and the timeout needs to be short
     //todo also logging is broken in the session layer
     let app_session = axum::Router::new()
-        .route("/", axum::routing::get(|| async { "Hello, Session!" }))
+        .route(
+            "/",
+            axum::routing::get(|| async {
+                info!("session route");
+                "Hello, Session!"
+            }),
+        )
         .layer(session_layer);
 
     let app = app.nest("/session", app_session);
 
     #[cfg(feature = "log")]
-    let app = app.layer(TracingLayer {});
+    let app = app.layer(TracingLayer {
+        log_dispatcher: log_dispatcher.clone(),
+    });
+
+    #[cfg(feature = "log")]
+    let app = app.layer(TraceLayer::new_for_http());
 
     info!("running sever");
 
@@ -78,7 +90,7 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
         None => server.await,
     };
 
-    match run_result {
+    let result = match run_result {
         Ok(_) => {
             trace!("server shut down success");
             Ok(())
@@ -87,5 +99,7 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
             error!("server shut down with error: {:?}", err);
             Err(anyhow::anyhow!("server error: {}", err))
         }
-    }
+    };
+
+    result
 }
