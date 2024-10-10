@@ -124,11 +124,6 @@ pub async fn run_server_main_inner<F: Future<Output = ()> + Send + 'static>(
 
     let app = app.nest("/session", app_session);
 
-    // #[cfg(feature = "log")]
-    // let app = app.layer(TracingLayer {
-    //     log_dispatcher: log_dispatcher.clone(),
-    // });
-
     #[cfg(feature = "log")]
     let app = app.layer(TraceLayer::new_for_http());
 
@@ -145,7 +140,7 @@ pub async fn run_server_main_inner<F: Future<Output = ()> + Send + 'static>(
         None => server.await,
     };
 
-    let result = match run_result {
+    match run_result {
         Ok(_) => {
             trace!("server shut down success");
             Ok(())
@@ -154,9 +149,7 @@ pub async fn run_server_main_inner<F: Future<Output = ()> + Send + 'static>(
             error!("server shut down with error: {:?}", err);
             Err(anyhow::anyhow!("server error: {}", err))
         }
-    };
-
-    result
+    }
 }
 
 // async fn log_middleware(
