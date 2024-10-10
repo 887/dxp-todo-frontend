@@ -12,6 +12,7 @@ pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + 
 // mod error;
 // mod i18n;
 // mod routes;
+mod error_layer;
 mod server;
 mod session;
 // mod state;
