@@ -68,6 +68,7 @@ host = [
     "dep:tower-http",
     "dep:tower",
     "dep:dioxus",
+    #"dep:dioxus-hot-reload",
 ]
 web = [
     "dep:anyhow",
@@ -79,7 +80,6 @@ web = [
     "dep:dioxus",
     "dep:dioxus-web", 
     "dep:dioxus-i18n",
-    "dep:dioxus-hot-reload",
     "dep:dioxus-fullstack",
 ]
 hot-reload = ["dep:arc-swap", "dep:notify"]
