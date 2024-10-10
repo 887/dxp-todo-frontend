@@ -224,7 +224,7 @@
       }
     },
     "/api/session/delete_all": {
-      "get": {
+      "delete": {
         "tags": [
           "Session"
         ],
@@ -282,7 +282,7 @@
       }
     },
     "/api/session/delete_one_by_id": {
-      "get": {
+      "delete": {
         "tags": [
           "Session"
         ],
