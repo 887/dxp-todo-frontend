@@ -47,8 +47,20 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
     // let app = endpoint::get_route().await?;
 
     let app = axum::Router::new()
-        .route("/", axum::routing::get(|| async { "Hello, World!" }))
-        .route("/2", axum::routing::get(|| async { "Hello, World2!" }));
+        .route(
+            "/",
+            axum::routing::get(|| async {
+                trace!("hello world");
+                "Hello, World!"
+            }),
+        )
+        .route(
+            "/2",
+            axum::routing::get(|| async {
+                trace!("hello world 2");
+                "Hello, World2!"
+            }),
+        );
 
     let pool = get_api_storage("http://127.0.0.1:8000".to_string()).await?;
     let session_config = SessionConfig::default();
