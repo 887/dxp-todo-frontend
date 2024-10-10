@@ -71,15 +71,16 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
     //todo session layer destroys app! (no endpoint reachable if session layer is added and session server unreachable!)
     //todo this needs to be logged and the timeout needs to be short
     //todo also logging is broken in the session layer
-    let app_session = axum::Router::new()
-        .route(
-            "/",
-            axum::routing::get(|| async {
-                info!("session route");
-                "Hello, Session!"
-            }),
-        )
-        .layer(session_layer);
+    let app_session = axum::Router::new().route(
+        "/",
+        axum::routing::get(|| async {
+            info!("session route");
+            "Hello, Session!"
+        }),
+    );
+
+    // this breaks everything!
+    let app_session = app_session.layer(session_layer);
 
     let app = app.nest("/session", app_session);
 
@@ -90,6 +91,8 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
 
     #[cfg(feature = "log")]
     let app = app.layer(TraceLayer::new_for_http());
+
+    // let app = app.layer(axum::middleware::from_fn(log_middleware));
 
     info!("running sever");
 
@@ -115,3 +118,28 @@ pub async fn run_server_main<F: Future<Output = ()> + Send + 'static>(
 
     result
 }
+
+// async fn log_middleware(
+//     req: axum::http::Request<axum::body::Body>,
+//     next: axum::middleware::Next,
+// ) -> Response {
+//     let log_guard = dxp_logging::subscribe_thread_with_default();
+//     // Create a new span for the request
+//     let span =
+//         tracing::span!(Level::INFO, "request", method = %req.method(), path = %req.uri().path());
+//     let enter = span.enter(); // Enter the span
+
+//     // Log the request
+//     info!("Received request");
+
+//     // Call the next middleware/handler
+//     let response = next.run(req).await;
+
+//     // Log the response
+//     info!("Response: {:?}", response);
+
+//     drop(enter);
+//     drop(log_guard);
+
+//     response
+// }
