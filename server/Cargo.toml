@@ -16,7 +16,7 @@ serde_json = { workspace = true, optional = true }
 
 dxp-logging = { workspace = true, optional = true, default-features = false }
 dotenvy = { workspace = true, optional = true}
-tokio = { workspace = true, optional = true, features = ["rt-multi-thread", "signal", "net", "sync", "process"] }
+tokio = { workspace = true, optional = true, features = ["rt-multi-thread", "signal", "sync", "time", "macros", "net", "process"] }
 base64 = { workspace = true, optional = true}
 chrono = { workspace = true, optional = true }
 arc-swap = { workspace = true , optional = true }
@@ -43,9 +43,9 @@ is_executable = { workspace = true }
 
 [features]
 #default features are the ones that hot reload uses to build when saving a file
-default = ["server", "log", "hot-reload"]
+default = ["host", "log", "hot-reload"]
 github = []
-server = [
+host = [
     "dep:anyhow",
     "dep:tracing",
     "dep:axum_session",

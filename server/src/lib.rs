@@ -15,17 +15,17 @@ pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + 
 // mod state;
 // mod templates;
 
-#[cfg(feature = "server")]
+#[cfg(feature = "host")]
 mod server;
 
 #[cfg(feature = "web")]
 pub mod web;
 
-#[cfg(all(feature = "server", not(feature = "hot-reload")))]
+#[cfg(all(feature = "host", not(feature = "hot-reload")))]
 mod cold;
-#[cfg(all(feature = "server", not(feature = "hot-reload")))]
+#[cfg(all(feature = "host", not(feature = "hot-reload")))]
 pub use cold::*;
-#[cfg(all(feature = "server", feature = "hot-reload"))]
+#[cfg(all(feature = "host", feature = "hot-reload"))]
 mod hot;
-#[cfg(all(feature = "server", feature = "hot-reload"))]
+#[cfg(all(feature = "host", feature = "hot-reload"))]
 pub use hot::*;

@@ -2,7 +2,10 @@ use tokio::sync::mpsc::Receiver;
 
 use tracing::error;
 
-use super::{get_log_subscription, observe};
+#[cfg(feature = "log")]
+use super::get_log_subscription;
+
+use super::observe;
 
 //info: in order to cause a reload you nee to actually change a function signature/make the compiler do work
 //if the file is identical to the compiler, hot-reload will not try to do a reload
