@@ -7,10 +7,16 @@ use serde::{Deserialize, Serialize};
 //https://crates.io/crates/dioxus-hot-reload
 
 pub fn main() -> std::io::Result<()> {
+    println!(
+        "web started \n\
+        \n\
+        \n\
+        "
+    );
+
     // Hydrate the application on the client
     dioxus_web::launch::launch_cfg(app, dioxus_web::Config::new().hydrate(true));
 
-    println!("web started");
     Ok(())
 }
 
