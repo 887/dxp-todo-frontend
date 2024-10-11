@@ -3,8 +3,10 @@
 Frontend for dxp-todo-backend
 
 - Uses Progenitor client to connect to the backend API.
-- Uses MiniJinja templates.
-- I18n ready.
+
+cargo build --no-default-features --target wasm32-unknown-unknown --features "web"
+
+cargo run
 
 ## Recommendation
 

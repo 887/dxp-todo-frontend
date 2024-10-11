@@ -5,22 +5,22 @@
     clippy::panic
 )]
 
-#[cfg(feature = "host")]
+#[cfg(feature = "server")]
 mod server;
 
 #[cfg(feature = "web")]
 mod web;
 
-#[cfg(feature = "host")]
+#[cfg(feature = "server")]
 #[allow(dead_code)]
 pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
-#[cfg(all(feature = "host", feature = "hot-reload"))]
+#[cfg(all(feature = "server", feature = "hot-reload"))]
 fn main() -> std::io::Result<()> {
     server::hot::main()
 }
 
-#[cfg(all(feature = "host", not(feature = "hot-reload")))]
+#[cfg(all(feature = "server", not(feature = "hot-reload")))]
 fn main() -> std::io::Result<()> {
     server::cold::main()
 }

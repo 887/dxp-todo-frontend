@@ -10,12 +10,12 @@ use super::observe;
 //info: in order to cause a reload you nee to actually change a function signature/make the compiler do work
 //if the file is identical to the compiler, hot-reload will not try to do a reload
 
-#[hot_lib_reloader::hot_module(dylib = "server", file_watch_debounce = 10)]
-pub(crate) mod hot_server {
+#[hot_lib_reloader::hot_module(dylib = "heart", file_watch_debounce = 10)]
+pub(crate) mod hot_heart {
     // pub use lib::*;
     pub type Result<T> = crate::Result<T>;
 
-    hot_functions_from_file!("server/src/hot.rs");
+    hot_functions_from_file!("heart/src/hot.rs");
 
     // expose a type to subscribe to lib load events
     #[lib_change_subscription]
@@ -95,7 +95,7 @@ pub(crate) async fn run(rx_shutdown_server: Receiver<()>) {
 }
 
 async fn run_inner(rx_shutdown_server: Receiver<()>) -> crate::Result<()> {
-    hot_server::load_env()?;
+    hot_heart::load_env()?;
 
     run_server(rx_shutdown_server).await
 }
@@ -109,7 +109,7 @@ async fn run_server(rx_shutdown_server: Receiver<()>) -> crate::Result<()> {
     // the tokio threadpool is used here
 
     Ok(tokio::task::spawn_blocking(|| {
-        hot_server::run_server(rx_shutdown_server)
+        hot_heart::run_server(rx_shutdown_server)
             .map_err(|e| format!("run_server aborted with error: {:?}", e))
     })
     .await??)

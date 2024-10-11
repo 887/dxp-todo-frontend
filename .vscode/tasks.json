@@ -13,8 +13,8 @@
             "type": "shell",
             "args": [
                 "watch", 
-                "-w", "server",
-                "-x", "'build -p server'"],
+                "-w", "heart",
+                "-x", "'build -p heart'"],
             "isBackground": true,
             "command": "cargo",
             "problemMatcher": [

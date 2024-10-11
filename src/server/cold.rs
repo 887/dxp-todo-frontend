@@ -28,10 +28,10 @@ pub(crate) async fn run() -> std::io::Result<()> {
 }
 
 async fn run_inner() -> crate::Result<()> {
-    server::load_env()?;
+    heart::load_env()?;
 
     Ok(tokio::task::spawn_blocking(|| {
-        server::run_server().map_err(|e| format!("run_server aborted with error: {:?}", e))
+        heart::run_server().map_err(|e| format!("run_server aborted with error: {:?}", e))
     })
     .await??)
 }
