@@ -1,3 +1,3 @@
-[submodule "server/tools/css-builder"]
-	path = server/tools/css-builder
+[submodule "heart/tools/css-builder"]
+	path = heart/tools/css-builder
 	url = https://github.com/887/dxp-css-builder.git
