@@ -105,7 +105,7 @@ pub fn watch_directory<
     //https://old.reddit.com/r/rust/comments/q6nyc6/async_file_watcher_like_notifyrs/
     tokio::task::spawn(async move {
         #[cfg(feature = "log")]
-        let Ok(log_subscription) = dxp_logging::get_subscription() else {
+        let Ok(log_subscription) = dxp_logging::subscribe_thread_with_default() else {
             return;
         };
 

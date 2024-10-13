@@ -1,6 +1,8 @@
 mod session;
 
+mod endpoint;
 mod error_layer;
+mod state;
 
 use std::env;
 use std::future::Future;
@@ -11,6 +13,7 @@ use anyhow::Result;
 use axum_session::SessionConfig;
 use axum_session::SessionLayer;
 use axum_session::SessionStore;
+use error_layer::ErrorLayer;
 use tokio::runtime::Builder;
 
 use std::net::SocketAddr;
@@ -22,8 +25,6 @@ use tracing::trace;
 
 use session::api_database_pool::ApiDatabasePool;
 use session::get_api_storage;
-
-// use crate::endpoint;
 
 pub async fn get_tcp_listener() -> Result<TcpListener> {
     let host = env::var("HOST").context("HOST is not set")?;
@@ -96,41 +97,9 @@ pub async fn run_server_main_inner<F: Future<Output = ()> + Send + 'static>(
 ) -> Result<()> {
     let listener = get_tcp_listener().await?;
 
-    // let app = endpoint::get_route().await?;
+    let app = endpoint::get_route().await?;
 
-    let app = axum::Router::new()
-        .route(
-            "/",
-            axum::routing::get(|| async {
-                trace!("hello world");
-                "Hello, World!"
-            }),
-        )
-        .route(
-            "/2",
-            axum::routing::get(|| async {
-                trace!("hello world 2");
-                "Hello, World2!"
-            }),
-        );
-
-    let pool = get_api_storage("http://127.0.0.1:8000".to_string()).await?;
-    let session_config = SessionConfig::default();
-    let session_storage = SessionStore::<ApiDatabasePool>::new(Some(pool), session_config).await?;
-
-    let session_layer = SessionLayer::new(session_storage);
-
-    //session error returns internal server error, we should probs log this
-    let app_session = axum::Router::new().route(
-        "/",
-        axum::routing::get(|| async {
-            info!("session route");
-            "Hello, Session!"
-        }),
-    );
-    let app_session = app_session.layer(session_layer);
-
-    let app = app.nest("/session", app_session);
+    let app = app.layer(ErrorLayer {});
 
     #[cfg(feature = "log")]
     let app = app.layer(TraceLayer::new_for_http());

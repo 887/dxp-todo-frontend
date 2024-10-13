@@ -7,13 +7,17 @@
 
 pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
-// mod css;
 // mod endpoint;
 // mod error;
 // mod i18n;
-// mod routes;
 // mod state;
 // mod templates;
+
+#[cfg(feature = "server")]
+mod routes;
+
+#[cfg(feature = "server")]
+mod css;
 
 #[cfg(feature = "server")]
 mod server;
