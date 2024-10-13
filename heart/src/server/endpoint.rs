@@ -34,6 +34,8 @@ pub async fn get_route() -> Result<Router> {
 
     let session_layer = SessionLayer::new(session_storage);
 
+    //TODO: host dioxus on the endpoints!
+
     Ok(route
         .layer(Extension(state.clone()))
         .layer(session_layer)
