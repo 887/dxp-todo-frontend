@@ -32,10 +32,9 @@ axum-server = { workspace = true, optional = true }
 tower-http = { workspace = true, optional = true }
 tower = { workspace = true, optional = true }
 # dioxus-sdk = { workspace = true, features = ["i18n"] }
-dioxus = { workspace = true, optional = true, features = ["web"] }
+dioxus = { workspace = true, optional = true, features = ["hooks", "macro"] }
 dioxus-i18n = { workspace = true, optional = true }
 dioxus-hot-reload = { workspace = true, optional = true }
-dioxus-fullstack = { workspace = true, optional = true }
 dioxus-web = { workspace = true, optional = true }
 
 [build-dependencies]
@@ -70,6 +69,9 @@ server = [
     "dep:tower",
     "dep:dioxus",
     #"dep:dioxus-hot-reload",
+
+    "dioxus/fullstack",
+    "dioxus/axum",
 ]
 web = [
     "dep:anyhow",
@@ -81,7 +83,8 @@ web = [
     "dep:dioxus",
     "dep:dioxus-web", 
     "dep:dioxus-i18n",
-    "dep:dioxus-fullstack",
+
+    "dioxus/web",
 ]
 hot-reload = ["dep:arc-swap", "dep:notify"]
 redis = []

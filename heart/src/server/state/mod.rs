@@ -5,8 +5,6 @@ use anyhow::Result;
 use derivative::Derivative;
 
 #[cfg(feature = "hot-reload")]
-use std::sync::Arc;
-#[cfg(feature = "hot-reload")]
 mod watcher;
 
 // use super::{

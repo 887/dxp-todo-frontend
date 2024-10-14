@@ -10,9 +10,6 @@ use std::net::Ipv4Addr;
 
 use anyhow::Context;
 use anyhow::Result;
-use axum_session::SessionConfig;
-use axum_session::SessionLayer;
-use axum_session::SessionStore;
 use error_layer::ErrorLayer;
 use tokio::runtime::Builder;
 
@@ -22,9 +19,6 @@ use tower_http::trace::TraceLayer;
 use tracing::error;
 use tracing::info;
 use tracing::trace;
-
-use session::api_database_pool::ApiDatabasePool;
-use session::get_api_storage;
 
 pub async fn get_tcp_listener() -> Result<TcpListener> {
     let host = env::var("HOST").context("HOST is not set")?;

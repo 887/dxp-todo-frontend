@@ -21,6 +21,8 @@ mod server;
 #[cfg(feature = "web")]
 pub mod web;
 
+mod app;
+
 #[cfg(all(feature = "server", not(feature = "hot-reload")))]
 mod cold;
 #[cfg(all(feature = "server", not(feature = "hot-reload")))]

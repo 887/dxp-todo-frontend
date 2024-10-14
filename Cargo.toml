@@ -41,7 +41,7 @@ tower = "0.5.1"
 tower-http = { version = "0.6.0", features = ["compression-zstd", "trace"] }
 axum_session = { version = "0.14.0" }
 # dioxus-sdk = { version = "0.5.0", features = ["i18n"] }
-dioxus = { version = "0.5.6", features = ["web"] }
+dioxus = { version = "0.5.6" }
 dioxus-hot-reload = "0.5.6"
 dioxus-i18n = "0.2.5"
 dioxus-fullstack = "0.5.6"
@@ -52,17 +52,20 @@ dioxus-web = { version = "0.5.6", features = ["hydrate"] }
 #cargo pulls the dependency even if it's just a crate feature
 
 [features]
+# default = []
 # default = ["web"]
 # default = ["server"]
 # default = ["server", "log"] # <- this only works with cargo run, not in vscode
-default = ["server", "log", "hot-reload"]
+# default = ["server", "log", "hot-reload"]
 server = [
     "dep:hot-lib-reloader",
     "dep:heart",
     "dep:dotenvy",
     "dep:tokio",
     "dep:tracing",
-    "heart/server"
+    "heart/server",
+    "log",
+    "hot-reload"
 ]
 web = ["heart/web"]
 github = ["heart/github"]

@@ -6,6 +6,8 @@ Frontend for dxp-todo-backend
 
 cargo build --no-default-features --target wasm32-unknown-unknown --features "web"
 
+dx bundle -- --no-default-features --features web,app
+
 cargo run
 
 ## Recommendation

@@ -29,3 +29,8 @@ fn main() -> std::io::Result<()> {
 fn main() -> std::io::Result<()> {
     web::main()
 }
+
+#[cfg(all(not(feature = "web"), not(feature = "server")))]
+fn main() -> std::io::Result<()> {
+    Ok(())
+}
