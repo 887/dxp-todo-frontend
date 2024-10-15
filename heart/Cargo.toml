@@ -68,8 +68,8 @@ server = [
     "dep:axum-server",
     "dep:tower-http",
     "dep:tower",
+
     "dep:dioxus",
-    #"dep:dioxus-hot-reload",
 
     "dioxus/fullstack",
     "dioxus/axum",

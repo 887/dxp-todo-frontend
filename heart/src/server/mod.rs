@@ -21,6 +21,11 @@ use tracing::info;
 use tracing::trace;
 
 pub async fn get_tcp_listener() -> Result<TcpListener> {
+    let address = get_socket_address()?;
+    Ok(TcpListener::bind(&address).await?)
+}
+
+fn get_socket_address() -> Result<SocketAddr, anyhow::Error> {
     let host = env::var("HOST").context("HOST is not set")?;
     let port = env::var("PORT").context("PORT is not set")?;
 
@@ -29,9 +34,7 @@ pub async fn get_tcp_listener() -> Result<TcpListener> {
     info!("Starting server at {server_url}");
 
     let port: u16 = port.parse().context("PORT is not a valid number")?;
-    let address = SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), port);
-
-    Ok(TcpListener::bind(&address).await?)
+    Ok(SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), port))
 }
 
 #[cfg(feature = "log")]
