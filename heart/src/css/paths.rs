@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub static STYLES: [&str; 2] = ["style.css", "layout.css"];
 pub static STYLE_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/css/");
 pub static STYLE_SHEET_OUTPUT_DIR: &str =

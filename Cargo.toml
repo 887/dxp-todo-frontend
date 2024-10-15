@@ -44,8 +44,7 @@ axum_session = { version = "0.14.0" }
 dioxus = { version = "0.5.6" }
 dioxus-hot-reload = "0.5.6"
 dioxus-i18n = "0.2.5"
-dioxus-fullstack = "0.5.6"
-dioxus-web = { version = "0.5.6", features = ["hydrate"] }
+dioxus-web = { version = "0.5.6"}
 
 #warning:
 #dependencies and features should not share the same name
@@ -65,7 +64,7 @@ server = [
     "dep:tracing",
     "heart/server",
     "log",
-    "hot-reload"
+    # "hot-reload"
 ]
 web = ["heart/web"]
 github = ["heart/github"]

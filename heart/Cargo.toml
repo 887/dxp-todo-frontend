@@ -32,10 +32,10 @@ axum-server = { workspace = true, optional = true }
 tower-http = { workspace = true, optional = true }
 tower = { workspace = true, optional = true }
 # dioxus-sdk = { workspace = true, features = ["i18n"] }
-dioxus = { workspace = true, optional = true, features = ["hooks", "macro"] }
+dioxus = { workspace = true, optional = true }
 dioxus-i18n = { workspace = true, optional = true }
-dioxus-hot-reload = { workspace = true, optional = true }
-dioxus-web = { workspace = true, optional = true }
+# dioxus-hot-reload = { workspace = true, optional = true }
+dioxus-web = { workspace = true, optional = true, features = ["hydrate"] }
 
 [build-dependencies]
 is_executable = { workspace = true }
@@ -44,6 +44,7 @@ is_executable = { workspace = true }
 #default features are the ones that hot reload uses to build when saving a file
 # default = ["server", "log"]
 default = ["server", "log", "hot-reload"]
+# default = ["web"]
 github = []
 server = [
     "dep:anyhow",
@@ -81,10 +82,10 @@ web = [
     "dep:serde_json",
 
     "dep:dioxus",
-    "dep:dioxus-web", 
     "dep:dioxus-i18n",
 
     "dioxus/web",
+    "dep:dioxus-web",
 ]
 hot-reload = ["dep:arc-swap", "dep:notify"]
 redis = []

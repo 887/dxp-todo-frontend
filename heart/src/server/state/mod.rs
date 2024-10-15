@@ -13,6 +13,7 @@ mod watcher;
 //     templates::{self, TemplatesType},
 // };
 
+#[cfg(feature = "hot-reload")]
 use crate::css;
 
 #[derive(Clone, Derivative)]
