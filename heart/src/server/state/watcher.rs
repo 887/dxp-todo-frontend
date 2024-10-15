@@ -74,10 +74,12 @@ impl<
         TParam: 'static + Send + Sync,
     > CallbackOneParam<F, Ret, TParam>
 {
+    #[allow(unused)]
     fn new(callback: &'static F, param: &'static TParam) -> Self {
         Self { callback, param }
     }
 
+    #[allow(unused)]
     pub fn wrap(callback: &'static F, param: &'static TParam) -> Arc<Self> {
         Arc::new(Self::new(callback, param))
     }
