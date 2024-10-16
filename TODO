@@ -1,0 +1,8 @@
+- don't put everything (axum) in heart crate but use a the default setup from Dioxus (see xxxx-xxxx test project)
+- don't use axum directly, use dioxus router / etc
+- still use the backend as is
+- still use hot-lib-reloader but only for functions that are used on the server
+- name heart crate server_functions or something
+- maybe use dioxus alpha?
+
+
