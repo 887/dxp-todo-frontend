@@ -7,22 +7,6 @@
 
 pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
-// mod i18n;
-
-#[cfg(feature = "server")]
-mod routes;
-
-#[cfg(feature = "server")]
-mod css;
-
-#[cfg(feature = "server")]
-mod server;
-
-#[cfg(feature = "web")]
-pub mod web;
-
-mod app;
-
 #[cfg(all(feature = "server", not(feature = "hot-reload")))]
 mod cold;
 #[cfg(all(feature = "server", not(feature = "hot-reload")))]

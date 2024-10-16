@@ -4,6 +4,11 @@
     clippy::indexing_slicing,
     clippy::panic
 )]
+#![allow(non_snake_case)]
+
+use dioxus::prelude::*;
+use dioxus_logger::tracing;
+mod app;
 
 #[cfg(feature = "server")]
 mod server;
@@ -11,26 +16,25 @@ mod server;
 #[cfg(feature = "web")]
 mod web;
 
-#[cfg(feature = "server")]
-#[allow(dead_code)]
-pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
-
-#[cfg(all(feature = "server", feature = "hot-reload"))]
-fn main() -> std::io::Result<()> {
-    server::hot::main()
+fn main() {
+    // Init logger
+    dioxus_logger::init(tracing::Level::INFO).expect("failed to init logger");
+    #[cfg(any(feature = "server", feature = "web", feature = "desktop"))]
+    init();
+    launch(App);
 }
 
-#[cfg(all(feature = "server", not(feature = "hot-reload")))]
-fn main() -> std::io::Result<()> {
-    server::cold::main()
+#[cfg(feature = "server")]
+fn init() {
+    tracing::info!("starting server app");
 }
 
 #[cfg(feature = "web")]
-fn main() -> std::io::Result<()> {
-    web::main()
+fn init() {
+    tracing::info!("starting web app");
 }
 
-#[cfg(all(not(feature = "web"), not(feature = "server")))]
-fn main() -> std::io::Result<()> {
-    Ok(())
+#[cfg(feature = "desktop")]
+fn init() {
+    tracing::info!("starting desktop app");
 }

@@ -1,8 +1,14 @@
-- don't put everything (axum) in heart crate but use a the default setup from Dioxus (see xxxx-xxxx test project)
-- don't use axum directly, use dioxus router / etc
-- still use the backend as is
-- still use hot-lib-reloader but only for functions that are used on the server
-- name heart crate server_functions or something
-- maybe use dioxus alpha?
+TODO
 
+- still use the backend as is
+
+- don't put everything (axum) in heart crate but use a the default setup from Dioxus (see xxxx-xxxx test project)
+- also run npx for tailwind etc
+
+- don't use axum directly, use dioxus router + fullstack setup like in dx new, more ergonomic to switch over to web app/static app case
+
+- still use hot-lib-reloader but only for functions that are used on the server (like it's intended - those functions are outside of the watched functions)
+
+- name heart crate server_functions or something?
+- maybe use dioxus alpha?
 

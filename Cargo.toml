@@ -13,9 +13,11 @@ edition = "2021"
 hot-lib-reloader = { version = "^0.7.0", optional = true }
 heart = { path = "heart", optional = true, default-features = false }
 dotenvy = { workspace = true, optional = true }
-tokio = { workspace = true, optional = true, features = ["rt-multi-thread", "signal", "sync", "time", "macros"] }
-tracing = { workspace = true, optional = true }
+tracing = { workspace = true }
 dxp-logging = { workspace = true, optional = true, default-features = false }
+dioxus-logger = "0.5.1"
+dioxus = { workspace = true }
+dioxus-i18n = { workspace = true, optional = true }
 
 [workspace.dependencies]
 dotenvy = { version = "^0.15.7" }
@@ -51,23 +53,23 @@ dioxus-web = { version = "0.5.6"}
 #cargo pulls the dependency even if it's just a crate feature
 
 [features]
-# default = []
-# default = ["web"]
-# default = ["server"]
-# default = ["server", "log"] # <- this only works with cargo run, not in vscode
-# default = ["server", "log", "hot-reload"]
+default = ["hot-reload"]
 server = [
     "dep:hot-lib-reloader",
     "dep:heart",
     "dep:dotenvy",
-    "dep:tokio",
-    "dep:tracing",
     "heart/server",
     "log",
-    # "hot-reload"
+
+    "dioxus/axum"
 ]
-web = ["heart/web"]
-github = ["heart/github"]
+web = [
+    "dep:dioxus-i18n",
+
+    "dioxus/web"
+]
+desktop = []
+github = []
 path-info = []
 hot-reload = ["dep:hot-lib-reloader", "heart/hot-reload"]
 log=["dep:dxp-logging", "heart/log"]

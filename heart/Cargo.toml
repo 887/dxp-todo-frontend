@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "heart"
-# crate-type = ["rlib", "dylib"]
+crate-type = ["rlib", "dylib"]
 
 [dependencies]
 anyhow = { workspace = true, optional = true }
