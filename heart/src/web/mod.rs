@@ -12,7 +12,7 @@ pub fn main() -> std::io::Result<()> {
         "
     );
 
-    dioxus::launch(app);
+    // dioxus::launch(app);
 
     // Hydrate the application on the client
     dioxus_web::launch::launch_cfg(app, dioxus_web::Config::new().hydrate(true));

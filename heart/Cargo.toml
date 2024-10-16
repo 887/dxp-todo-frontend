@@ -32,7 +32,7 @@ axum-server = { workspace = true, optional = true }
 tower-http = { workspace = true, optional = true }
 tower = { workspace = true, optional = true }
 # dioxus-sdk = { workspace = true, features = ["i18n"] }
-dioxus = { workspace = true, optional = true }
+dioxus = { workspace = true, optional = true, features = ["router"]}
 dioxus-i18n = { workspace = true, optional = true }
 # dioxus-hot-reload = { workspace = true, optional = true }
 dioxus-web = { workspace = true, optional = true, features = ["hydrate"] }
