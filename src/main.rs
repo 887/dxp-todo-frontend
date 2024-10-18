@@ -6,11 +6,11 @@
 )]
 #![allow(non_snake_case)]
 
+use app::App;
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
 mod app;
 
-#[cfg(feature = "server")]
 mod server;
 
 #[cfg(feature = "web")]

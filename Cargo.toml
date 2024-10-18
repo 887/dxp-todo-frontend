@@ -10,14 +10,17 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = { workspace = true }
 hot-lib-reloader = { version = "^0.7.0", optional = true }
 heart = { path = "heart", optional = true, default-features = false }
 dotenvy = { workspace = true, optional = true }
+serde = { workspace = true }
 tracing = { workspace = true }
 dxp-logging = { workspace = true, optional = true, default-features = false }
 dioxus-logger = "0.5.1"
 dioxus = { workspace = true }
 dioxus-i18n = { workspace = true, optional = true }
+
 
 [workspace.dependencies]
 dotenvy = { version = "^0.15.7" }
@@ -29,7 +32,6 @@ base64 = "^0.22.1"
 chrono = {version = "^0.4.38", default-features = false, features = ["clock"]}
 serde_json = { version = "^1.0.68" }
 arc-swap = "1.7.1"
-notify = { version ="6.1.1", default-features = false }
 include_dir = { version = "0.7.3" }
 derivative = "2.2.0"
 thiserror = "1.0.61"
@@ -43,7 +45,7 @@ tower = "0.5.1"
 tower-http = { version = "0.6.0", features = ["compression-zstd", "trace"] }
 axum_session = { version = "0.14.0" }
 # dioxus-sdk = { version = "0.5.0", features = ["i18n"] }
-dioxus = { version = "0.5.6" }
+dioxus = { version = "0.5.6", features = ["fullstack", "router"] }
 dioxus-hot-reload = "0.5.6"
 dioxus-i18n = "0.2.5"
 dioxus-web = { version = "0.5.6"}
@@ -53,12 +55,12 @@ dioxus-web = { version = "0.5.6"}
 #cargo pulls the dependency even if it's just a crate feature
 
 [features]
-default = ["hot-reload"]
+# default = ["hot-reload"]
+default = []
 server = [
     "dep:hot-lib-reloader",
     "dep:heart",
     "dep:dotenvy",
-    "heart/server",
     "log",
 
     "dioxus/axum"

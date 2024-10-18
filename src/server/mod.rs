@@ -5,16 +5,25 @@
     clippy::panic
 )]
 
+pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
+
 #[cfg(feature = "path-info")]
 mod path_info;
 
-#[cfg(feature = "hot-reload")]
-pub mod hot;
-#[cfg(feature = "hot-reload")]
-mod observe;
+#[cfg(all(feature = "server", feature = "hot-reload"))]
+mod hot;
+#[cfg(all(feature = "server", feature = "hot-reload"))]
+pub use hot::*;
 
-#[cfg(not(feature = "hot-reload"))]
-pub mod cold;
+#[cfg(all(feature = "server", not(feature = "hot-reload")))]
+mod cold;
+#[cfg(all(feature = "server", not(feature = "hot-reload")))]
+pub use cold::*;
+
+#[cfg(not(feature = "server"))]
+mod dummy;
+#[cfg(not(feature = "server"))]
+pub use dummy::*;
 
 #[cfg(feature = "log")]
 pub fn get_log_subscription() -> std::io::Result<dxp_logging::LogGuard> {

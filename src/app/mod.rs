@@ -11,14 +11,16 @@ enum Route {
     Blog { id: i32 },
 }
 
-fn main() {
+pub fn main() {
     // Init logger
     dioxus_logger::init(tracing::Level::INFO).expect("failed to init logger");
     tracing::info!("starting app");
+    #[cfg(all(feature = "hot-reload", feature = "server", feature = "log"))]
+    crate::server::log_reload();
     launch(App);
 }
 
-fn App() -> Element {
+pub fn App() -> Element {
     rsx! {
         Router::<Route> {}
     }
@@ -60,11 +62,14 @@ fn Home() -> Element {
 
 #[server(PostServerData)]
 async fn post_server_data(data: String) -> Result<(), ServerFnError> {
-    tracing::info!("Server received: {}", data);
-    Ok(())
+    crate::server::post_server_data(data)
+        .await
+        .map_err(ServerFnErrorErr::from)
 }
 
 #[server(GetServerData)]
 async fn get_server_data() -> Result<String, ServerFnError> {
-    Ok("Hello from the server!".to_string())
+    crate::server::get_server_data()
+        .await
+        .map_err(|err| ServerFnErrorErr::ServerError(err))
 }
