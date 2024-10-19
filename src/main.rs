@@ -21,6 +21,9 @@ fn main() -> Result<()> {
     // Init logger
     dioxus_logger::init(tracing::Level::INFO).expect("failed to init logger");
 
+    #[cfg(feature = "path-info")]
+    path_info::print_paths();
+
     #[cfg(feature = "server")]
     dotenvy::dotenv()
         .map_err(|_| std::io::Error::new(std::io::ErrorKind::Other, "could not load .env"))?;
