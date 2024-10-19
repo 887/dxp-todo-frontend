@@ -21,9 +21,6 @@ dxp-logging = { workspace = true, optional = true, default-features = false }
 [dev-dependencies]
 arc-swap = { workspace = true }
 
-[build-dependencies]
-is_executable = { workspace = true }
-
 [features]
 #default features are the ones that hot reload uses to build when saving a file
 default = ["log"]

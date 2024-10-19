@@ -9,9 +9,14 @@
 use app::App;
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
-mod app;
 
+#[cfg(feature = "path-info")]
+mod path_info;
+
+#[cfg(feature = "server")]
 mod server;
+
+mod app;
 
 fn main() {
     // Init logger
