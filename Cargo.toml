@@ -47,7 +47,6 @@ dxp-logging = { workspace = true, optional = true, default-features = false }
 dioxus-logger = "0.5.1"
 dioxus = { workspace = true }
 dioxus-i18n = { workspace = true, optional = true }
-backend = { workspace = true }
 
 #warning:
 #dependencies and features should not share the same name

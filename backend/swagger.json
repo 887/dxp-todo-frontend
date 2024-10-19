@@ -652,62 +652,12 @@
           }
         }
       },
-      "GreetParams": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
       "LoadResponse": {
         "type": "object",
         "properties": {
           "value": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "LoadSessionParams": {
-        "type": "object",
-        "required": [
-          "session_id"
-        ],
-        "properties": {
-          "session_id": {
-            "type": "string"
-          }
-        }
-      },
-      "LoginParams": {
-        "type": "object",
-        "required": [
-          "user_name",
-          "password",
-          "device_info"
-        ],
-        "properties": {
-          "device_info": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "user_name": {
-            "type": "string"
-          }
-        }
-      },
-      "RemoveSessionParams": {
-        "type": "object",
-        "required": [
-          "session_id"
-        ],
-        "properties": {
-          "session_id": {
-            "type": "string"
           }
         }
       },
@@ -729,17 +679,6 @@
         ],
         "properties": {
           "test": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateSessionParams": {
-        "type": "object",
-        "required": [
-          "session_id"
-        ],
-        "properties": {
-          "session_id": {
             "type": "string"
           }
         }

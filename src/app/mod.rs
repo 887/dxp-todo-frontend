@@ -1,11 +1,7 @@
 #![allow(non_snake_case)]
 
-use std::fmt::format;
-
-use backend::ClientSessionExt;
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
-use server_fn::client;
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 enum Route {
@@ -52,13 +48,16 @@ fn Home() -> Element {
             }
             button {
                 onclick: move |_| async move {
-                    match call_backend().await {
+                    let data = call_backend_with_server().await;
+                    match data {
                         Ok(data) => {
-                            tracing::info!("Backend call successful: {}", data);
-                            let data = format!("Server data: {}", data);
-                            text.set(data.to_string());
+                            tracing::info!("Client received: {}", data);
+                            text.set(data.clone());
                         }
-                        Err(err) => tracing::error!("Backend call failed: {}", err),
+                        Err(err) => {
+                            tracing::error!("Client error: {:?}", err);
+                            text.set("Error".to_string());
+                        }
                     }
                 },
                 "Reset text"
@@ -68,15 +67,12 @@ fn Home() -> Element {
     }
 }
 
-async fn call_backend() -> anyhow::Result<i64> {
-    let api = "http://localhost:3000";
-    let client = backend::Client::new(&api);
-    Ok(client
-        .count()
-        .table_name("session")
-        .send()
+#[server(CallBackend)]
+async fn call_backend_with_server() -> Result<String, ServerFnError> {
+    server::call_backend_with_server()
         .await
-        .map(|res| res.into_inner().count)?)
+        .map(|data| data.to_string())
+        .map_err(|err| ServerFnError::ServerError(format!("{:?}", err)))
 }
 
 #[server(PostServerData)]

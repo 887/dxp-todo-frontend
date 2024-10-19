@@ -19,3 +19,14 @@ pub async fn post_server_data(data: String) -> Result<()> {
 pub async fn get_server_data() -> Result<String> {
     Ok("Hello from the server!".to_string())
 }
+
+pub async fn call_backend_with_server() -> Result<i64> {
+    tracing::info!("Calling backend");
+
+    use backend::ClientSessionExt;
+
+    let api = "http://127.0.0.1:8000";
+    let client = backend::Client::new(&api);
+    let response = client.count().table_name("sessions").send().await?;
+    Ok(response.count)
+}

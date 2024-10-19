@@ -10,8 +10,9 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 dotenvy = { workspace = true }
 dxp-code-loc = { workspace = true }
-
 dxp-logging = { workspace = true, optional = true, default-features = false }
+
+backend = { workspace = true }
 
 [features]
 #default features are the ones that hot reload uses to build when saving a file
