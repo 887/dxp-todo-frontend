@@ -55,12 +55,12 @@ fn Home() -> Element {
 async fn post_server_data(data: String) -> Result<(), ServerFnError> {
     crate::server::post_server_data(data)
         .await
-        .map_err(ServerFnErrorErr::from)
+        .map_err(|err| ServerFnError::ServerError(format!("{:?}", err)))
 }
 
 #[server(GetServerData)]
 async fn get_server_data() -> Result<String, ServerFnError> {
     crate::server::get_server_data()
         .await
-        .map_err(|err| ServerFnErrorErr::ServerError(err))
+        .map_err(|err| ServerFnError::ServerError(format!("{:?}", err)))
 }
