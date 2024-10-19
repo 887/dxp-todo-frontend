@@ -1,7 +1,11 @@
 #![allow(non_snake_case)]
 
+use std::fmt::format;
+
+use backend::ClientSessionExt;
 use dioxus::prelude::*;
 use dioxus_logger::tracing;
+use server_fn::client;
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 enum Route {
@@ -46,9 +50,33 @@ fn Home() -> Element {
                 },
                 "Get Server Data"
             }
+            button {
+                onclick: move |_| async move {
+                    match call_backend().await {
+                        Ok(data) => {
+                            tracing::info!("Backend call successful: {}", data);
+                            let data = format!("Server data: {}", data);
+                            text.set(data.to_string());
+                        }
+                        Err(err) => tracing::error!("Backend call failed: {}", err),
+                    }
+                },
+                "Reset text"
+            }
             p { "Server data: {text}" }
         }
     }
+}
+
+async fn call_backend() -> anyhow::Result<i64> {
+    let api = "http://localhost:3000";
+    let client = backend::Client::new(&api);
+    Ok(client
+        .count()
+        .table_name("session")
+        .send()
+        .await
+        .map(|res| res.into_inner().count)?)
 }
 
 #[server(PostServerData)]
