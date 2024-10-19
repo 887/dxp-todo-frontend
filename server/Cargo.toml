@@ -1,11 +1,7 @@
 [package]
-name = "heart"
+name = "server"
 version = "0.1.0"
 edition = "2021"
-
-[lib]
-name = "heart"
-crate-type = ["rlib", "dylib"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -14,12 +10,8 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 dotenvy = { workspace = true }
 dxp-code-loc = { workspace = true }
-no-mangle-if-debug = { workspace = true }
 
 dxp-logging = { workspace = true, optional = true, default-features = false }
-
-[dev-dependencies]
-arc-swap = { workspace = true }
 
 [features]
 #default features are the ones that hot reload uses to build when saving a file

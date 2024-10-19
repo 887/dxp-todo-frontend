@@ -16,33 +16,33 @@
         //     ],
         //     "isBackground": true,
         // },
-        {
-            "label": "watch",
-            "type": "shell",
-            "args": [
-                "watch", 
-                "-w", "heart",
-                "-x", "'build -p heart'"],
-            "isBackground": true,
-            "command": "cargo",
-            "problemMatcher": [
-                {
-                    "pattern": [
-                        {
-                            "regexp": ".",
-                            "file": 1,
-                            "location": 2,
-                            "message": 3
-                        }
-                    ],
-                    "background": {
-                        "activeOnStart": false,
-                        "beginsPattern": ".",
-                        "endsPattern": ".",
-                    }
-                }
-            ]
-        },    
+        // {
+        //     "label": "watch",
+        //     "type": "shell",
+        //     "args": [
+        //         "watch", 
+        //         "-w", "heart",
+        //         "-x", "'build -p heart'"],
+        //     "isBackground": true,
+        //     "command": "cargo",
+        //     "problemMatcher": [
+        //         {
+        //             "pattern": [
+        //                 {
+        //                     "regexp": ".",
+        //                     "file": 1,
+        //                     "location": 2,
+        //                     "message": 3
+        //                 }
+        //             ],
+        //             "background": {
+        //                 "activeOnStart": false,
+        //                 "beginsPattern": ".",
+        //                 "endsPattern": ".",
+        //             }
+        //         }
+        //     ]
+        // },    
         {
             "label": "dx serve",
             "type": "shell",

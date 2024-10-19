@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["heart"]
+members = ["server"]
 
 [package]
 name = "dxp-todo-frontend"
@@ -36,12 +36,10 @@ dioxus = { version = "0.5.6", features = ["fullstack", "router"] }
 dioxus-hot-reload = "0.5.6"
 dioxus-i18n = "0.2.5"
 dioxus-web = { version = "0.5.6"}
-no-mangle-if-debug = { version = "0.1.0" }
 
 [dependencies]
 anyhow = { workspace = true }
-hot-lib-reloader = { version = "^0.7.0", optional = true }
-heart = { path = "heart", optional = true, default-features = false }
+server = { path = "server", optional = true, default-features = false }
 dotenvy = { workspace = true, optional = true }
 serde = { workspace = true }
 tracing = { workspace = true }
@@ -58,8 +56,7 @@ dioxus-i18n = { workspace = true, optional = true }
 # default = ["hot-reload"]
 default = []
 server = [
-    "dep:hot-lib-reloader",
-    "dep:heart",
+    "dep:server",
     "dep:dotenvy",
     "log",
 
@@ -73,6 +70,6 @@ web = [
 desktop = []
 github = []
 path-info = []
-log=["dep:dxp-logging", "heart/log"]
-log-file=["log", "dxp-logging/log-file", "heart/log-file"]
+log=["dep:dxp-logging", "server/log"]
+log-file=["log", "dxp-logging/log-file", "server/log-file"]
 
