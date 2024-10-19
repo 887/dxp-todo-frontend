@@ -31,7 +31,14 @@ fn main() -> Result<()> {
     #[cfg(any(feature = "server", feature = "web", feature = "desktop"))]
     init();
 
-    launch(App);
+    // launch(App);
+
+    //https://github.com/DioxusLabs/dioxus/issues/2380
+    let cfg = server_only!(
+        dioxus::fullstack::Config::new().addr(std::net::SocketAddr::from(([0, 0, 0, 0], 3000)))
+    );
+
+    LaunchBuilder::fullstack().with_cfg(cfg).launch(App);
 
     Ok(())
 }
