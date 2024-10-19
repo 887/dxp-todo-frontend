@@ -2,19 +2,22 @@
 //https://github.com/rust-lang/rust/issues/111967
 #![allow(unsafe_code)]
 
-use crate::{cold, Result};
+use no_mangle_if_debug::no_mangle_if_debug;
 
-#[no_mangle]
+use crate::Result;
+
+#[no_mangle_if_debug]
 pub extern "Rust" fn load_env() -> Result<std::path::PathBuf> {
-    cold::load_env()
+    Ok(dotenvy::dotenv().map_err(|_| "could not load .env")?)
 }
 
-#[no_mangle]
+#[no_mangle_if_debug]
 pub async fn post_server_data(data: String) -> Result<()> {
-    cold::post_server_data(data).await
+    tracing::info!("Server received: {}", data);
+    Ok(())
 }
 
-#[no_mangle]
+#[no_mangle_if_debug]
 pub async fn get_server_data() -> Result<String> {
-    cold::get_server_data().await
+    Ok("Hello from the server!".to_string())
 }

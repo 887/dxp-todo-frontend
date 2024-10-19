@@ -14,20 +14,21 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 dotenvy = { workspace = true }
 dxp-code-loc = { workspace = true }
+no-mangle-if-debug = { workspace = true }
 
 dxp-logging = { workspace = true, optional = true, default-features = false }
 
-arc-swap = { workspace = true , optional = true }
+[dev-dependencies]
+arc-swap = { workspace = true }
 
 [build-dependencies]
 is_executable = { workspace = true }
 
 [features]
 #default features are the ones that hot reload uses to build when saving a file
-default = ["log", "hot-reload"]
+default = ["log"]
 github = []
 
-hot-reload = ["dep:arc-swap"]
 redis = []
 log=["dep:dxp-logging"]
 log-file=["log", "dxp-logging/log-file"]

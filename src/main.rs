@@ -13,14 +13,16 @@ mod app;
 
 mod server;
 
-#[cfg(feature = "web")]
-mod web;
-
 fn main() {
     // Init logger
     dioxus_logger::init(tracing::Level::INFO).expect("failed to init logger");
+
+    #[cfg(all(feature = "hot-reload", feature = "server", feature = "log"))]
+    crate::server::log_reload();
+
     #[cfg(any(feature = "server", feature = "web", feature = "desktop"))]
     init();
+
     launch(App);
 }
 
