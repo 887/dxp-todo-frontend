@@ -73,7 +73,6 @@ web = [
 desktop = []
 github = []
 path-info = []
-hot-reload = ["dep:hot-lib-reloader"]
 log=["dep:dxp-logging", "heart/log"]
 log-file=["log", "dxp-logging/log-file", "heart/log-file"]
 

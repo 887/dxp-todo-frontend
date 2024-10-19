@@ -4,21 +4,23 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // {
+        //     "name": "Launch",
+        //     // "preLaunchTask": "build",
+        //     "preLaunchTask": "dx serve",
+        //     "program": "${workspaceFolder}/target/debug/dxp-todo-frontend",
+        //     "type": "lldb",
+        //     "request": "attach",
+        // },
+
         {
             "name": "Launch",
             "preLaunchTask": "watch",
-            "cargo": {
-                "args": [
-                    "build",
-                    "-p",
-                    "dxp-todo-frontend",
-                    "-p",
-                    "heart"
-                ],
-            },
-            "type": "lldb",
             "request": "launch",
+            "type": "node-terminal",
+            "command": "dx serve",
         },
+
         // {
         //     "name": "Launch",
         //     "cargo": {

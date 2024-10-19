@@ -19,5 +19,5 @@ pub async fn post_server_data(data: String) -> Result<()> {
 
 #[no_mangle_if_debug]
 pub async fn get_server_data() -> Result<String> {
-    Ok("Hello from the server!".to_string())
+    Ok("Helloasasd from the server!".to_string())
 }

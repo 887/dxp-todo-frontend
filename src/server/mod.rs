@@ -5,17 +5,14 @@
     clippy::panic
 )]
 
-#[cfg(feature = "hot-reload")]
-pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
-
-#[cfg(feature = "hot-reload")]
+#[cfg(debug_assertions)]
 mod hot;
-#[cfg(feature = "hot-reload")]
+#[cfg(debug_assertions)]
 pub use hot::*;
 
-#[cfg(not(feature = "hot-reload"))]
+#[cfg(debug_assertions)]
 mod cold;
-#[cfg(not(feature = "hot-reload"))]
+#[cfg(debug_assertions)]
 pub use cold::*;
 
 #[cfg(feature = "log")]

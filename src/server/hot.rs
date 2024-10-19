@@ -7,7 +7,7 @@ use super::get_log_subscription;
 #[hot_lib_reloader::hot_module(dylib = "heart", file_watch_debounce = 10)]
 pub(crate) mod hot_heart {
     // pub use lib::*;
-    pub type Result<T> = crate::server::Result<T>;
+    pub type Result<T> = crate::Result<T>;
 
     hot_functions_from_file!("heart/src/hot.rs");
 
@@ -21,19 +21,18 @@ pub use hot_heart::*;
 #[cfg(feature = "log")]
 pub fn log_reload() {
     use std::thread;
-
     use tracing::info;
     thread::spawn(|| {
         #[cfg(feature = "log")]
-        let Ok(log_guard) = get_log_subscription() else {
+        let Ok(_log_guard) = get_log_subscription() else {
             return;
         };
-        info!("Waiting for reloads...");
+        tracing::info!("Waiting for reloads...");
         loop {
             hot_heart::subscribe().wait_for_reload();
             info!("Reloading heart...");
         }
         #[cfg(feature = "log")]
-        drop(log_guard);
+        drop(_log_guard);
     });
 }

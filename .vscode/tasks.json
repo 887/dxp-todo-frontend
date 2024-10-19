@@ -8,6 +8,14 @@
         //     "command": "sleep 5",
         //     "label": "sleep"
         // }
+        // {
+        //     "label": "build",
+        //     "dependsOn": [
+        //         "watch",
+        //         "dx serve"
+        //     ],
+        //     "isBackground": true,
+        // },
         {
             "label": "watch",
             "type": "shell",
@@ -35,5 +43,29 @@
                 }
             ]
         },    
+        {
+            "label": "dx serve",
+            "type": "shell",
+            "isBackground": true,
+            "command": "dx",
+            "args": ["serve"],
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": false,
+                        "beginsPattern": ".",
+                        "endsPattern": "."
+                    }
+                }
+            ]
+        }
     ]
 }
