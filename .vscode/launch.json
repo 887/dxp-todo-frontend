@@ -8,7 +8,7 @@
             "name": "Launch",
             "request": "launch",
             "type": "node-terminal",
-            "command": "dx serve",
+            "command": "dx serve --port 3000",
         },
 
         {

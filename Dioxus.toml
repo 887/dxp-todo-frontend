@@ -13,6 +13,8 @@ out_dir = "dist"
 # resource (assets) file folder
 asset_dir = "assets"
 
+[fullstack]
+
 [web.app]
 
 # HTML title tag content
@@ -29,11 +31,19 @@ watch_path = ["src", "assets", "server/src"]
 # include `assets` in web platform
 [web.resource]
 
+# BUILD: The `web.resource` config has been deprecated in favor of head components and will be removed in a future release.
+# To migrate to head components, remove `web.resource.style` and include the following rsx in your root component:         
+# ```rust                                                                                                                  
+# rsx! {                                                                                                                   
+#     document::Link { rel: "stylesheet", href: asset!(css("public/tailwind.css")) }                                       
+# }                                                                                                                        
+# ```       
+
 # CSS style file
 # {% if styling == "Tailwind" %}
 # style = ["/tailwind.css"]
 # {% else %}
-style = []
+# style = ["public/tailwind.css"]
 # {% endif %}
 
 # Javascript code file

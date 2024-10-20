@@ -11,13 +11,13 @@ edition = "2021"
 
 [workspace.dependencies]
 dotenvy = { version = "^0.15.7" }
-tokio = { version = "^1.37.0", default-features = false }
+tokio = { version = "^1.40.0", default-features = false }
 anyhow = { version = "^1.0.90", features = ["backtrace"] }
 tracing = "^0.1.40"
 serde = { version = "^1.0.203", features = ["derive"] }
 base64 = "^0.22.1"
 chrono = {version = "^0.4.38", default-features = false, features = ["clock"]}
-serde_json = { version = "^1.0.131" }
+serde_json = { version = "^1.0.132" }
 arc-swap = "1.7.1"
 include_dir = { version = "0.7.3" }
 derivative = "2.2.0"
@@ -32,10 +32,10 @@ tower = "0.5.1"
 tower-http = { version = "0.6.1", features = ["compression-zstd", "trace"] }
 axum_session = { version = "0.14.0" }
 # dioxus-sdk = { version = "0.5.0", features = ["i18n"] }
-dioxus = { version = "0.5.6", features = ["fullstack", "router"] }
-dioxus-hot-reload = "0.5.6"
+dioxus = { version = "0.6.0-alpha.3", features = ["fullstack", "router"] }
+dioxus-hot-reload = "0.6.0-alpha.3"
+dioxus-web = { version = "0.6.0-alpha.3"}
 dioxus-i18n = "0.2.5"
-dioxus-web = { version = "0.5.6"}
 
 [dependencies]
 anyhow = { workspace = true }
@@ -44,6 +44,13 @@ dotenvy = { workspace = true, optional = true }
 serde = { workspace = true }
 tracing = { workspace = true }
 dxp-logging = { workspace = true, optional = true, default-features = false }
+tokio = { workspace = true, optional = true,features = [
+    "sync",
+    "macros",
+    "io-util",
+    "rt",
+    "time"
+]}
 dioxus-logger = "0.5.1"
 dioxus = { workspace = true }
 dioxus-i18n = { workspace = true, optional = true }
@@ -60,6 +67,7 @@ server = [
     "dep:dotenvy",
     "log",
 
+    "dep:tokio",
     "dioxus/axum"
 ]
 web = [

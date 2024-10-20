@@ -48,7 +48,8 @@
             "type": "shell",
             "isBackground": true,
             "command": "dx",
-            "args": ["serve"],
+            // "args": ["serve"],
+            "args": ["serve", "--port", "3000"],
             "problemMatcher": [
                 {
                     "pattern": [

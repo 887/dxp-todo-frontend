@@ -31,15 +31,39 @@ fn main() -> Result<()> {
     #[cfg(any(feature = "server", feature = "web", feature = "desktop"))]
     init();
 
-    // launch(App);
+    // #[cfg(feature = "web")]
+    launch(App);
 
-    //https://github.com/DioxusLabs/dioxus/issues/2380
-    let cfg = server_only!(
-        dioxus::fullstack::Config::new().addr(std::net::SocketAddr::from(([0, 0, 0, 0], 3000)))
-    );
+    // //https://github.com/DioxusLabs/dioxus/issues/2380
+    // dioxus 0.5.0
+    // let cfg = server_only!(
+    //     dioxus::fullstack::Config::new().addr(std::net::SocketAddr::from(([0, 0, 0, 0], 3000)))
+    // );
 
-    LaunchBuilder::fullstack().with_cfg(cfg).launch(App);
+    // LaunchBuilder::server().with_cfg(cfg).launch(App);
 
+    // dioxus 0.6.0
+    // #[cfg(feature = "server")]
+    // {
+    //     tokio::runtime::Runtime::new()
+    //         .unwrap()
+    //         .block_on(async move {
+    //             let listener = tokio::net::TcpListener::bind("127.0.0.01:3000")
+    //                 .await
+    //                 .unwrap();
+    //             axum::serve(
+    //                 listener,
+    //                 axum::Router::new()
+    //                     // Server side render the application, serve static assets, and register server functions
+    //                     .serve_dioxus_application(ServeConfigBuilder::default(), App)
+    //                     .into_make_service(),
+    //             )
+    //             .await
+    //             .unwrap();
+    //         });
+    // }
+
+    #[cfg(feature = "web")]
     Ok(())
 }
 

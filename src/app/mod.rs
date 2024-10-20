@@ -11,6 +11,8 @@ enum Route {
     Blog { id: i32 },
 }
 
+const TAILWIND_URL: &str = manganis::mg!("public/tailwind.css");
+
 pub fn App() -> Element {
     rsx! {
         Router::<Route> {}
@@ -31,7 +33,9 @@ fn Home() -> Element {
     let mut text = use_signal(|| String::from("..."));
 
     rsx! {
+        document::Link { rel: "stylesheet", href: TAILWIND_URL }
         Link { to: Route::Blog { id: count() }, "Go to blog" }
+        h1 { class: "text-3xl font-bold underline", "Hello world!" }
         div {
             h1 { "High-Five counter: {count}" }
             button { onclick: move |_| count += 1, "Up high!" }
