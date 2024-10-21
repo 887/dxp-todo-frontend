@@ -37,6 +37,7 @@ fn Home() -> Element {
         Link { to: Route::Blog { id: count() }, "Go to blog" }
         h1 { class: "text-3xl font-bold underline", "Hello world!" }
         div {
+            //example code https://github.com/DioxusLabs/dioxus/blob/main/examples/tailwind/src/main.rs
             header {
                 class: "text-gray-400 body-font",
                 // you can use optional attributes to optionally apply a tailwind class
