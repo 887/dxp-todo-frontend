@@ -11,7 +11,8 @@ enum Route {
     Blog { id: i32 },
 }
 
-const TAILWIND_URL: &str = manganis::mg!("public/tailwind.css");
+// const TAILWIND_URL: &str = manganis::mg!("public/tailwind.css");
+const TAILWIND_URL: &str = asset!("public/tailwind.css");
 
 pub fn App() -> Element {
     rsx! {
@@ -61,6 +62,7 @@ fn Home() -> Element {
             button { onclick: move |_| count += 1, "Up high!" }
             button { onclick: move |_| count -= 1, "Down lows!" }
             button {
+                class: "bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| async move {
                     if let Ok(data) = get_server_data().await {
                         tracing::info!("Client received: {}", data);
