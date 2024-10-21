@@ -6,6 +6,7 @@ module.exports = {
         "./src/**/*.{rs,html,css}",
         // include all html files in the output (dist) directory
         "./dist/**/*.html",
+        "./public/tailwind.css",
     ],
     theme: {
         extend: {},

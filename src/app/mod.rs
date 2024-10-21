@@ -37,7 +37,26 @@ fn Home() -> Element {
         Link { to: Route::Blog { id: count() }, "Go to blog" }
         h1 { class: "text-3xl font-bold underline", "Hello world!" }
         div {
-            h1 { "High-Five counter: {count}" }
+            header {
+                class: "text-gray-400 body-font",
+                // you can use optional attributes to optionally apply a tailwind class
+                class: if true { "bg-gray-900" },
+                div { class: "container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center",
+                    a { class: "flex title-font font-medium items-center text-white mb-4 md:mb-0",
+                        span { class: "ml-3 text-xl", "Hello Dioxus!" }
+                    }
+                    nav { class: "md:ml-auto flex flex-wrap items-center text-base justify-center",
+                        a { class: "mr-5 hover:text-white", "First Link" }
+                        a { class: "mr-5 hover:text-white", "Second Link" }
+                        a { class: "mr-5 hover:text-white", "Third Link" }
+                        a { class: "mr-5 hover:text-white", "Fourth Link" }
+                    }
+                    button { class: "inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:bg-gray-700 rounded text-base mt-4 md:mt-0",
+                        "Button"
+                    }
+                }
+            }
+            h1 { class: "bg-blue", "High-Five counter: {count}" }
             button { onclick: move |_| count += 1, "Up high!" }
             button { onclick: move |_| count -= 1, "Down lows!" }
             button {
