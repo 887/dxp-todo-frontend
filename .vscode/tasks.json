@@ -3,6 +3,32 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
+        //npx tailwindcss -i ./input.css -o ./public/tailwind.css --watch
+        {
+            "label": "npx tailwindcss",
+            "type": "shell",
+            "isBackground": true,
+            "command": "npx",
+            "args": ["tailwindcss", "-i", "./input.css", "-o", "./public/tailwind.css", "--watch"],
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": false,
+                        "beginsPattern": ".",
+                        "endsPattern": "."
+                    }
+                }
+            ]
+        }
+
         // {
         //     "type": "shell",
         //     "command": "sleep 5",
@@ -43,30 +69,30 @@
         //         }
         //     ]
         // },    
-        {
-            "label": "dx serve",
-            "type": "shell",
-            "isBackground": true,
-            "command": "dx",
-            // "args": ["serve"],
-            "args": ["serve", "--port", "3000"],
-            "problemMatcher": [
-                {
-                    "pattern": [
-                        {
-                            "regexp": ".",
-                            "file": 1,
-                            "location": 2,
-                            "message": 3
-                        }
-                    ],
-                    "background": {
-                        "activeOnStart": false,
-                        "beginsPattern": ".",
-                        "endsPattern": "."
-                    }
-                }
-            ]
-        }
+        // {
+        //     "label": "dx serve",
+        //     "type": "shell",
+        //     "isBackground": true,
+        //     "command": "dx",
+        //     // "args": ["serve"],
+        //     "args": ["serve", "--port", "3000"],
+        //     "problemMatcher": [
+        //         {
+        //             "pattern": [
+        //                 {
+        //                     "regexp": ".",
+        //                     "file": 1,
+        //                     "location": 2,
+        //                     "message": 3
+        //                 }
+        //             ],
+        //             "background": {
+        //                 "activeOnStart": false,
+        //                 "beginsPattern": ".",
+        //                 "endsPattern": "."
+        //             }
+        //         }
+        //     ]
+        // }
     ]
 }
