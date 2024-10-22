@@ -1,7 +1,10 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
+use dioxus_elements::video;
 use dioxus_logger::tracing;
+use wasm_bindgen::{JsCast, JsValue};
+use web_sys::{MediaDevices, MediaStream, MediaStreamConstraints};
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 enum Route {
@@ -28,11 +31,59 @@ fn Blog(id: i32) -> Element {
     }
 }
 
+//this is video download, not screen share
+//https://github.com/DioxusLabs/dioxus/blob/main/examples/video_stream.rs
+
 //todo
 //try to get screen share going
 
-//this is video download, not screen share
-//https://github.com/DioxusLabs/dioxus/blob/main/examples/video_stream.rs
+#[component]
+fn ScreenShare() -> Element {
+    let video_player_id = "video_player";
+    let document = web_sys::window().unwrap().document().unwrap();
+    let video_ref = document.get_element_by_id(video_player_id).unwrap();
+
+    let start_screen_share = move |_| {
+        let video_ref = video_ref.clone();
+        let video_element = video_ref.dyn_into::<web_sys::HtmlVideoElement>().unwrap();
+        let media_devices = web_sys::window()
+            .unwrap()
+            .navigator()
+            .media_devices()
+            .unwrap();
+
+        let mut constraints = MediaStreamConstraints::new();
+        constraints.set_video(&JsValue::TRUE);
+
+        let promise = media_devices.get_display_media().unwrap();
+
+        let future = wasm_bindgen_futures::JsFuture::from(promise);
+        wasm_bindgen_futures::spawn_local(async move {
+            match future.await {
+                Ok(stream) => {
+                    let media_stream = MediaStream::from(stream);
+                    video_element.set_src_object(Some(&media_stream));
+                }
+                Err(err) => {
+                    tracing::error!("Error starting screen share: {:?}", err);
+                }
+            }
+        });
+    };
+
+    let var_name = rsx! {
+        div {
+            button { onclick: start_screen_share, "Start Screen Share" }
+            video {
+                id: video_player_id,
+                autoplay: true,
+                controls: true,
+                style: "width: 100%; height: auto;"
+            }
+        }
+    };
+    var_name
+}
 
 #[component]
 fn Home() -> Element {
