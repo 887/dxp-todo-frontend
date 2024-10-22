@@ -28,6 +28,12 @@ fn Blog(id: i32) -> Element {
     }
 }
 
+//todo
+//try to get screen share going
+
+//this is video download, not screen share
+//https://github.com/DioxusLabs/dioxus/blob/main/examples/video_stream.rs
+
 #[component]
 fn Home() -> Element {
     let mut count = use_signal(|| 0);
