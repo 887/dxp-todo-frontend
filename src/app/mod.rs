@@ -90,6 +90,8 @@ fn Home() -> Element {
     let mut count = use_signal(|| 0);
     let mut text = use_signal(|| String::from("..."));
 
+    let mut show_element = use_signal(|| false);
+
     rsx! {
         document::Link { rel: "stylesheet", href: TAILWIND_URL }
         Link { to: Route::Blog { id: count() }, "Go to blog" }
@@ -128,6 +130,19 @@ fn Home() -> Element {
                     }
                 },
                 "Get Server Data"
+            }
+
+            button {
+                class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded",
+                onclick: move |_| {
+                    let value = show_element();
+                    show_element.set(!value)
+                },
+                "Toggle Element"
+            }
+
+            if (*show_element)() {
+                div { "This is the new element!" }
             }
             button {
                 onclick: move |_| async move {
