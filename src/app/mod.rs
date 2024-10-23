@@ -1,10 +1,9 @@
 #![allow(non_snake_case)]
 
 use dioxus::prelude::*;
-use dioxus_elements::video;
 use dioxus_logger::tracing;
 use wasm_bindgen::{JsCast, JsValue};
-use web_sys::{MediaDevices, MediaStream, MediaStreamConstraints};
+use web_sys::{MediaStream, MediaStreamConstraints};
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 enum Route {
@@ -51,7 +50,7 @@ fn ScreenShare() -> Element {
             .media_devices()
             .unwrap();
 
-        let mut constraints = MediaStreamConstraints::new();
+        let constraints = MediaStreamConstraints::new();
         constraints.set_video(&JsValue::TRUE);
 
         let promise = media_devices.get_display_media().unwrap();
