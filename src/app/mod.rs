@@ -41,10 +41,9 @@ fn Blog(id: i32) -> Element {
 fn ScreenShare() -> Element {
     let video_player_id = "video_player";
     let document = web_sys::window().unwrap().document().unwrap();
-    let video_ref = document.get_element_by_id(video_player_id).unwrap();
 
     let start_screen_share = move |_| {
-        let video_ref = video_ref.clone();
+        let video_ref = document.get_element_by_id(video_player_id).unwrap();
         let video_element = video_ref.dyn_into::<web_sys::HtmlVideoElement>().unwrap();
         let media_devices = web_sys::window()
             .unwrap()
@@ -73,7 +72,11 @@ fn ScreenShare() -> Element {
 
     let var_name = rsx! {
         div {
-            button { onclick: start_screen_share, "Start Screen Share" }
+            button {
+                onclick: start_screen_share,
+                class: "bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded",
+                "Start Screen Share"
+            }
             video {
                 id: video_player_id,
                 autoplay: true,
@@ -82,6 +85,7 @@ fn ScreenShare() -> Element {
             }
         }
     };
+
     var_name
 }
 
@@ -143,6 +147,7 @@ fn Home() -> Element {
 
             if (*show_element)() {
                 div { "This is the new element!" }
+                ScreenShare {}
             }
             button {
                 onclick: move |_| async move {
