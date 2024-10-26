@@ -40,7 +40,8 @@ jobs:
     #   run: cargo build --features "github" --release --verbose
 
     - name: Build
-      run: cargo build --features "${{ matrix.feature }}" --release --verbose
+      run: cargo build --features "${{ matrix.feature }}" --release --verbose ${{ matrix.feature == 'web' && '--target wasm32-unknown-unknown' || '' }}
+
 
     - name: Run tests
       run: cargo test --verbose
