@@ -33,6 +33,9 @@ jobs:
 
     - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
 
+    - if: matrix.feature == 'web'
+      run: rustup target add wasm32-unknown-unknown
+
     # - name: Build css-builder
     #   run: cargo build --manifest-path tools/css-builder/Cargo.toml --release --verbose
 
