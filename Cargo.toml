@@ -33,8 +33,7 @@ tower-http = { version = "0.6.1", features = ["compression-zstd", "trace"] }
 axum_session = { version = "0.14.0" }
 # dioxus-sdk = { version = "0.5.0", features = ["i18n"] }
 dioxus = { version = "0.6.0-alpha.3", features = ["fullstack", "router"] }
-dioxus-hot-reload = "0.6.0-alpha.3"
-dioxus-web = { version = "0.6.0-alpha.3"}
+dioxus-cli-config = "0.6.0-alpha.3"
 dioxus-i18n = "0.2.5"
 
 [dependencies]
@@ -51,8 +50,10 @@ tokio = { workspace = true, optional = true,features = [
     "rt",
     "time"
 ]}
+axum = { workspace = true, optional = true }
 dioxus-logger = "0.5.1"
 dioxus = { workspace = true }
+dioxus-cli-config = { workspace = true, optional = true }
 dioxus-i18n = { workspace = true, optional = true }
 wasm-bindgen = "0.2.95"
 web-sys = { version = "0.3.72", features = ["MediaDevices", "MediaStream", "MediaStreamConstraints", "HtmlVideoElement", "Navigator"] }
@@ -64,6 +65,7 @@ wasm-bindgen-futures = "0.4.45"
 
 [features]
 # default = ["hot-reload"]
+server-axum = []
 default = []
 server = [
     "dep:server",
@@ -71,7 +73,10 @@ server = [
     "log",
 
     "dep:tokio",
-    "dioxus/axum"
+    "dep:axum",
+    "dioxus/axum",
+    "dioxus-cli-config",
+    "server-axum"
 ]
 web = [
     "dep:dioxus-i18n",

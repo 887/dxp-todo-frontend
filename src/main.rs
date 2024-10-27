@@ -7,8 +7,10 @@
 #![allow(non_snake_case)]
 
 use app::App;
-use dioxus::prelude::*;
 use dioxus_logger::tracing;
+
+#[allow(unused)]
+use dioxus::prelude::*;
 
 #[cfg(feature = "path-info")]
 mod path_info;
@@ -17,54 +19,52 @@ mod app;
 
 pub type Result<T> = core::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
-fn main() -> Result<()> {
+// The entry point for the server
+#[cfg(all(feature = "server", feature = "server-axum"))]
+#[tokio::main]
+async fn main() -> Result<()> {
     // Init logger
     dioxus_logger::init(tracing::Level::INFO).expect("failed to init logger");
 
-    #[cfg(feature = "path-info")]
-    path_info::print_paths();
-
-    #[cfg(feature = "server")]
-    dotenvy::dotenv()
-        .map_err(|_| std::io::Error::new(std::io::ErrorKind::Other, "could not load .env"))?;
-
-    #[cfg(any(feature = "server", feature = "web", feature = "desktop"))]
     init();
 
-    // #[cfg(feature = "web")]
-    launch(App);
+    // Get the address the server should run on. If the CLI is running, the CLI proxies fullstack into the main address
+    // and we use the generated address the CLI gives us
+    let address = dioxus_cli_config::fullstack_address_or_localhost();
 
-    // //https://github.com/DioxusLabs/dioxus/issues/2380
-    // dioxus 0.5.0
-    // let cfg = server_only!(
-    //     dioxus::fullstack::Config::new().addr(std::net::SocketAddr::from(([0, 0, 0, 0], 3000)))
-    // );
+    // Set up the axum router
+    let router = axum::Router::new()
+        // You can add a dioxus application to the router with the `serve_dioxus_application` method
+        // This will add a fallback route to the router that will serve your component and server functions
+        .serve_dioxus_application(ServeConfigBuilder::default(), App);
 
-    // LaunchBuilder::server().with_cfg(cfg).launch(App);
+    // Finally, we can launch the server
+    let router = router.into_make_service();
+    let listener = tokio::net::TcpListener::bind(address).await.unwrap();
 
-    // dioxus 0.6.0
-    // #[cfg(feature = "server")]
-    // {
-    //     tokio::runtime::Runtime::new()
-    //         .unwrap()
-    //         .block_on(async move {
-    //             let listener = tokio::net::TcpListener::bind("127.0.0.01:3000")
-    //                 .await
-    //                 .unwrap();
-    //             axum::serve(
-    //                 listener,
-    //                 axum::Router::new()
-    //                     // Server side render the application, serve static assets, and register server functions
-    //                     .serve_dioxus_application(ServeConfigBuilder::default(), App)
-    //                     .into_make_service(),
-    //             )
-    //             .await
-    //             .unwrap();
-    //         });
-    // }
+    tracing::info!("listening on {}", address);
 
-    #[cfg(feature = "web")]
+    axum::serve(listener, router).await.unwrap();
+
     Ok(())
+}
+
+#[cfg(any(
+    not(feature = "server"),
+    all(feature = "server", not(feature = "server-axum"))
+))]
+fn main() {
+    // Init logger
+    dioxus_logger::init(tracing::Level::INFO).expect("failed to init logger");
+
+    init();
+
+    dioxus::launch(App);
+}
+
+#[cfg(not(any(feature = "server", feature = "web", feature = "desktop")))]
+fn init() {
+    tracing::info!("starting unknown app");
 }
 
 #[cfg(feature = "server")]
