@@ -5,6 +5,7 @@
     clippy::indexing_slicing
 )]
 
+use regex::Regex;
 use std::io::Write;
 
 use progenitor::GenerationSettings;
@@ -22,11 +23,33 @@ fn main() {
     }
 
     println!("cargo:rerun-if-changed={}", swagger_file);
-    let file = std::fs::File::open(swagger_file).unwrap();
+    let mut content = std::fs::read_to_string(swagger_file).unwrap();
+
+    //progenitor only supports openapi 3.0
+    //https://github.com/oxidecomputer/progenitor/issues/762
+
+    //we can get around this by patching the file back to 3.0
+
     #[cfg(feature = "json")]
-    let spec = serde_json::from_reader(file).unwrap();
+    if content.contains(r#""openapi": "3.1.0","#) {
+        let re = regex::Regex::new(r#""type":\s*\[\s*"string",\s*"null"\s*\]"#).unwrap();
+        let patched_content = re.replace_all(&content, r#""type": "string", "nullable": true"#);
+        let patched_content =
+            patched_content.replace(r#""openapi": "3.1.0","#, r#""openapi": "3.0.3","#);
+        let patched_file = swagger_file.to_string() + ".patched";
+        std::fs::write(patched_file, patched_content.as_bytes()).unwrap();
+
+        content = patched_content.to_string();
+    }
+
+    #[cfg(feature = "json")]
+    let spec = serde_json::from_str(&content).unwrap();
+
+    //TODO patch the yaml file like the json file
+
     #[cfg(feature = "yaml")]
-    let spec = serde_yml::from_reader(file).unwrap();
+    let mut spec = serde_yml::from_str(&content).unwrap();
+
     let mut settings = GenerationSettings::default();
     settings.with_interface(progenitor::InterfaceStyle::Builder);
     settings.with_tag(progenitor::TagStyle::Separate);
