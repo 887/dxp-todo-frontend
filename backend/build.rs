@@ -36,8 +36,10 @@ fn main() {
         let patched_content = re.replace_all(&content, r#""type": "string", "nullable": true"#);
         let patched_content =
             patched_content.replace(r#""openapi": "3.1.0","#, r#""openapi": "3.0.3","#);
-        let patched_file = swagger_file.to_string() + ".patched";
-        std::fs::write(patched_file, patched_content.as_bytes()).unwrap();
+
+        //only for debugging
+        // let patched_file = swagger_file.to_string() + ".patched";
+        // std::fs::write(patched_file, patched_content.as_bytes()).unwrap();
 
         content = patched_content.to_string();
     }
