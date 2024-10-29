@@ -5,7 +5,6 @@
     clippy::indexing_slicing
 )]
 
-use regex::Regex;
 use std::io::Write;
 
 use progenitor::GenerationSettings;
