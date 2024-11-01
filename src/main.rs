@@ -55,7 +55,10 @@ async fn main() -> Result<()> {
 ))]
 fn main() {
     // Init logger
-    dioxus_logger::init(tracing::Level::INFO).expect("failed to init logger");
+    if let Err(e) = dioxus_logger::init(tracing::Level::INFO) {
+        tracing::error!("failed to init logger: {}", e);
+        return;
+    }
 
     init();
 

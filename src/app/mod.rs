@@ -41,21 +41,59 @@ fn Blog(id: i32) -> Element {
 #[component]
 fn ScreenShare() -> Element {
     let video_player_id = "video_player";
-    let document = web_sys::window().unwrap().document().unwrap();
+    let window = match web_sys::window() {
+        Some(win) => win,
+        None => {
+            tracing::error!("Unable to access window");
+            return rsx! {
+                div { "Error: Unable to access window" }
+            };
+        }
+    };
+
+    let document = match window.document() {
+        Some(doc) => doc,
+        None => {
+            tracing::error!("Unable to access document");
+            return rsx! {
+                div { "Error: Unable to access document" }
+            };
+        }
+    };
 
     let start_screen_share = move |_| {
-        let video_ref = document.get_element_by_id(video_player_id).unwrap();
-        let video_element = video_ref.dyn_into::<web_sys::HtmlVideoElement>().unwrap();
-        let media_devices = web_sys::window()
-            .unwrap()
-            .navigator()
-            .media_devices()
-            .unwrap();
+        let video_ref = match document.get_element_by_id(video_player_id) {
+            Some(element) => element,
+            None => {
+                tracing::error!("Unable to find video element");
+                return;
+            }
+        };
+        let video_element = match video_ref.dyn_into::<web_sys::HtmlVideoElement>() {
+            Ok(element) => element,
+            Err(_) => {
+                tracing::error!("Unable to cast video element");
+                return;
+            }
+        };
+        let media_devices = match window.navigator().media_devices() {
+            Ok(devices) => devices,
+            Err(_) => {
+                tracing::error!("Unable to access media devices");
+                return;
+            }
+        };
 
         let constraints = MediaStreamConstraints::new();
         constraints.set_video(&JsValue::TRUE);
 
-        let promise = media_devices.get_display_media().unwrap();
+        let promise = match media_devices.get_display_media() {
+            Ok(promise) => promise,
+            Err(err) => {
+                tracing::error!("Error getting display media: {:?}", err);
+                return;
+            }
+        };
 
         let future = wasm_bindgen_futures::JsFuture::from(promise);
         wasm_bindgen_futures::spawn_local(async move {
@@ -131,7 +169,9 @@ fn Home() -> Element {
                     if let Ok(data) = get_server_data().await {
                         tracing::info!("Client received: {}", data);
                         text.set(data.clone());
-                        post_server_data(data).await.unwrap();
+                        if let Err(err) = post_server_data(data).await {
+                            tracing::error!("Error posting server data: {:?}", err);
+                        }
                     }
                 },
                 "Get Server Data"
