@@ -14,7 +14,7 @@ enum Route {
 }
 
 // const TAILWIND_URL: &str = manganis::mg!("public/tailwind.css");
-const TAILWIND_URL: &str = asset!("public/tailwind.css");
+const TAILWIND_URL: Asset = asset!("public/tailwind.css");
 
 pub fn App() -> Element {
     rsx! {
