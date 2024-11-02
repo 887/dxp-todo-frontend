@@ -9,7 +9,7 @@
             "preLaunchTask": "npx tailwindcss",
             "request": "launch",
             "type": "node-terminal",
-            "command": "dx serve --port 3000",
+            "command": "dx serve --port 3000 --platform web",
         },
 
         {
