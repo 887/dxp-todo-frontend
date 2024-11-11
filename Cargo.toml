@@ -21,7 +21,7 @@ serde_json = { version = "^1.0.132" }
 arc-swap = "1.7.1"
 include_dir = { version = "0.7.3" }
 derivative = "2.2.0"
-thiserror = "1.0.61"
+thiserror = "2.0.3"
 backend = { path = "backend"}
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
