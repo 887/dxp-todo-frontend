@@ -51,7 +51,7 @@ tokio = { workspace = true, optional = true,features = [
     "time"
 ]}
 axum = { workspace = true, optional = true }
-dioxus-logger = "0.5.1"
+dioxus-logger = "0.6.0"
 dioxus = { workspace = true }
 dioxus-cli-config = { workspace = true, optional = true }
 dioxus-i18n = { workspace = true, optional = true }
