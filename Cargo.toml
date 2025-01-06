@@ -26,7 +26,7 @@ backend = { path = "backend"}
 dxp-logging = { git = "https://github.com/887/dxp-logging.git", default-features = false }
 dxp-code-loc = { git = "https://github.com/887/dxp-code-loc.git" }
 is_executable = { version ="1.0.4" }
-axum = { version = "0.7.5", features = ["http2", "macros"] }
+axum = { version = "0.8.1", features = ["http2", "macros"] }
 axum-server = "0.7.1"
 tower = "0.5.1"
 tower-http = { version = "0.6.1", features = ["compression-zstd", "trace"] }
